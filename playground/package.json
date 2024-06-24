@@ -1,0 +1,25 @@
+{
+  "name": "@vue-emap/playground",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.4.0",
+  "description": "Vue EMap Playground",
+  "author": "CofCat <https://github.com/CofCat456>",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite --port 5555",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue-emap": "workspace:*",
+    "vue-router": "^4.3.2"
+  },
+  "devDependencies": {
+    "@iconify-json/carbon": "^1.1.33",
+    "@vue-macros/volar": "^0.19.1",
+    "unplugin-auto-import": "^0.17.6",
+    "unplugin-vue-components": "^0.27.0",
+    "unplugin-vue-macros": "^2.9.2",
+    "unplugin-vue-router": "^0.8.6"
+  }
+}

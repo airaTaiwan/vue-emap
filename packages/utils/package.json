@@ -1,0 +1,47 @@
+{
+  "name": "@vue-emap/utils",
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.4.0",
+  "description": "Vue EMap utils library.",
+  "author": "CofCat <https://github.com/CofCat456>",
+  "license": "MIT",
+  "homepage": "https://www.aira.com.tw/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/airaTaiwan/vue-emap.git",
+    "directory": "packages/utils"
+  },
+  "bugs": {
+    "url": "https://github.com/airaTaiwan/vue-emap/issues"
+  },
+  "keywords": [
+    "vue",
+    "map",
+    "utils"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "main": "src/index.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "watch": "tsup --watch"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts"
+  }
+}
