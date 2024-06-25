@@ -1,1 +1,2 @@
-export const a = 1
+export * from './canvas'
+export * from './dom'

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { EMap } from 'vue-emap'
+import mapImg from '~/public/map.jpg'
 
 defineOptions({
   name: 'IndexPage',
@@ -7,8 +8,8 @@ defineOptions({
 </script>
 
 <template>
-  <div>
-    <EMap :model-value="false">
+  <div class="w-[400px] h-[400px]">
+    <EMap :img="mapImg">
       I Am EMap
     </EMap>
   </div>

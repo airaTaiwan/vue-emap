@@ -9,7 +9,7 @@
     "preinstall": "npx only-allow pnpm",
     "dev": "nr stub",
     "watch": "pnpm -r --parallel --filter=./packages/* run watch",
-    "build": "rimraf packages/*/dist && nr -r -F \"./packages/*\" build",
+    "build": "rimraf packages/*/dist && nr -r --filter \"./packages/{utils,core}\" build && nr -r --filter \"./packages/vue-emap\" build",
     "play": "run-s build play:run",
     "play:run": "run-p dev play:dev",
     "play:dev": "npm -C playground run dev",
@@ -27,6 +27,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.1",
     "@antfu/ni": "^0.21.12",
+    "@antfu/utils": "^0.7.8",
     "@types/node": "^20.14.8",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",

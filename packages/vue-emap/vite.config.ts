@@ -14,6 +14,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    emptyOutDir: false,
     lib: {
       name: 'vue-emap',
       fileName: (format, name) => {
