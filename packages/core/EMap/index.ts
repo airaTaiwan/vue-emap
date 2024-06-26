@@ -1,3 +1,1 @@
-export {
-  default as EMap,
-} from './src/emap.vue'
+export { default as EMap } from './src/EMap.vue'
