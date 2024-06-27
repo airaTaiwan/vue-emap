@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
-import { useDevicePixelRatio, useElementSize, useRafFn, watchDeep, watchImmediate } from '@vueuse/core'
+import { until, useDevicePixelRatio, useElementSize, useRafFn, watchDeep } from '@vueuse/core'
 import { isString } from '@antfu/utils'
 
 import type { Info, Point, Size } from '@vue-emap/utils'
-import { centerOffset, initCanvas, loadImage } from '@vue-emap/utils'
+import { centerOffset, loadImage, useCanvas } from '@vue-emap/utils'
 
 import { Overlayview } from '../../OverlayView'
 import { Eventview } from '../../EventView'
@@ -24,7 +24,6 @@ const canvasLayerEl = shallowRef<HTMLDivElement | null>(null)
 const { width: canvasLayerWidth, height: canvasLayerHeight } = useElementSize(canvasLayerEl)
 
 const canvasEl = shallowRef<HTMLCanvasElement | null>(null)
-const canvasCtx = shallowRef<CanvasRenderingContext2D | null>(null)
 const imageCache = shallowRef<HTMLImageElement | null>(null)
 const imageInfo = shallowRef<Info>({ x: 0, y: 0, width: 0, height: 0 })
 const zoomNum = ref(props.zoom)
@@ -33,10 +32,14 @@ const minZoom = ref(props.minZoom)
 
 const steps = ref<Function[]>([])
 
-const getCanvasLayerCenterPoint = computed<Point>(() => ({
-  x: canvasLayerWidth.value / 2,
-  y: canvasLayerHeight.value / 2,
-}))
+const { canvasCtx, canvasCenterPoint, clear } = useCanvas(
+  canvasEl,
+  {
+    width: canvasLayerWidth,
+    height: canvasLayerHeight,
+    dpi: pixelRatio,
+  },
+)
 
 const getZoomImageSize = computed<Size>(() => ({
   width: imageInfo.value.width * zoomNum.value,
@@ -76,8 +79,8 @@ function setZoom(zoom: number, point?: Point, resetPos: boolean = false): void {
    * If no point is specified, zoom from the center of the canvas.
    */
   const changePoint = {
-    x: point ? point.x : getCanvasLayerCenterPoint.value.x,
-    y: point ? point.y : getCanvasLayerCenterPoint.value.y,
+    x: point ? point.x : canvasCenterPoint.value.x,
+    y: point ? point.y : canvasCenterPoint.value.y,
   }
 
   /**
@@ -168,16 +171,22 @@ function reset() {
 }
 
 /**
- * Clear canvas
+ * Add a step to the animation queue.
  */
-function clear() {
-  if (canvasCtx.value)
-    canvasCtx.value.clearRect(0, 0, canvasLayerWidth.value, canvasLayerHeight.value)
-}
+watchDeep(steps, () => {
+  controls.pause()
+  controls.resume()
+})
 
-watchImmediate([imageCache, canvasLayerWidth, canvasLayerHeight], () => {
-  if (imageCache.value == null)
-    return
+onMounted(async () => {
+  const img = isString(props.img) ? await loadImage(props.img) : props.img
+
+  imageInfo.value.width = img.naturalWidth
+  imageInfo.value.height = img.naturalHeight
+  imageCache.value = img
+
+  await until(canvasLayerWidth).toMatch(v => v > 0)
+  await until(canvasLayerHeight).toMatch(v => v > 0)
 
   steps.value.push(() => {
     processOffset()
@@ -188,26 +197,6 @@ watchImmediate([imageCache, canvasLayerWidth, canvasLayerHeight], () => {
 
     setZoom(zoomNum.value)
   })
-})
-
-/**
- * Add a step to the animation queue.
- */
-watchDeep(steps, () => {
-  controls.pause()
-  controls.resume()
-})
-
-onMounted(async () => {
-  const canvas = canvasEl.value!
-  const ctx = initCanvas(canvas, canvasLayerWidth.value, canvasLayerHeight.value, pixelRatio.value).ctx
-  const img = isString(props.img) ? await loadImage(props.img) : props.img
-
-  imageInfo.value.width = img.naturalWidth
-  imageInfo.value.height = img.naturalHeight
-
-  canvasCtx.value = ctx
-  imageCache.value = img
 })
 
 defineExpose({
