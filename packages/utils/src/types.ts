@@ -13,3 +13,8 @@ export interface Point {
   x: number
   y: number
 }
+
+/**
+ * Represents the position and size of an object or element.
+ */
+export interface Info extends Size, Point {}
