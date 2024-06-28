@@ -4,7 +4,7 @@
   "private": true,
   "packageManager": "pnpm@9.4.0",
   "description": "Vue EMap Playground",
-  "author": "CofCat <https://github.com/CofCat456>",
+  "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "scripts": {
     "build": "vite build",
     "dev": "vite --port 5555",
