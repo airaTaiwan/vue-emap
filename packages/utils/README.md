@@ -9,4 +9,4 @@ pnpm i @vue-emap/utils
 
 ## License
 
-[MIT](../../LICENSE) License © 2024 [CofCat](https://github.com/CofCat456)
+[MIT](../../LICENSE) License © 2024 [airaTaiwan](https://github.com/airaTaiwan456)

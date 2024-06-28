@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "packageManager": "pnpm@9.4.0",
-  "author": "CofCat <https://github.com/CofCat456>",
+  "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
