@@ -1,4 +1,4 @@
-export interface EMapProps {
+export interface EMapOptions {
   /**
    * map image
    */
@@ -18,6 +18,15 @@ export interface EMapProps {
   zoom?: number
   /**
    * The enabled/disabled state of the Zoom control.
+   *
+   * @default true
    */
   zoomControl?: boolean
+
+  /**
+   * If false, prevents the map from being dragged.
+   *
+   * @default true
+   */
+  draggable?: boolean
 }
