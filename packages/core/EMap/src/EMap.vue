@@ -1,21 +1,35 @@
+<script lang="ts">
+import { centerOffset, createContext, loadImage, useCanvas } from '@vue-emap/utils'
+
+export interface EMapContext {
+  eventLayerEl: ShallowRef<HTMLDivElement | null>
+  imageInfo: ShallowRef<Info>
+}
+
+export const [injectEMapContext, provideEMapContext]
+  = createContext<EMapContext>('EMapContext')
+</script>
+
 <script setup lang="ts">
 import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
 import { until, useDevicePixelRatio, useElementSize, useRafFn, watchDeep } from '@vueuse/core'
-import { isString } from '@antfu/utils'
 
+import type { ShallowRef } from 'vue'
 import type { Info, Point, Size } from '@vue-emap/utils'
-import { centerOffset, loadImage, useCanvas } from '@vue-emap/utils'
+
+import { isString } from '@antfu/utils'
 
 import EMapEventLayer from './EMapEventLayer.vue'
 import EMapOverlay from './EMapOverlay.vue'
 
-import type { EMapProps } from './types'
+import type { EMapOptions } from './types'
 
-const props = withDefaults(defineProps<EMapProps>(), {
+const props = withDefaults(defineProps<EMapOptions>(), {
   maxZoom: 5,
   minZoom: 0.5,
   zoom: 1,
-  zoomControl: false,
+  zoomControl: true,
+  draggable: true,
 })
 
 const { pixelRatio } = useDevicePixelRatio()
@@ -26,6 +40,8 @@ const { width: canvasLayerWidth, height: canvasLayerHeight } = useElementSize(ca
 const canvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const imageCache = shallowRef<HTMLImageElement | null>(null)
 const imageInfo = shallowRef<Info>({ x: 0, y: 0, width: 0, height: 0 })
+const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
+
 const zoomNum = ref(props.zoom)
 const maxZoom = ref(props.maxZoom)
 const minZoom = ref(props.minZoom)
@@ -199,6 +215,11 @@ onMounted(async () => {
   })
 })
 
+provideEMapContext({
+  eventLayerEl,
+  imageInfo,
+})
+
 defineExpose({
   zoomNum,
   setZoom,
@@ -213,7 +234,7 @@ defineExpose({
     </div>
 
     <template #event>
-      <EMapEventLayer />
+      <EMapEventLayer :draggable @on-refresh="refresh" />
     </template>
   </EMapOverlay>
 </template>

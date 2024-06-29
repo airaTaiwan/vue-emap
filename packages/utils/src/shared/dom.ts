@@ -9,3 +9,17 @@ export function loadImage(url: string): Promise<HTMLImageElement> {
     img.onerror = e => reject(e)
   })
 }
+
+/**
+ * Aborts the given event by stopping its propagation and preventing its default behavior.
+ */
+export function abortEvent(e: Event | null) {
+  if (e == null)
+    return
+
+  if (e.stopPropagation)
+    e.stopPropagation()
+
+  if (e.preventDefault)
+    e.preventDefault()
+}
