@@ -6,8 +6,8 @@ import { isString } from '@antfu/utils'
 import type { Info, Point, Size } from '@vue-emap/utils'
 import { centerOffset, loadImage, useCanvas } from '@vue-emap/utils'
 
-import { Overlayview } from '../../OverlayView'
-import { Eventview } from '../../EventView'
+import EMapEventLayer from './EMapEventLayer.vue'
+import EMapOverlay from './EMapOverlay.vue'
 
 import type { EMapProps } from './types'
 
@@ -207,17 +207,13 @@ defineExpose({
 </script>
 
 <template>
-  <Overlayview :img-width="imageInfo.width" :img-height="imageInfo.height" :zoom="minZoom">
+  <EMapOverlay :img-width="imageInfo.width" :img-height="imageInfo.height" :zoom="minZoom">
     <div ref="canvasLayerEl" position="absolute inset-0" z0>
       <canvas ref="canvasEl" position="absolute top-0 left-0" select-none :width="canvasLayerWidth" :height="canvasLayerHeight" />
     </div>
 
-    <template #object>
-      object
-    </template>
-
     <template #event>
-      <Eventview />
+      <EMapEventLayer />
     </template>
-  </Overlayview>
+  </EMapOverlay>
 </template>
