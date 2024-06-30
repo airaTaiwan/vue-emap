@@ -119,7 +119,7 @@ function setZoom(zoom: number, point?: Point, resetPos: boolean = false): void {
   if (resetPos)
     processOffset()
 
-  refresh()
+  redraw()
 
   // this.trigger(ZOOMCHANGED, preZoom, {
   //   x: changePointX,
@@ -145,9 +145,9 @@ function processOffset() {
 }
 
 /**
- * Refresh the canvas.
+ * Redraw the canvas.
  */
-function refresh() {
+function redraw() {
   if (canvasCtx.value == null || imageCache.value == null)
     return
 
@@ -234,7 +234,7 @@ defineExpose({
     </div>
 
     <template #event>
-      <EMapEventLayer :draggable @on-refresh="refresh" />
+      <EMapEventLayer :draggable @on-refresh="redraw" />
     </template>
   </EMapOverlay>
 </template>
