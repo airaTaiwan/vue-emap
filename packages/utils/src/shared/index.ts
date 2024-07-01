@@ -1,3 +1,4 @@
+export * from './animation'
 export * from './canvas'
 export * from './createContext'
 export * from './dom'

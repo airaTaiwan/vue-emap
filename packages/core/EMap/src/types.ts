@@ -1,3 +1,5 @@
+import type { AnimationType } from '@vue-emap/utils'
+
 export interface EMapOptions {
   /**
    * map image
@@ -29,4 +31,22 @@ export interface EMapOptions {
    * @default true
    */
   draggable?: boolean
+
+  animation?: Animation
+}
+
+export interface Animation {
+  /**
+   * The duration of the animation in milliseconds.
+   *
+   * @default 1000
+   */
+  duration: number
+
+  /**
+   * The easing function of the animation.
+   *
+   * {@link AnimationType}
+   */
+  easingFunction: AnimationType
 }
