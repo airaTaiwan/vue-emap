@@ -22,7 +22,10 @@
     "postinstall": "npx simple-git-hooks",
     "major": "taze minor -wIr",
     "mono": "monoman && nr lint:fix",
-    "mono:check": "monoman --check"
+    "mono:check": "monoman --check",
+    "test": "vitest",
+    "test:update": "vitest -u",
+    "test:coverage": "vitest --coverage"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.21.2",
@@ -31,6 +34,9 @@
     "@types/node": "^20.14.9",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "@vitest/coverage-c8": "^0.33.0",
+    "@vitest/ui": "^1.6.0",
+    "@vue/test-utils": "^2.4.6",
     "@vueuse/core": "^10.11.0",
     "bumpp": "^9.4.1",
     "eslint": "^8.57.0",
@@ -47,6 +53,8 @@
     "unocss": "^0.61.0",
     "vite": "^5.3.2",
     "vite-plugin-dts": "^3.9.1",
+    "vitest": "^1.6.0",
+    "vitest-canvas-mock": "^0.3.3",
     "vue": "^3.4.31",
     "vue-component-type-helpers": "^2.0.22",
     "vue-tsc": "^2.0.22"
