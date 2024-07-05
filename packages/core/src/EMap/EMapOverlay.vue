@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import ViewLayer from './ViewLayer.vue'
-import ObjectView from './ObjectView.vue'
 
 const props = defineProps<{
   imgWidth: number
@@ -17,13 +15,18 @@ const size = computed(() => ({
 
 <template>
   <div w-full h-full pos-relative overflow-hidden>
-    <div position="absolute inset-0" w-full h-full m-0 p-0 b-0 :style="size">
-      <ViewLayer>
+    <div position="absolute inset-0" w-full h-full m0 p0 b-0 z0 :style="size">
+      <div position="absolute inset-0" w-full z-1>
         <slot />
-      </ViewLayer>
-      <ObjectView>
+      </div>
+      <div
+        position="absolute inset-0" w-full will-change-transform z103
+        :style="{
+          transform: 'translate(0px, 0px)',
+        }"
+      >
         <slot name="object" />
-      </ObjectView>
+      </div>
     </div>
     <slot name="event" />
   </div>

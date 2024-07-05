@@ -26,11 +26,14 @@ export interface UseCanvasReturn {
   canvasCenterPoint: ComputedRef<Point>
 
   /**
-   * Clear canvas
+   * Clear canvas.
    */
   clear: () => void
 }
 
+/**
+ * Create a canvas and return its related properties and methods.
+ */
 export function useCanvas(
   target: MaybeRef<HTMLElement | null>,
   {
