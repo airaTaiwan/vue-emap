@@ -1,3 +1,3 @@
 import 'uno.css'
 
-export * from './EMap'
+export * from './src/EMap'

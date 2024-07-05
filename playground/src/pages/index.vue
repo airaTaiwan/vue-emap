@@ -20,8 +20,8 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
       I Am EMap
     </EMap>
     <ControlBtns
-      @on-zoom-in="EMapRef?.setZoom(EMapRef.zoomNum + 0.1)"
-      @on-zoom-out="EMapRef?.setZoom(EMapRef.zoomNum - 0.1)"
+      @on-zoom-in="EMapRef?.setZoom(EMapRef.zoomNum + 0.5)"
+      @on-zoom-out="EMapRef?.setZoom(EMapRef.zoomNum - 0.5)"
       @on-reset="EMapRef?.reset()"
     />
   </div>

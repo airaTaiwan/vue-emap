@@ -15,3 +15,13 @@ export function centerOffset(
 
   return { offsetX, offsetY }
 }
+
+export function calcNewImageOffset() {
+  // const scaleChange = newZoom / zoomNum.value
+
+  // Current center point of the image
+  // const imageCenterPointX = x + getZoomImageSize.value.width / 2
+  // const imageCenterPointY = y + getZoomImageSize.value.height / 2
+  // const newImageCenterX = (imageCenterPointX - targetPoint.x) * scaleChange + targetPoint.x
+  // const newImageCenterY = (imageCenterPointY - targetPoint.y) * scaleChange + targetPoint.y
+}
