@@ -1,4 +1,6 @@
 <script lang="ts">
+import { type Point, createContext, useResetPoint } from '@vue-emap/utils'
+
 interface EMapEventLayerProps {
   draggable: EMapOptions['draggable']
 }
@@ -6,13 +8,19 @@ interface EMapEventLayerProps {
 export type EMapEventLayerEmits = {
   onRefresh: []
 }
+
+export interface EMapEventContext {
+  translate: Ref<Point>
+}
+
+export const [injectEMapEventContext, provideEMapEventContext]
+  = createContext<EMapEventContext>('EMapContext')
 </script>
 
 <script setup lang="ts">
+import type { Ref } from 'vue'
 import { ref, watch } from 'vue'
-import { useEventListener, usePointer } from '@vueuse/core'
-
-import { type Point, useResetPoint } from '@vue-emap/utils'
+import { usePointer } from '@vueuse/core'
 
 import type { EMapOptions } from './types'
 
@@ -25,19 +33,19 @@ const { eventLayerEl, imageInfo } = injectEMapContext()
 
 const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
 
-const clickOffset = ref<Point>(useResetPoint())
+const isDragging = ref(false)
 const translate = ref<Point>(useResetPoint())
 
-const { x, y, pressure, isInside } = usePointer({
+const { x, y, pressure } = usePointer({
   target: eventLayerEl,
 })
 
 if (props.draggable) {
-  watch([x, y, pressure, isInside], ([curX, curY, curPressure, curIsside], [preX, preY, _prePressure, preIsInside]) => {
-    if (preIsInside !== curIsside && curIsside === false)
-      dragEnd()
+  watch([x, y, pressure], ([curX, curY, curPressure], [preX, preY, _prePressure]) => {
+    if (!isDragging.value)
+      return
 
-    if (curPressure <= 0)
+    if (curPressure <= 0 || preX === 0 || preY === 0)
       return
 
     eventLayerCursor.value = 'grabbing'
@@ -54,30 +62,44 @@ if (props.draggable) {
   })
 }
 
-function dragEnd() {
-  eventLayerCursor.value = 'default'
+function dragStart() {
+  isDragging.value = true
 
-  useResetPoint([clickOffset, translate])
+  eventLayerCursor.value = 'grab'
 }
 
-useEventListener(eventLayerEl, 'pointerup', dragEnd)
+function dragEnd() {
+  eventLayerCursor.value = 'default'
+}
+
+provideEMapEventContext({
+  translate,
+})
 </script>
 
 <template>
   <div
-    ref="eventLayerEl" position="absolute inset-0" w-full h-full m0 p0 b-0 z3
+    ref="eventLayerEl" pos-absolute w-full h-full m0 p0 b-0 z3
     :style="{
       cursor: eventLayerCursor,
 
     }"
+    @pointerdown="dragStart"
+    @pointerup="dragEnd"
+    @pointerleave="dragEnd"
   >
     <div
-      position="absolute inset-0" w-full will-change-transform
-      :style="{
-        translate: `${translate.x}px ${translate.y}px`,
-      }"
+      position="absolute top-0 left-0" w-full will-change-transform
+      @pointerdown.stop
+      @click.stop
+      @dblclick.stop
+      @mousedown.stop
     >
-      <slot />
+      <div
+        position="absolute top-0 left-0" w-full z104
+      >
+        <slot />
+      </div>
     </div>
   </div>
 </template>

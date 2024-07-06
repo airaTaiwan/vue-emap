@@ -1,9 +1,12 @@
 <script lang="ts">
-import { ANIMATION_EASE_IN_OUT_QUAD, centerOffset, createContext, easingFunctions, loadImage, useCanvas } from '@vue-emap/utils'
+import { ANIMATION_EASE_IN_OUT_QUAD, centerOffset, createContext, easingFunctions, loadImage, useCanvas, useResetPoint } from '@vue-emap/utils'
 
 export interface EMapContext {
   eventLayerEl: ShallowRef<HTMLDivElement | null>
-  imageInfo: ShallowRef<Info>
+  imageInfo: Ref<Info>
+  zoomNum: Ref<number>
+  zoomRatio: Ref<number>
+  zoomChangePoint: Ref<Point>
 }
 
 export const [injectEMapContext, provideEMapContext]
@@ -14,7 +17,7 @@ export const [injectEMapContext, provideEMapContext]
 import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
 import { until, useDevicePixelRatio, useElementSize, useFps, useRafFn, watchDeep } from '@vueuse/core'
 
-import type { ShallowRef } from 'vue'
+import type { Ref, ShallowRef } from 'vue'
 import type { Info, Point, Size } from '@vue-emap/utils'
 
 import { isString, sleep } from '@antfu/utils'
@@ -22,7 +25,7 @@ import { isString, sleep } from '@antfu/utils'
 import EMapEventLayer from './EMapEventLayer.vue'
 import EMapOverlay from './EMapOverlay.vue'
 
-import type { EMapOptions } from './types'
+import type { EMapOptions, Zoom } from './types'
 
 const props = withDefaults(defineProps<EMapOptions>(), {
   maxZoom: 5,
@@ -45,12 +48,14 @@ const { width: canvasLayerWidth, height: canvasLayerHeight } = useElementSize(ca
 
 const canvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const imageCache = shallowRef<HTMLImageElement | null>(null)
-const imageInfo = shallowRef<Info>({ x: 0, y: 0, width: 0, height: 0 })
+const imageInfo = ref<Info>({ x: 0, y: 0, width: 0, height: 0 })
 const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
 
 const zoomNum = ref(props.zoom)
 const maxZoom = ref(props.maxZoom)
 const minZoom = ref(props.minZoom)
+const zoomRatio = ref(1)
+const zoomChangePoint = ref<Point>(useResetPoint())
 
 const animationEasingTime = ref(0)
 const animationEasingFunction = computed(() => easingFunctions[props.animation.easingFunction])
@@ -59,7 +64,7 @@ const sourceTransitionZoom = ref(0)
 // Queue for the animation steps
 const steps = ref<Function[]>([])
 
-const { canvasCtx, clear } = useCanvas(
+const { canvasCtx, canvasCenterPoint, clear } = useCanvas(
   canvasEl,
   {
     width: canvasLayerWidth,
@@ -96,22 +101,42 @@ async function frame() {
 /**
  * Sets the zoom of the map.
  */
-function setZoom(zoom: number): void {
+function setZoom(zoom: number, point?: Point): void {
   if (!props.zoomControl)
     throw new Error('Zoom control is disabled')
 
   const newZoom = Math.max(minZoom.value, Math.min(zoom, maxZoom.value))
 
-  const preZoom = zoomNum.value
-  sourceTransitionZoom.value = preZoom
-  zoomNum.value = newZoom
+  if (newZoom === zoomNum.value)
+    return
 
-  const targetCenter: Point = {
-    x: imageInfo.value.x + imageInfo.value.width * preZoom / 2,
-    y: imageInfo.value.y + imageInfo.value.height * preZoom / 2,
+  const preZoom = zoomNum.value
+
+  const changePointX = point ? point.x : canvasCenterPoint.value.x
+  const changePointY = point ? point.y : canvasCenterPoint.value.y
+
+  const imageCenterX = imageInfo.value.x + imageInfo.value.width * preZoom / 2
+  const imageCenterY = imageInfo.value.y + imageInfo.value.height * preZoom / 2
+
+  const newImageCenterX = (imageCenterX - changePointX) * (newZoom / preZoom) + changePointX
+  const newImageCenterY = (imageCenterY - changePointY) * (newZoom / preZoom) + changePointY
+
+  sourceTransitionZoom.value = preZoom
+  zoomChangePoint.value = {
+    x: changePointX,
+    y: changePointY,
   }
 
-  animationRedraw(preZoom, targetCenter)
+  animationRedraw(
+    {
+      sourceZoom: preZoom,
+      nextZoom: newZoom,
+    },
+    {
+      x: newImageCenterX,
+      y: newImageCenterY,
+    },
+  )
 }
 
 /**
@@ -158,8 +183,10 @@ function redraw(zoom: number) {
   })
 }
 
-async function transitionRedraw(sourceZoom: number, targetPoint: Point, firstRender: boolean, finished: boolean = false) {
+async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boolean, finished: boolean = false) {
   const { animation } = props
+  const { sourceZoom, nextZoom } = zoom
+
   // 60 for 60 fps, 0.001 for milli's
   const animationFps = fps.value || 60
   const animationSpeed
@@ -175,7 +202,8 @@ async function transitionRedraw(sourceZoom: number, targetPoint: Point, firstRen
 
   const { width: imageWidth, height: imageHeight } = imageInfo.value
 
-  const newZoom = sourceZoom + (zoomNum.value - sourceZoom) * progress
+  const newZoom = sourceZoom + (nextZoom - sourceZoom) * progress
+  zoomRatio.value = newZoom / zoomNum.value
 
   const newZoomImageWidth = imageWidth * newZoom
   const newZoomImageHeight = imageHeight * newZoom
@@ -184,22 +212,23 @@ async function transitionRedraw(sourceZoom: number, targetPoint: Point, firstRen
   imageInfo.value.y = targetPoint.y - (newZoomImageHeight) / 2
 
   sourceTransitionZoom.value = newZoom
+  zoomNum.value = newZoom
 
   redraw(newZoom)
 
   if (!firstRender)
     await sleep(6)
 
-  if (finished || sourceZoom === zoomNum.value) {
+  if (finished) {
     sourceTransitionZoom.value = 0
     animationEasingTime.value = 0
     return
   }
 
-  animationRedraw(sourceZoom, targetPoint, false)
+  animationRedraw(zoom, targetPoint, false)
 }
 
-async function animationRedraw(sourceZoom: number, targetPoint: Point, firstRender: boolean = true) {
+async function animationRedraw(zoom: Zoom, targetPoint: Point, firstRender: boolean = true) {
   const { animation } = props
 
   // if the time is set to 0, don't do an animation
@@ -209,7 +238,7 @@ async function animationRedraw(sourceZoom: number, targetPoint: Point, firstRend
   else {
     // forcefully complete the old animation if it was still running
     // by setting easingtime to 1, we finish the animation.
-    await transitionRedraw(sourceZoom, targetPoint, firstRender, animationEasingTime.value === 1)
+    await transitionRedraw(zoom, targetPoint, firstRender, animationEasingTime.value === 1)
   }
 }
 
@@ -254,6 +283,9 @@ onMounted(async () => {
 provideEMapContext({
   eventLayerEl,
   imageInfo,
+  zoomNum,
+  zoomRatio,
+  zoomChangePoint,
 })
 
 defineExpose({
@@ -270,7 +302,9 @@ defineExpose({
     </div>
 
     <template #event>
-      <EMapEventLayer :draggable @on-refresh="redraw(zoomNum)" />
+      <EMapEventLayer :draggable @on-refresh="redraw(zoomNum)">
+        <slot />
+      </EMapEventLayer>
     </template>
   </EMapOverlay>
 </template>
