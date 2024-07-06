@@ -1,23 +1,21 @@
+import vue from '@vitejs/plugin-vue'
 import { resolve } from 'node:path'
 import { defaultExclude, defineConfig } from 'vitest/config'
-import vue from '@vitejs/plugin-vue'
 
 import { alias } from './alias'
 
 export default defineConfig({
-  plugins: [
-    vue(),
-  ],
   optimizeDeps: {
     entries: [],
   },
+  plugins: [
+    vue(),
+  ],
+  resolve: {
+    alias,
+  },
   test: {
-    name: 'unit',
-    environment: 'jsdom',
     clearMocks: true,
-    testTimeout: 30_000,
-    exclude: [...defaultExclude],
-    setupFiles: [resolve(__dirname, 'test/setup/setup.ts')],
     deps: {
       // vitest < 0.34
       inline: ['vitest-canvas-mock'],
@@ -28,8 +26,10 @@ export default defineConfig({
         },
       },
     },
-  },
-  resolve: {
-    alias,
+    environment: 'jsdom',
+    exclude: [...defaultExclude],
+    name: 'unit',
+    setupFiles: [resolve(__dirname, 'test/setup/setup.ts')],
+    testTimeout: 30_000,
   },
 })

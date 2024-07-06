@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { describe, expect, it } from 'vitest'
 import { EMap } from 'vue-emap'
 
 import mapImg from './mock/map.jpg'
@@ -8,8 +8,8 @@ describe('map', () => {
   it('map render test', () => {
     const wrapper = mount(EMap, {
       props: {
-        zoomControl: true,
         img: mapImg,
+        zoomControl: true,
       },
     })
 
@@ -19,9 +19,9 @@ describe('map', () => {
   it('should zoom to 1.5', () => {
     const wrapper = mount(EMap, {
       props: {
+        img: mapImg,
         zoom: 1,
         zoomControl: true,
-        img: mapImg,
       },
     })
 

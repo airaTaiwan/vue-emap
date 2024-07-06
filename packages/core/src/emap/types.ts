@@ -1,11 +1,18 @@
 import type { AnimationType } from '@vue-emap/utils'
 
 export interface EMapOptions {
+  animation?: Animation
+
+  /**
+   * If false, prevents the map from being dragged.
+   *
+   * @default true
+   */
+  draggable?: boolean
   /**
    * map image
    */
-  img: string | HTMLImageElement
-
+  img: HTMLImageElement | string
   /**
    * The maximum zoom level which will be displayed on the map.
    */
@@ -14,25 +21,18 @@ export interface EMapOptions {
    * The minimum zoom level which will be displayed on the map.
    */
   minZoom?: number
+
   /**
    * The initial Map zoom level.
    */
   zoom?: number
+
   /**
    * The enabled/disabled state of the Zoom control.
    *
    * @default true
    */
   zoomControl?: boolean
-
-  /**
-   * If false, prevents the map from being dragged.
-   *
-   * @default true
-   */
-  draggable?: boolean
-
-  animation?: Animation
 }
 
 export interface Animation {
@@ -53,11 +53,11 @@ export interface Animation {
 
 export interface Zoom {
   /**
-   * The current zoom level.
-   */
-  sourceZoom: number
-  /**
    * The next zoom level.
    */
   nextZoom: number
+  /**
+   * The current zoom level.
+   */
+  sourceZoom: number
 }

@@ -12,19 +12,19 @@ export const ANIMATION_EASE_IN_QUINT = Symbol('easeInQuint')
 export const ANIMATION_EASE_OUT_QUINT = Symbol('easeOutQuint')
 export const ANIMATION_EASE_IN_OUT_QUINT = Symbol('easeInOutQuint')
 
-export type AnimationType = typeof ANIMATION_LINEAR |
-  typeof ANIMATION_EASE_IN_QUAD |
-  typeof ANIMATION_EASE_OUT_QUAD |
-  typeof ANIMATION_EASE_IN_OUT_QUAD |
-  typeof ANIMATION_EASE_IN_CUBIC |
-  typeof ANIMATION_EASE_OUT_CUBIC |
+export type AnimationType = typeof ANIMATION_EASE_IN_CUBIC |
   typeof ANIMATION_EASE_IN_OUT_CUBIC |
-  typeof ANIMATION_EASE_IN_QUART |
-  typeof ANIMATION_EASE_OUT_QUART |
+  typeof ANIMATION_EASE_IN_OUT_QUAD |
   typeof ANIMATION_EASE_IN_OUT_QUART |
+  typeof ANIMATION_EASE_IN_OUT_QUINT |
+  typeof ANIMATION_EASE_IN_QUAD |
+  typeof ANIMATION_EASE_IN_QUART |
   typeof ANIMATION_EASE_IN_QUINT |
+  typeof ANIMATION_EASE_OUT_CUBIC |
+  typeof ANIMATION_EASE_OUT_QUAD |
+  typeof ANIMATION_EASE_OUT_QUART |
   typeof ANIMATION_EASE_OUT_QUINT |
-  typeof ANIMATION_EASE_IN_OUT_QUINT
+  typeof ANIMATION_LINEAR
 
 /*
  * Easing Functions.
@@ -34,46 +34,6 @@ export type AnimationType = typeof ANIMATION_LINEAR |
  */
 export const easingFunctions: Record<symbol, (t: number) => number> = {
   /**
-   * Provides no easing and no acceleration.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_LINEAR](t: number): number {
-    return t
-  },
-
-  /**
-   * Accelerate from zero velocity.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_EASE_IN_QUAD](t: number): number {
-    return t * t
-  },
-
-  /**
-   * Decelerate to zero velocity.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_EASE_OUT_QUAD](t: number): number {
-    return t * (2 - t)
-  },
-
-  /**
-   * Accelerate until halfway, then decelerate.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_EASE_IN_OUT_QUAD](t: number): number {
-    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
-  },
-
-  /**
    * Accelerate from zero velocity.
    *
    * @param t - Time.
@@ -81,16 +41,6 @@ export const easingFunctions: Record<symbol, (t: number) => number> = {
    */
   [ANIMATION_EASE_IN_CUBIC](t: number): number {
     return t * t * t
-  },
-
-  /**
-   * Decelerate to zero velocity.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_EASE_OUT_CUBIC](t: number): number {
-    return --t * t * t + 1
   },
 
   /**
@@ -104,23 +54,13 @@ export const easingFunctions: Record<symbol, (t: number) => number> = {
   },
 
   /**
-   * Accelerate from zero velocity.
+   * Accelerate until halfway, then decelerate.
    *
    * @param t - Time.
    * @returns Value at time t.
    */
-  [ANIMATION_EASE_IN_QUART](t: number): number {
-    return t * t * t * t
-  },
-
-  /**
-   * Decelerate to zero velocity.
-   *
-   * @param t - Time.
-   * @returns Value at time t.
-   */
-  [ANIMATION_EASE_OUT_QUART](t: number): number {
-    return 1 - --t * t * t * t
+  [ANIMATION_EASE_IN_OUT_QUAD](t: number): number {
+    return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
   },
 
   /**
@@ -131,6 +71,36 @@ export const easingFunctions: Record<symbol, (t: number) => number> = {
    */
   [ANIMATION_EASE_IN_OUT_QUART](t: number): number {
     return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * --t * t * t * t
+  },
+
+  /**
+   * Accelerate until halfway, then decelerate.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
+  [ANIMATION_EASE_IN_OUT_QUINT](t: number): number {
+    return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t
+  },
+
+  /**
+   * Accelerate from zero velocity.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
+  [ANIMATION_EASE_IN_QUAD](t: number): number {
+    return t * t
+  },
+
+  /**
+   * Accelerate from zero velocity.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
+  [ANIMATION_EASE_IN_QUART](t: number): number {
+    return t * t * t * t
   },
 
   /**
@@ -149,17 +119,47 @@ export const easingFunctions: Record<symbol, (t: number) => number> = {
    * @param t - Time.
    * @returns Value at time t.
    */
+  [ANIMATION_EASE_OUT_CUBIC](t: number): number {
+    return --t * t * t + 1
+  },
+
+  /**
+   * Decelerate to zero velocity.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
+  [ANIMATION_EASE_OUT_QUAD](t: number): number {
+    return t * (2 - t)
+  },
+
+  /**
+   * Decelerate to zero velocity.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
+  [ANIMATION_EASE_OUT_QUART](t: number): number {
+    return 1 - --t * t * t * t
+  },
+
+  /**
+   * Decelerate to zero velocity.
+   *
+   * @param t - Time.
+   * @returns Value at time t.
+   */
   [ANIMATION_EASE_OUT_QUINT](t: number): number {
     return 1 + --t * t * t * t * t
   },
 
   /**
-   * Accelerate until halfway, then decelerate.
+   * Provides no easing and no acceleration.
    *
    * @param t - Time.
    * @returns Value at time t.
    */
-  [ANIMATION_EASE_IN_OUT_QUINT](t: number): number {
-    return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * --t * t * t * t * t
+  [ANIMATION_LINEAR](t: number): number {
+    return t
   },
 }

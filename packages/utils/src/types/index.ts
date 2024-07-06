@@ -2,8 +2,8 @@
  * Represents the size of an object or element.
  */
 export interface Size {
-  width: number
   height: number
+  width: number
 }
 
 /**

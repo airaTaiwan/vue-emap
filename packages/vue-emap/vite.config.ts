@@ -1,28 +1,21 @@
-import { resolve } from 'node:path'
-import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { resolve } from 'node:path'
+import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueJsx(),
-    dts({
-      cleanVueFileName: true,
-    }),
-  ],
   build: {
     emptyOutDir: false,
     lib: {
-      name: 'vue-emap',
-      fileName: (format, name) => {
-        return `${name}.${format === 'es' ? 'js' : 'umd.cjs'}`
-      },
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
       },
+      fileName: (format, name) => {
+        return `${name}.${format === 'es' ? 'js' : 'umd.cjs'}`
+      },
+      name: 'vue-emap',
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
@@ -30,16 +23,23 @@ export default defineConfig({
       external: ['vue'],
       output: {
         // Provide global variables to use in the UMD build
-        // for externalized deps
-        globals: {
-          vue: 'Vue',
-        },
         assetFileNames: (chunkInfo) => {
           if (chunkInfo.name === 'style.css')
             return 'index.css'
           return chunkInfo.name as string
         },
+        // for externalized deps
+        globals: {
+          vue: 'Vue',
+        },
       },
     },
   },
+  plugins: [
+    vue(),
+    vueJsx(),
+    dts({
+      cleanVueFileName: true,
+    }),
+  ],
 })

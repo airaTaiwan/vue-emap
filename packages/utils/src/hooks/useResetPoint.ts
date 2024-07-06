@@ -1,7 +1,7 @@
-import { ref } from 'vue'
-import { toArray } from '@antfu/utils'
-
 import type { MaybeRef } from '@vueuse/shared'
+
+import { toArray } from '@antfu/utils'
+import { ref } from 'vue'
 
 import type { Point } from '../types'
 

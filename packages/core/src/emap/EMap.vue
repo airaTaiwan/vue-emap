@@ -4,9 +4,9 @@ import { ANIMATION_EASE_IN_OUT_QUAD, centerOffset, createContext, easingFunction
 export interface EMapContext {
   eventLayerEl: ShallowRef<HTMLDivElement | null>
   imageInfo: Ref<Info>
+  zoomChangePoint: Ref<Point>
   zoomNum: Ref<number>
   zoomRatio: Ref<number>
-  zoomChangePoint: Ref<Point>
 }
 
 export const [injectEMapContext, provideEMapContext]
@@ -14,41 +14,40 @@ export const [injectEMapContext, provideEMapContext]
 </script>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
-import { until, useDevicePixelRatio, useElementSize, useFps, useRafFn, watchDeep } from '@vueuse/core'
-
-import type { Ref, ShallowRef } from 'vue'
 import type { Info, Point, Size } from '@vue-emap/utils'
+import type { Ref, ShallowRef } from 'vue'
 
 import { isString, sleep } from '@antfu/utils'
+import { until, useDevicePixelRatio, useElementSize, useFps, useRafFn, watchDeep } from '@vueuse/core'
+import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
+
+import type { EMapOptions, Zoom } from './types'
 
 import EMapEventLayer from './EMapEventLayer.vue'
 import EMapOverlay from './EMapOverlay.vue'
 
-import type { EMapOptions, Zoom } from './types'
-
 const props = withDefaults(defineProps<EMapOptions>(), {
-  maxZoom: 5,
-  minZoom: 0.5,
-  zoom: 1,
-  zoomControl: true,
-  draggable: true,
   animation: () => ({
     duration: 1000,
     // TODO: it should can be string
     easingFunction: ANIMATION_EASE_IN_OUT_QUAD,
   }),
+  draggable: true,
+  maxZoom: 5,
+  minZoom: 0.5,
+  zoom: 1,
+  zoomControl: true,
 })
 
 const { pixelRatio } = useDevicePixelRatio()
 const fps = useFps()
 
 const canvasLayerEl = shallowRef<HTMLDivElement | null>(null)
-const { width: canvasLayerWidth, height: canvasLayerHeight } = useElementSize(canvasLayerEl)
+const { height: canvasLayerHeight, width: canvasLayerWidth } = useElementSize(canvasLayerEl)
 
 const canvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const imageCache = shallowRef<HTMLImageElement | null>(null)
-const imageInfo = ref<Info>({ x: 0, y: 0, width: 0, height: 0 })
+const imageInfo = ref<Info>({ height: 0, width: 0, x: 0, y: 0 })
 const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
 
 const zoomNum = ref(props.zoom)
@@ -64,18 +63,18 @@ const sourceTransitionZoom = ref(0)
 // Queue for the animation steps
 const steps = ref<Function[]>([])
 
-const { canvasCtx, canvasCenterPoint, clear } = useCanvas(
+const { canvasCenterPoint, canvasCtx, clear } = useCanvas(
   canvasEl,
   {
-    width: canvasLayerWidth,
-    height: canvasLayerHeight,
     dpi: pixelRatio,
+    height: canvasLayerHeight,
+    width: canvasLayerWidth,
   },
 )
 
 const getZoomImageSize = computed<Size>(() => ({
-  width: imageInfo.value.width * zoomNum.value,
   height: imageInfo.value.height * zoomNum.value,
+  width: imageInfo.value.width * zoomNum.value,
 }))
 
 const controls = useRafFn(async () => {
@@ -129,8 +128,8 @@ function setZoom(zoom: number, point?: Point): void {
 
   animationRedraw(
     {
-      sourceZoom: preZoom,
       nextZoom: newZoom,
+      sourceZoom: preZoom,
     },
     {
       x: newImageCenterX,
@@ -143,7 +142,7 @@ function setZoom(zoom: number, point?: Point): void {
  * Calculate the offset from the center of the image.
  */
 function processOffset() {
-  const { width, height } = getZoomImageSize.value
+  const { height, width } = getZoomImageSize.value
 
   const { offsetX, offsetY } = centerOffset(
     canvasLayerWidth.value,
@@ -167,7 +166,7 @@ function redraw(zoom: number) {
     if (canvasCtx.value == null || imageCache.value == null)
       return
 
-    const { x, y, width: imageWidth, height: imageHeight } = imageInfo.value
+    const { height: imageHeight, width: imageWidth, x, y } = imageInfo.value
 
     clear()
 
@@ -185,7 +184,7 @@ function redraw(zoom: number) {
 
 async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boolean, finished: boolean = false) {
   const { animation } = props
-  const { sourceZoom, nextZoom } = zoom
+  const { nextZoom, sourceZoom } = zoom
 
   // 60 for 60 fps, 0.001 for milli's
   const animationFps = fps.value || 60
@@ -200,7 +199,7 @@ async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boo
   if (animationEasingTime.value >= 1)
     animationEasingTime.value = 1
 
-  const { width: imageWidth, height: imageHeight } = imageInfo.value
+  const { height: imageHeight, width: imageWidth } = imageInfo.value
 
   const newZoom = sourceZoom + (nextZoom - sourceZoom) * progress
   zoomRatio.value = newZoom / zoomNum.value
@@ -272,7 +271,7 @@ onMounted(async () => {
   steps.value.push(() => {
     processOffset()
 
-    const { x, y, width: imageWidth, height: imageHeight } = imageInfo.value
+    const { height: imageHeight, width: imageWidth, x, y } = imageInfo.value
 
     canvasCtx.value!.drawImage(imageCache.value!, x, y, imageWidth, imageHeight)
 
@@ -283,22 +282,22 @@ onMounted(async () => {
 provideEMapContext({
   eventLayerEl,
   imageInfo,
+  zoomChangePoint,
   zoomNum,
   zoomRatio,
-  zoomChangePoint,
 })
 
 defineExpose({
-  zoomNum,
-  setZoom,
   reset,
+  setZoom,
+  zoomNum,
 })
 </script>
 
 <template>
-  <EMapOverlay :img-width="imageInfo.width" :img-height="imageInfo.height" :zoom="minZoom">
-    <div ref="canvasLayerEl" position="absolute inset-0" z0>
-      <canvas ref="canvasEl" position="absolute top-0 left-0" select-none :width="canvasLayerWidth" :height="canvasLayerHeight" />
+  <EMapOverlay :img-height="imageInfo.height" :img-width="imageInfo.width" :zoom="minZoom">
+    <div position="absolute inset-0" ref="canvasLayerEl" z0>
+      <canvas :height="canvasLayerHeight" :width="canvasLayerWidth" position="absolute top-0 left-0" ref="canvasEl" select-none />
     </div>
 
     <template #event>

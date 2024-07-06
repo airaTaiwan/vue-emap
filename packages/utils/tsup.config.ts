@@ -1,10 +1,10 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts'],
   clean: true,
-  format: ['cjs', 'esm'],
-  external: ['vue'],
   dts: true,
+  entry: ['src/index.ts'],
+  external: ['vue'],
+  format: ['cjs', 'esm'],
   minify: true,
 })

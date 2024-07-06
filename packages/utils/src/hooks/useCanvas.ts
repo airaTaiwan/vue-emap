@@ -1,29 +1,29 @@
-import type { ComputedRef, Ref, ShallowRef } from 'vue'
 import type { MaybeRef } from '@vueuse/shared'
+import type { ComputedRef, Ref, ShallowRef } from 'vue'
 
-import { computed, ref, shallowRef } from 'vue'
 import { invoke, unrefElement, until } from '@vueuse/core'
+import { computed, ref, shallowRef } from 'vue'
 
 import type { Point } from '../types'
 
 import { initCanvas } from '../shared'
 
 export interface UseCanvasOptions {
-  width: Ref<number>
-  height: Ref<number>
   dpi: Ref<number>
+  height: Ref<number>
+  width: Ref<number>
 }
 
 export interface UseCanvasReturn {
   /**
-   * The canvas 2D rendering context.
-   */
-  canvasCtx: ShallowRef<CanvasRenderingContext2D | null>
-
-  /**
    * The center point of the canvas.
    */
   canvasCenterPoint: ComputedRef<Point>
+
+  /**
+   * The canvas 2D rendering context.
+   */
+  canvasCtx: ShallowRef<CanvasRenderingContext2D | null>
 
   /**
    * Clear canvas.
@@ -37,9 +37,9 @@ export interface UseCanvasReturn {
 export function useCanvas(
   target: MaybeRef<HTMLElement | null>,
   {
-    width,
-    height,
     dpi,
+    height,
+    width,
   }: UseCanvasOptions,
 ): UseCanvasReturn {
   const canvasCtx = shallowRef<CanvasRenderingContext2D | null>(null)
@@ -76,8 +76,8 @@ export function useCanvas(
   })
 
   return {
-    canvasCtx,
     canvasCenterPoint,
+    canvasCtx,
 
     clear,
   }

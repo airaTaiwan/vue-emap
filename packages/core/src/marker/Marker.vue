@@ -1,18 +1,18 @@
 <script setup lang="ts">
+import type { Point } from '@vue-emap/utils'
+
 import { ref, watch, watchEffect } from 'vue'
 
-import type { Point } from '@vue-emap/utils'
+import type { MarkerOptions } from './types'
 
 import { injectEMapContext } from '../emap/EMap.vue'
 import { injectEMapEventContext } from '../emap/EMapEventLayer.vue'
-
-import type { MarkerOptions } from './types'
 
 const props = withDefaults(defineProps<MarkerOptions>(), {
   position: () => ({ x: 500, y: 300 }),
 })
 
-const { zoomNum, zoomRatio, zoomChangePoint } = injectEMapContext()
+const { zoomChangePoint, zoomNum, zoomRatio } = injectEMapContext()
 const { translate } = injectEMapEventContext()
 
 const position = ref<Point>({ ...props.position })
@@ -38,11 +38,11 @@ watch(zoomNum, () => {
 
 <template>
   <div
-    pos-absolute block op100 z0
     :style="{
       top: `${position.y}px`,
       left: `${position.x}px`,
-    }"
+    }" block op100 pos-absolute
+    z0
   >
     <slot>
       I am a marker

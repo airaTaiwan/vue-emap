@@ -8,17 +8,17 @@ defineEmits<{
 </script>
 
 <template>
-  <div position="fixed bottom-5 right-5" flex="~ col gap-2">
+  <div flex="~ col gap-2" position="fixed bottom-5 right-5">
     <slot />
 
     <slot name="base">
-      <button icon-btn @click="$emit('onZoomIn')">
+      <button @click="$emit('onZoomIn')" icon-btn>
         <div i="carbon-zoom-in" />
       </button>
-      <button icon-btn @click="$emit('onZoomOut')">
+      <button @click="$emit('onZoomOut')" icon-btn>
         <div i="carbon-zoom-out" />
       </button>
-      <button icon-btn @click="$emit('onReset')">
+      <button @click="$emit('onReset')" icon-btn>
         <div i="carbon-reset" />
       </button>
     </slot>

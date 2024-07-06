@@ -19,8 +19,9 @@ export const [injectEMapEventContext, provideEMapEventContext]
 
 <script setup lang="ts">
 import type { Ref } from 'vue'
-import { ref, watch } from 'vue'
+
 import { usePointer } from '@vueuse/core'
+import { ref, watch } from 'vue'
 
 import type { EMapOptions } from './types'
 
@@ -36,7 +37,7 @@ const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
 const isDragging = ref(false)
 const translate = ref<Point>(useResetPoint())
 
-const { x, y, pressure } = usePointer({
+const { pressure, x, y } = usePointer({
   target: eventLayerEl,
 })
 
@@ -79,21 +80,21 @@ provideEMapEventContext({
 
 <template>
   <div
-    ref="eventLayerEl" pos-absolute w-full h-full m0 p0 b-0 z3
     :style="{
       cursor: eventLayerCursor,
 
-    }"
-    @pointerdown="dragStart"
-    @pointerup="dragEnd"
-    @pointerleave="dragEnd"
+    }" @pointerdown="dragStart" @pointerleave="dragEnd" @pointerup="dragEnd" ref="eventLayerEl" b-0 h-full m0
+    p0
+    pos-absolute
+    w-full
+    z3
   >
     <div
-      position="absolute top-0 left-0" w-full will-change-transform
-      @pointerdown.stop
-      @click.stop
-      @dblclick.stop
+      position="absolute top-0 left-0" @click.stop @dblclick.stop
       @mousedown.stop
+      @pointerdown.stop
+      w-full
+      will-change-transform
     >
       <div
         position="absolute top-0 left-0" w-full z104

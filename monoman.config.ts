@@ -1,5 +1,5 @@
-import path from 'node:path'
 import { defineConfig } from 'monoman'
+import path from 'node:path'
 
 const docsLink = 'https://www.aira.com.tw/'
 const githubRepo = 'airaTaiwan/vue-emap'
@@ -16,16 +16,14 @@ function getPkgName(filePath: string) {
 
 export default defineConfig([
   {
-    include: ['packages/*/package.json'],
-    type: 'json',
     contents(data: Record<string, unknown>, { filePath }) {
       const pkgName = getPkgName(filePath)
 
       const descriptions: Record<string, string> = {
-        'playground': 'Vue EMap playground.',
         'core': 'Vue EMap core.',
-        'vue-emap': 'Vue EMap component library.',
+        'playground': 'Vue EMap playground.',
         'utils': 'Vue EMap utils library.',
+        'vue-emap': 'Vue EMap component library.',
       }
 
       if (!data.private) {
@@ -40,9 +38,9 @@ export default defineConfig([
         data.homepage = docsLink
         data.bugs = { url: `${githubLink}/issues` }
         data.repository = {
+          directory: `packages/${pkgName}`,
           type: 'git',
           url: `git+${githubLink}.git`,
-          directory: `packages/${pkgName}`,
         }
         data.files = ['dist']
         data.sideEffects = false
@@ -50,10 +48,10 @@ export default defineConfig([
 
       return data
     },
+    include: ['packages/*/package.json'],
+    type: 'json',
   },
   {
-    include: ['package.json', 'packages/*/package.json', 'playground/package.json'],
-    type: 'json',
     contents(data: Record<string, any>) {
       if (!packageManager) {
         packageManager = data.packageManager
@@ -71,5 +69,7 @@ export default defineConfig([
 
       return data
     },
+    include: ['package.json', 'packages/*/package.json', 'playground/package.json'],
+    type: 'json',
   },
 ])

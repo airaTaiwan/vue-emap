@@ -8,22 +8,22 @@ const props = defineProps<{
 }>()
 
 const size = computed(() => ({
-  minWidth: `${props.imgWidth * props.zoom}px`,
   minHeight: `${props.imgHeight * props.zoom}px`,
+  minWidth: `${props.imgWidth * props.zoom}px`,
 }))
 </script>
 
 <template>
-  <div w-full h-full pos-relative overflow-hidden>
-    <div position="absolute inset-0" w-full h-full m0 p0 b-0 z0 :style="size">
+  <div h-full overflow-hidden pos-relative w-full>
+    <div :style="size" position="absolute inset-0" b-0 h-full m0 p0 w-full z0>
       <div position="absolute inset-0" w-full z-1>
         <slot />
       </div>
       <div
-        position="absolute inset-0" w-full will-change-transform z103
         :style="{
           transform: 'translate(0px, 0px)',
-        }"
+        }" position="absolute inset-0" w-full will-change-transform
+        z103
       >
         <slot name="object" />
       </div>
