@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { EMap } from 'vue-emap'
+import { EMap, Marker } from 'vue-emap'
 
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
@@ -17,7 +17,17 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
 <template>
   <div class="w-[800px] h-[800px]">
     <EMap ref="EMapRef" zoom-control :img="mapImg">
-      I Am EMap
+      <Marker>
+        <div btn>
+          123
+        </div>
+      </Marker>
+
+      <Marker>
+        <div btn>
+          123
+        </div>
+      </Marker>
     </EMap>
     <ControlBtns
       @on-zoom-in="EMapRef?.setZoom(EMapRef.zoomNum + 0.5)"

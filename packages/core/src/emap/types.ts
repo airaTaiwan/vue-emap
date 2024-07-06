@@ -50,3 +50,14 @@ export interface Animation {
    */
   easingFunction: AnimationType
 }
+
+export interface Zoom {
+  /**
+   * The current zoom level.
+   */
+  sourceZoom: number
+  /**
+   * The next zoom level.
+   */
+  nextZoom: number
+}

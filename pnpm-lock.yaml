@@ -106,10 +106,10 @@ importers:
         version: link:../utils
       '@vueuse/core':
         specifier: ^10.11.0
-        version: 10.11.0(vue@3.4.31(typescript@5.4.2))
+        version: 10.11.0
       '@vueuse/shared':
         specifier: ^10.11.0
-        version: 10.11.0(vue@3.4.31(typescript@5.4.2))
+        version: 10.11.0
 
   packages/utils: {}
 
@@ -5639,6 +5639,16 @@ snapshots:
       js-beautify: 1.15.1
       vue-component-type-helpers: 2.0.22
 
+  '@vueuse/core@10.11.0':
+    dependencies:
+      '@types/web-bluetooth': 0.0.20
+      '@vueuse/metadata': 10.11.0
+      '@vueuse/shared': 10.11.0
+      vue-demi: 0.14.8
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
+
   '@vueuse/core@10.11.0(vue@3.4.31(typescript@5.4.2))':
     dependencies:
       '@types/web-bluetooth': 0.0.20
@@ -5650,6 +5660,13 @@ snapshots:
       - vue
 
   '@vueuse/metadata@10.11.0': {}
+
+  '@vueuse/shared@10.11.0':
+    dependencies:
+      vue-demi: 0.14.8
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
 
   '@vueuse/shared@10.11.0(vue@3.4.31(typescript@5.4.2))':
     dependencies:
@@ -8431,6 +8448,8 @@ snapshots:
   vscode-uri@3.0.8: {}
 
   vue-component-type-helpers@2.0.22: {}
+
+  vue-demi@0.14.8: {}
 
   vue-demi@0.14.8(vue@3.4.31(typescript@5.4.2)):
     dependencies:
