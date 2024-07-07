@@ -1,0 +1,5 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`map > zoom to 1.5 1`] = `"<div style="top: 300.00px; left: 500.00px;" class="marker" block="" op100="" pos-absolute="" z0=""> I am a marker </div>"`;
+
+exports[`map > zoom to 1.5 2`] = `"<div style="top: 449.88px; left: 749.79px;" class="marker" block="" op100="" pos-absolute="" z0=""> I am a marker </div>"`;

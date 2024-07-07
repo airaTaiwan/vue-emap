@@ -23,18 +23,23 @@ const { height, width } = useElementSize(el)
 
 const position = ref<Point>({ ...props.position })
 
-const markerPosOnMap = computed(() => ({
-  x: props.originX === 'center'
+const markerPosOnMap = computed(() => {
+  const x = props.originX === 'center'
     ? position.value.x - width.value / 2
     : props.originX === 'right'
       ? position.value.x - width.value
-      : position.value.x,
-  y: props.originY === 'center'
+      : position.value.x
+  const y = props.originY === 'center'
     ? position.value.y - height.value / 2
     : props.originY === 'bottom'
       ? position.value.y - height.value
-      : position.value.y,
-}))
+      : position.value.y
+
+  return {
+    x: x.toFixed(2),
+    y: y.toFixed(2),
+  }
+})
 
 // map drag
 watchEffect(() => {
@@ -61,6 +66,7 @@ watch(zoomNum, () => {
       top: `${markerPosOnMap.y}px`,
       left: `${markerPosOnMap.x}px`,
     }"
+    class="marker"
     ref="el"
     block op100 pos-absolute z0
   >
