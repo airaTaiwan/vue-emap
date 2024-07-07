@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Point } from '@vue-emap/utils'
 
-import { ref, watch, watchEffect } from 'vue'
+import { useElementSize } from '@vueuse/core'
+import { computed, ref, shallowRef, watch, watchEffect } from 'vue'
 
 import type { MarkerOptions } from './types'
 
@@ -9,21 +10,39 @@ import { injectEMapContext } from '../emap/EMap.vue'
 import { injectEMapEventContext } from '../emap/EMapEventLayer.vue'
 
 const props = withDefaults(defineProps<MarkerOptions>(), {
+  originX: 'center',
+  originY: 'center',
   position: () => ({ x: 500, y: 300 }),
 })
 
 const { zoomChangePoint, zoomNum, zoomRatio } = injectEMapContext()
 const { translate } = injectEMapEventContext()
 
+const el = shallowRef<HTMLDivElement | null>(null)
+const { height, width } = useElementSize(el)
+
 const position = ref<Point>({ ...props.position })
 
-// drag
+const markerPosOnMap = computed(() => ({
+  x: props.originX === 'center'
+    ? position.value.x - width.value / 2
+    : props.originX === 'right'
+      ? position.value.x - width.value
+      : position.value.x,
+  y: props.originY === 'center'
+    ? position.value.y - height.value / 2
+    : props.originY === 'bottom'
+      ? position.value.y - height.value
+      : position.value.y,
+}))
+
+// map drag
 watchEffect(() => {
   position.value.x = props.position.x + translate.value.x
   position.value.y = props.position.y + translate.value.y
 })
 
-// zoom
+// map zoom
 watch(zoomNum, () => {
   const { x, y } = position.value
   const { x: zoomChangePointX, y: zoomChangePointY } = zoomChangePoint.value
@@ -39,10 +58,11 @@ watch(zoomNum, () => {
 <template>
   <div
     :style="{
-      top: `${position.y}px`,
-      left: `${position.x}px`,
-    }" block op100 pos-absolute
-    z0
+      top: `${markerPosOnMap.y}px`,
+      left: `${markerPosOnMap.x}px`,
+    }"
+    ref="el"
+    block op100 pos-absolute z0
   >
     <slot>
       I am a marker

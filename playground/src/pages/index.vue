@@ -20,12 +20,6 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
           123
         </div>
       </Marker>
-
-      <Marker>
-        <div btn>
-          123
-        </div>
-      </Marker>
     </EMap>
     <ControlBtns
       @on-reset="EMapRef?.reset()"
