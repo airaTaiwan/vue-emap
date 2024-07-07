@@ -98,6 +98,13 @@ async function frame() {
 }
 
 /**
+ * Check if a redraw is necessary.
+ */
+function isRedrawNotNeeded(zoom: number): boolean {
+  return zoom === zoomNum.value
+}
+
+/**
  * Sets the zoom of the map.
  */
 function setZoom(zoom: number, point?: Point): void {
@@ -106,7 +113,7 @@ function setZoom(zoom: number, point?: Point): void {
 
   const newZoom = Math.max(minZoom.value, Math.min(zoom, maxZoom.value))
 
-  if (newZoom === zoomNum.value)
+  if (isRedrawNotNeeded(newZoom))
     return
 
   const preZoom = zoomNum.value
@@ -245,6 +252,9 @@ async function animationRedraw(zoom: Zoom, targetPoint: Point, firstRender: bool
  * Reset the map to the initital zoom.
  */
 function reset() {
+  if (isRedrawNotNeeded(props.zoom))
+    return
+
   clear()
   processOffset()
   setZoom(props.zoom)
