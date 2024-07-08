@@ -73,8 +73,16 @@ function dragEnd() {
   eventLayerCursor.value = 'default'
 }
 
+function reset() {
+  useResetPoint(translate)
+}
+
 provideEMapEventContext({
   translate: computed(() => JSON.parse(JSON.stringify(translate.value))),
+})
+
+defineExpose({
+  reset,
 })
 </script>
 
