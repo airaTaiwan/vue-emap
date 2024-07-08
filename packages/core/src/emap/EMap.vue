@@ -63,7 +63,7 @@ const sourceTransitionZoom = ref(0)
 // Queue for the animation steps
 const steps = ref<Function[]>([])
 
-const { canvasCenterPoint, canvasCtx, clear } = useCanvas(
+const { canvasCtx, clear } = useCanvas(
   canvasEl,
   {
     dpi: pixelRatio,
@@ -118,14 +118,11 @@ function setZoom(zoom: number, point?: Point): void {
 
   const preZoom = zoomNum.value
 
-  const changePointX = point ? point.x : canvasCenterPoint.value.x
-  const changePointY = point ? point.y : canvasCenterPoint.value.y
-
   const imageCenterX = imageInfo.value.x + imageInfo.value.width * preZoom / 2
   const imageCenterY = imageInfo.value.y + imageInfo.value.height * preZoom / 2
 
-  const newImageCenterX = (imageCenterX - changePointX) * (newZoom / preZoom) + changePointX
-  const newImageCenterY = (imageCenterY - changePointY) * (newZoom / preZoom) + changePointY
+  const changePointX = point ? point.x : imageCenterX
+  const changePointY = point ? point.y : imageCenterY
 
   sourceTransitionZoom.value = preZoom
   zoomChangePoint.value = {
@@ -139,8 +136,7 @@ function setZoom(zoom: number, point?: Point): void {
       sourceZoom: preZoom,
     },
     {
-      x: newImageCenterX,
-      y: newImageCenterY,
+      ...zoomChangePoint.value,
     },
   )
 }
@@ -216,6 +212,7 @@ async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boo
 
   imageInfo.value.x = targetPoint.x - (newZoomImageWidth) / 2
   imageInfo.value.y = targetPoint.y - (newZoomImageHeight) / 2
+
 
   sourceTransitionZoom.value = newZoom
   zoomNum.value = newZoom

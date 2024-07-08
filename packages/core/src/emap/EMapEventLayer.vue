@@ -10,7 +10,7 @@ export type EMapEventLayerEmits = {
 }
 
 export interface EMapEventContext {
-  translate: Ref<Point>
+  translate: ComputedRef<Point>
 }
 
 export const [injectEMapEventContext, provideEMapEventContext]
@@ -18,10 +18,10 @@ export const [injectEMapEventContext, provideEMapEventContext]
 </script>
 
 <script setup lang="ts">
-import type { Ref } from 'vue'
+import type { ComputedRef } from 'vue'
 
 import { usePointer } from '@vueuse/core'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import type { EMapOptions } from './types'
 
@@ -74,7 +74,7 @@ function dragEnd() {
 }
 
 provideEMapEventContext({
-  translate,
+  translate: computed(() => JSON.parse(JSON.stringify(translate.value))),
 })
 </script>
 
@@ -82,19 +82,21 @@ provideEMapEventContext({
   <div
     :style="{
       cursor: eventLayerCursor,
-
-    }" @pointerdown="dragStart" @pointerleave="dragEnd" @pointerup="dragEnd" ref="eventLayerEl" b-0 h-full m0
-    p0
-    pos-absolute
-    w-full
-    z3
+    }"
+    @pointerdown="dragStart"
+    @pointerleave="dragEnd"
+    @pointerup="dragEnd"
+    class="emap-event-layer"
+    ref="eventLayerEl"
+    b-0 h-full m0 p0 pos-absolute w-full z3
   >
     <div
-      position="absolute top-0 left-0" @click.stop @dblclick.stop
+      position="absolute top-0 left-0"
+      @click.stop
+      @dblclick.stop
       @mousedown.stop
       @pointerdown.stop
-      w-full
-      will-change-transform
+      w-full will-change-transform
     >
       <div
         position="absolute top-0 left-0" w-full z104

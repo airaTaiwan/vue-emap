@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Point } from '@vue-emap/utils'
 
-import { useElementSize } from '@vueuse/core'
-import { computed, ref, shallowRef, watch, watchEffect } from 'vue'
+import { useElementSize, watchDeep } from '@vueuse/core'
+import { computed, ref, shallowRef, watch } from 'vue'
 
 import type { MarkerOptions } from './types'
 
@@ -42,9 +42,12 @@ const markerPosOnMap = computed(() => {
 })
 
 // map drag
-watchEffect(() => {
-  position.value.x = props.position.x + translate.value.x
-  position.value.y = props.position.y + translate.value.y
+watchDeep(translate, ({ x: curX, y: curY }, { x: preX, y: preY }) => {
+  const diffX = curX - preX
+  const diffY = curY - preY
+
+  position.value.x += diffX
+  position.value.y += diffY
 })
 
 // map zoom
