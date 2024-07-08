@@ -16,6 +16,7 @@ export const [injectEMapContext, provideEMapContext]
 <script setup lang="ts">
 import type { Info, Point, Size } from '@vue-emap/utils'
 import type { Ref, ShallowRef } from 'vue'
+import type { ComponentExposed } from 'vue-component-type-helpers'
 
 import { isString, sleep } from '@antfu/utils'
 import { until, useDevicePixelRatio, useElementSize, useFps, useRafFn, watchDeep } from '@vueuse/core'
@@ -49,6 +50,7 @@ const canvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const imageCache = shallowRef<HTMLImageElement | null>(null)
 const imageInfo = ref<Info>({ height: 0, width: 0, x: 0, y: 0 })
 const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
+const eventLayerRef = shallowRef<ComponentExposed<typeof EMapEventLayer> | null>(null)
 
 const zoomNum = ref(props.zoom)
 const maxZoom = ref(props.maxZoom)
@@ -255,6 +257,7 @@ function reset() {
   clear()
   processOffset()
   setZoom(props.zoom)
+  eventLayerRef.value?.reset()
 }
 
 /**
@@ -308,7 +311,7 @@ defineExpose({
     </div>
 
     <template #event>
-      <EMapEventLayer :draggable @on-refresh="redraw(zoomNum)">
+      <EMapEventLayer :draggable @on-refresh="redraw(zoomNum)" ref="eventLayerRef">
         <slot />
       </EMapEventLayer>
     </template>
