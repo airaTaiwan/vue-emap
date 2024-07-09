@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Point } from '@vue-emap/utils'
 
-import { useElementSize, watchDeep } from '@vueuse/core'
+import { useElementSize, useEventListener, watchDeep } from '@vueuse/core'
 import { computed, ref, shallowRef, watch } from 'vue'
 
 import type { MarkerOptions } from './types'
@@ -10,18 +10,33 @@ import { injectEMapContext } from '../emap/EMap.vue'
 import { injectEMapEventContext } from '../emap/EMapEventLayer.vue'
 
 const props = withDefaults(defineProps<MarkerOptions>(), {
+  draggable: true,
   originX: 'center',
   originY: 'center',
   position: () => ({ x: 500, y: 300 }),
 })
 
-const { zoomChangePoint, zoomNum, zoomRatio } = injectEMapContext()
-const { translate } = injectEMapEventContext()
+const { eventLayerEl, zoomChangePoint, zoomNum, zoomRatio } = injectEMapContext()
+const { mouseX, mouseY, translate } = injectEMapEventContext()
+
+const position = ref<Point>({ ...props.position })
 
 const el = shallowRef<HTMLDivElement | null>(null)
 const { height, width } = useElementSize(el)
 
-const position = ref<Point>({ ...props.position })
+const isDragging = ref(false)
+watch([mouseX, mouseY], ([curX, curY], [preX, preY]) => {
+  if (el.value == null || !props.draggable || !isDragging.value)
+    return
+
+  el.value.style.cursor = 'grabbing'
+
+  const dragOffsetX = curX - preX
+  const dragOffsetY = curY - preY
+
+  position.value.x += dragOffsetX
+  position.value.y += dragOffsetY
+})
 
 const markerPosOnMap = computed(() => {
   const x = props.originX === 'center'
@@ -40,6 +55,25 @@ const markerPosOnMap = computed(() => {
     y: y.toFixed(2),
   }
 })
+
+
+function dragStart() {
+  if (el.value == null)
+    return
+
+  isDragging.value = true
+
+  el.value.style.cursor = 'grab'
+}
+
+function dragEnd() {
+  if (el.value == null)
+    return
+
+  el.value.style.cursor = 'default'
+
+  isDragging.value = false
+}
 
 // map drag
 watchDeep(translate, ({ x: curX, y: curY }, { x: preX, y: preY }) => {
@@ -61,6 +95,8 @@ watch(zoomNum, () => {
   position.value.x = zoomChangePointX + deltaX
   position.value.y = zoomChangePointY + deltaY
 })
+
+useEventListener(eventLayerEl, ['pointerleave', 'pointerup'], dragEnd)
 </script>
 
 <template>
@@ -69,6 +105,7 @@ watch(zoomNum, () => {
       top: `${markerPosOnMap.y}px`,
       left: `${markerPosOnMap.x}px`,
     }"
+    @pointerdown="dragStart"
     class="marker"
     ref="el"
     block op100 pos-absolute z0

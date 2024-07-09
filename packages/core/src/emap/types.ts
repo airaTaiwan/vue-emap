@@ -9,6 +9,7 @@ export interface EMapOptions {
    * @default true
    */
   draggable?: boolean
+
   /**
    * map image
    */
