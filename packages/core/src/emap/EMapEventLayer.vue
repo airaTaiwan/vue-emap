@@ -1,5 +1,6 @@
 <script lang="ts">
 import { type Point, createContext, useResetPoint } from '@vue-emap/utils'
+import { usePointer } from '@vueuse/core'
 
 interface EMapEventLayerProps {
   draggable: EMapOptions['draggable']
@@ -10,6 +11,8 @@ export type EMapEventLayerEmits = {
 }
 
 export interface EMapEventContext {
+  mouseX: Ref<number>
+  mouseY: Ref<number>
   translate: ComputedRef<Point>
 }
 
@@ -18,9 +21,8 @@ export const [injectEMapEventContext, provideEMapEventContext]
 </script>
 
 <script setup lang="ts">
-import type { ComputedRef } from 'vue'
+import type { ComputedRef, Ref } from 'vue'
 
-import { usePointer } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 
 import type { EMapOptions } from './types'
@@ -32,45 +34,50 @@ const emits = defineEmits<EMapEventLayerEmits>()
 
 const { eventLayerEl, imageInfo } = injectEMapContext()
 
-const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
-
 const isDragging = ref(false)
-const translate = ref<Point>(useResetPoint())
+const { pressure, x: mouseX, y: mouseY } = usePointer({ target: eventLayerEl })
 
-const { pressure, x, y } = usePointer({
-  target: eventLayerEl,
+watch([mouseX, mouseY, pressure], ([curX, curY, curPressure], [preX, preY, _prePressure]) => {
+  if (eventLayerEl.value == null || !props.draggable || !isDragging.value)
+    return
+
+  if (curPressure <= 0 || preX === 0 || preY === 0)
+    return
+
+  eventLayerEl.value.style.cursor = 'grabbing'
+
+  const dragOffsetX = curX - preX
+  const dragOffsetY = curY - preY
+
+  translate.value.x += dragOffsetX
+  translate.value.y += dragOffsetY
+  imageInfo.value.x += dragOffsetX
+  imageInfo.value.y += dragOffsetY
+
+  emits('onRefresh')
 })
 
-if (props.draggable) {
-  watch([x, y, pressure], ([curX, curY, curPressure], [preX, preY, _prePressure]) => {
-    if (!isDragging.value)
-      return
 
-    if (curPressure <= 0 || preX === 0 || preY === 0)
-      return
+const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
 
-    eventLayerCursor.value = 'grabbing'
-
-    const dragOffsetX = curX - preX
-    const dragOffsetY = curY - preY
-
-    translate.value.x += dragOffsetX
-    translate.value.y += dragOffsetY
-    imageInfo.value.x += dragOffsetX
-    imageInfo.value.y += dragOffsetY
-
-    emits('onRefresh')
-  })
-}
+const translate = ref<Point>(useResetPoint())
 
 function dragStart() {
+  if (eventLayerEl.value == null)
+    return
+
   isDragging.value = true
 
-  eventLayerCursor.value = 'grab'
+  eventLayerEl.value.style.cursor = 'grab'
 }
 
 function dragEnd() {
-  eventLayerCursor.value = 'default'
+  if (eventLayerEl.value == null)
+    return
+
+  eventLayerEl.value.style.cursor = 'default'
+
+  isDragging.value = false
 }
 
 function reset() {
@@ -78,6 +85,8 @@ function reset() {
 }
 
 provideEMapEventContext({
+  mouseX,
+  mouseY,
   translate: computed(() => JSON.parse(JSON.stringify(translate.value))),
 })
 
@@ -94,8 +103,7 @@ defineExpose({
     @pointerdown="dragStart"
     @pointerleave="dragEnd"
     @pointerup="dragEnd"
-    class="emap-event-layer"
-    ref="eventLayerEl"
+    class="emap-event-layer" ref="eventLayerEl"
     b-0 h-full m0 p0 pos-absolute w-full z3
   >
     <div
