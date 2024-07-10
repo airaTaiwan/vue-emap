@@ -1,6 +1,7 @@
 <script lang="ts">
-import { type Point, createContext, useResetPoint } from '@vue-emap/utils'
+import { createContext, useResetPoint } from '@vue-emap/utils'
 import { usePointer } from '@vueuse/core'
+import { computed, ref, watch } from 'vue'
 
 interface EMapEventLayerProps {
   draggable: EMapOptions['draggable']
@@ -13,7 +14,7 @@ export type EMapEventLayerEmits = {
 export interface EMapEventContext {
   mouseX: Ref<number>
   mouseY: Ref<number>
-  translate: ComputedRef<Point>
+  translate: any
 }
 
 export const [injectEMapEventContext, provideEMapEventContext]
@@ -21,9 +22,7 @@ export const [injectEMapEventContext, provideEMapEventContext]
 </script>
 
 <script setup lang="ts">
-import type { ComputedRef, Ref } from 'vue'
-
-import { computed, ref, watch } from 'vue'
+import type { Ref } from 'vue'
 
 import type { EMapOptions } from './types'
 
@@ -32,7 +31,7 @@ import { injectEMapContext } from './EMap.vue'
 const props = defineProps<EMapEventLayerProps>()
 const emits = defineEmits<EMapEventLayerEmits>()
 
-const { eventLayerEl, imageInfo } = injectEMapContext()
+const { eventLayerEl, imageInfo, translate } = injectEMapContext()
 
 const isDragging = ref(false)
 const { pressure, x: mouseX, y: mouseY } = usePointer({ target: eventLayerEl })
@@ -59,8 +58,6 @@ watch([mouseX, mouseY, pressure], ([curX, curY, curPressure], [preX, preY, _preP
 
 
 const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
-
-const translate = ref<Point>(useResetPoint())
 
 function dragStart() {
   if (eventLayerEl.value == null)

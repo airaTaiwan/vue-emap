@@ -1,9 +1,18 @@
 <script lang="ts">
-import { ANIMATION_EASE_IN_OUT_QUAD, centerOffset, createContext, easingFunctions, loadImage, useCanvas, useResetPoint } from '@vue-emap/utils'
+import {
+  ANIMATION_EASE_IN_OUT_QUAD,
+  centerOffset,
+  createContext,
+  easingFunctions,
+  loadImage,
+  useCanvas,
+  useResetPoint,
+} from '@vue-emap/utils'
 
 export interface EMapContext {
   eventLayerEl: ShallowRef<HTMLDivElement | null>
   imageInfo: Ref<Info>
+  translate: Ref<Point>
   zoomChangePoint: Ref<Point>
   zoomNum: Ref<number>
   zoomRatio: Ref<number>
@@ -19,8 +28,21 @@ import type { Ref, ShallowRef } from 'vue'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
 import { isString, sleep } from '@antfu/utils'
-import { until, useDevicePixelRatio, useElementSize, useFps, useRafFn, watchDeep } from '@vueuse/core'
-import { computed, onMounted, ref, shallowRef, toValue } from 'vue'
+import {
+  until,
+  useDevicePixelRatio,
+  useElementSize,
+  useFps,
+  useRafFn,
+  watchDeep,
+} from '@vueuse/core'
+import {
+  computed,
+  onMounted,
+  ref,
+  shallowRef,
+  toValue,
+} from 'vue'
 
 import type { EMapOptions, Zoom } from './types'
 
@@ -57,6 +79,8 @@ const maxZoom = ref(props.maxZoom)
 const minZoom = ref(props.minZoom)
 const zoomRatio = ref(1)
 const zoomChangePoint = ref<Point>(useResetPoint())
+
+const translate = ref<Point>(useResetPoint())
 
 const animationEasingTime = ref(0)
 const animationEasingFunction = computed(() => easingFunctions[props.animation.easingFunction])
@@ -103,7 +127,17 @@ async function frame() {
  * Check if a redraw is necessary.
  */
 function isRedrawNotNeeded(zoom: number): boolean {
-  return zoom === zoomNum.value
+  /**
+   * When zoom is equal to zoomNum
+   */
+  const checkZoom = zoom === zoomNum.value
+
+  /**
+   * When translate remains unchanged
+   */
+  const checkTranslate = translate.value.x === 0 && translate.value.y === 0
+
+  return checkZoom && checkTranslate
 }
 
 /**
@@ -292,6 +326,7 @@ onMounted(async () => {
 provideEMapContext({
   eventLayerEl,
   imageInfo,
+  translate,
   zoomChangePoint,
   zoomNum,
   zoomRatio,

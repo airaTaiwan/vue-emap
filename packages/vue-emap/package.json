@@ -2,15 +2,15 @@
   "name": "vue-emap",
   "type": "module",
   "version": "0.0.0",
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@9.5.0",
   "description": "Vue EMap component library.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",
   "homepage": "https://www.aira.com.tw/",
   "repository": {
+    "directory": "packages/vue-emap",
     "type": "git",
-    "url": "git+https://github.com/airaTaiwan/vue-emap.git",
-    "directory": "packages/vue-emap"
+    "url": "git+https://github.com/airaTaiwan/vue-emap.git"
   },
   "bugs": {
     "url": "https://github.com/airaTaiwan/vue-emap/issues"
