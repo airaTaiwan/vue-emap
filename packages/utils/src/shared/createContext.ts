@@ -1,5 +1,7 @@
 import { type InjectionKey, inject, provide } from 'vue'
 
+import { EMapSymbol } from './symbol'
+
 /**
  * @param providerComponentName - The name(s) of the component(s) providing the context.
  *
@@ -16,7 +18,7 @@ export function createContext<ContextValue>(
       ? `${providerComponentName}Context`
       : contextName
 
-  const injectionKey: InjectionKey<ContextValue | null> = Symbol(symbolDescription)
+  const injectionKey: InjectionKey<ContextValue | null> | string = providerComponentName === 'EMap' ? EMapSymbol : Symbol(symbolDescription)
 
   /**
    * @param fallback The context value to return if the injection fails.
