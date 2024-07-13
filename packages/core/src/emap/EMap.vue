@@ -30,7 +30,6 @@ import {
 import {
   computed,
   onMounted,
-  provide,
   ref,
   shallowRef,
   toValue,
@@ -68,6 +67,7 @@ const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
 const eventLayerRef = shallowRef<ComponentExposed<typeof EMapEventLayer> | null>(null)
 
 const zoomNum = ref(props.zoom)
+const finallyZoom = ref(props.zoom)
 const maxZoom = ref(props.maxZoom)
 const minZoom = ref(props.minZoom)
 const zoomRatio = ref(1)
@@ -154,6 +154,7 @@ function setZoom(zoom: number, point?: Point): void {
   const changePointY = point ? point.y : imageCenterY
 
   sourceTransitionZoom.value = preZoom
+  finallyZoom.value = newZoom
   zoomChangePoint.value = {
     x: changePointX,
     y: changePointY,
@@ -318,6 +319,7 @@ onMounted(async () => {
 
 provideEMapContext({
   eventLayerEl,
+  finallyZoom,
   imageInfo,
   translate,
   zoomChangePoint,

@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { isNumber, isString } from '@antfu/utils'
 import { type Point, useBaseSetup, useDrag } from '@vue-emap/utils'
 import { useElementSize } from '@vueuse/core'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, h, onMounted, ref, shallowRef, watch } from 'vue'
 
 import type { MarkerOptions } from './types'
 
@@ -18,7 +19,7 @@ const props = withDefaults(defineProps<MarkerOptions>(), {
 const { eventLayerEl, zoomChangePoint, zoomNum, zoomRatio } = injectEMapContext()
 const { mouseX, mouseY, translate } = injectEMapEventContext()
 
-const position = ref<Point>({ ...props.position })
+const position = ref<Point>(props.position)
 
 useBaseSetup(position, {
   translate,
@@ -56,6 +57,11 @@ const markerPosOnMap = computed(() => {
     x: x.toFixed(2),
     y: y.toFixed(2),
   }
+})
+
+// Update Data
+watch(() => props.position, (newPosition) => {
+  position.value = { ...newPosition }
 })
 </script>
 

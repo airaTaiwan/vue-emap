@@ -4,6 +4,7 @@ import type { Info, Point } from '../types'
 
 export interface EMapContext {
   eventLayerEl: ShallowRef<HTMLDivElement | null>
+  finallyZoom: Ref<number>
   imageInfo: Ref<Info>
   translate: Ref<Point>
   zoomChangePoint: Ref<Point>

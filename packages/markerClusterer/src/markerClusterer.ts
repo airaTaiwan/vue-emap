@@ -1,39 +1,57 @@
 import { type EMapContext, EMapSymbol } from '@vue-emap/utils'
-import { type VNode, cloneVNode, defineComponent, inject, ref } from 'vue'
+import { type VNode, cloneVNode, defineComponent, inject, ref, toValue } from 'vue'
 
+import type { MarkerClustererOptions } from './types'
+
+import { GridAlgorithm } from './algorithms/grid'
 import { useChildren } from './useChildren'
 
 export const MarkerClusterer = defineComponent(
-  (_props, { slots: originalSlots }) => {
-    inject(EMapSymbol) as EMapContext
+  (props: MarkerClustererOptions, { slots: originalSlots }) => {
+    const { finallyZoom } = inject(EMapSymbol) as EMapContext
+
+    const { algorithm = new GridAlgorithm({}) } = props
 
     const { markers } = useChildren(originalSlots)
+
+    const isRender = ref(false)
     const cloneMarkers = ref<VNode[]>([])
 
-
-    function renderMarkers(markers: VNode[]) {
-      cloneMarkers.value = []
+    function renderDom(markers: VNode[]) {
       for (const node of markers) {
         const clone = cloneVNode(node)
         cloneMarkers.value.push(clone)
       }
 
-      // const { clusters } = this.algorithm.calculate({
-      //   map: this.map!,
-      //   markers: this.markers,
-      // })
+      return cloneMarkers.value
+    }
 
-      // console.log('markers', markers)
+    function renderClusterer(): VNode[] {
+      const { clusters } = algorithm.calculate(toValue(finallyZoom), {
+        markers: cloneMarkers.value,
+      })
 
-      return markers
+      // console.log(clusters, clusters.length)
+
+      return clusters.map(cluster => cloneVNode(cluster.marker))
+    }
+
+
+    function render(markers: VNode[]) {
+      if (isRender.value)
+        return renderClusterer()
+
+      isRender.value = true
+
+      return renderDom(markers)
     }
 
     return () => {
-      renderMarkers(markers)
-
-      return cloneMarkers.value
-      // return h('div', 123)
+      return render(markers)
     }
+  },
+  {
+    props: ['algorithm'],
   },
 )
 

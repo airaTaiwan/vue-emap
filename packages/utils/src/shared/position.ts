@@ -1,3 +1,7 @@
+import type { Point } from '../types'
+
+import { useResetPoint } from '../hooks'
+
 /**
  * Calculate the offset required to center the image on the canvas.
  */
@@ -16,12 +20,30 @@ export function centerOffset(
   return { offsetX, offsetY }
 }
 
-export function calcNewImageOffset() {
-  // const scaleChange = newZoom / zoomNum.value
+/**
+ * Calculates the distance between two points in a two-dimensional space.
+ */
+export function distanceBetweenPoints(p1: Point, p2: Point): number {
+  const deltaX = p2.x - p1.x
+  const deltaY = p2.y - p1.y
 
-  // Current center point of the image
-  // const imageCenterPointX = x + getZoomImageSize.value.width / 2
-  // const imageCenterPointY = y + getZoomImageSize.value.height / 2
-  // const newImageCenterX = (imageCenterPointX - targetPoint.x) * scaleChange + targetPoint.x
-  // const newImageCenterY = (imageCenterPointY - targetPoint.y) * scaleChange + targetPoint.y
+  return Math.sqrt(deltaX ** 2 + deltaY ** 2)
+}
+
+/**
+ * Calculates the centroid of an array of points.
+ */
+export function calculateCentroid(points: Point[]): Point {
+  const sum = points.reduce((accumulator, point) => {
+    accumulator.x += point.x
+    accumulator.y += point.y
+    return accumulator
+  }, useResetPoint())
+
+  const numPoints = points.length
+
+  return {
+    x: sum.x / numPoints,
+    y: sum.y / numPoints,
+  }
 }
