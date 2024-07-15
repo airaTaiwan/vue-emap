@@ -10,5 +10,6 @@ declare module 'vue' {
     ControlBtns: typeof import('./src/components/ControlBtns.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TheBtns: typeof import('./src/components/TheBtns.vue')['default']
   }
 }

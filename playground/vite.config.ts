@@ -7,6 +7,7 @@ import VueMacros from 'unplugin-vue-macros/vite'
 import { VueRouterAutoImports } from 'unplugin-vue-router'
 import VueRouter from 'unplugin-vue-router/vite'
 import { defineConfig } from 'vite'
+import Layouts from 'vite-plugin-vue-layouts'
 
 export default defineConfig({
   plugins: [
@@ -24,7 +25,13 @@ export default defineConfig({
     }),
 
     // https://github.com/posva/unplugin-vue-router
-    VueRouter(),
+    VueRouter({
+      dts: 'src/typed-router.d.ts',
+      extensions: ['.vue', '.md'],
+    }),
+
+    // https://github.com/JohnCampionJr/vite-plugin-vue-layouts
+    Layouts(),
 
     // https://github.com/antfu/unplugin-auto-import
     AutoImport({
@@ -32,7 +39,6 @@ export default defineConfig({
         './src/composables',
       ],
       dts: true,
-      ignore: ['h'],
       imports: [
         'vue',
         '@vueuse/core',
