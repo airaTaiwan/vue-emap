@@ -19,7 +19,7 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
     <EMap :img="mapImg" ref="EMapRef" zoom-control>
       <MarkerClusterer>
         <Marker :key="item" :position="generateMarkerPos(800, 800)" v-for="item in 100">
-          <div btn>
+          <div class="btn">
             {{ item }}
           </div>
         </Marker>

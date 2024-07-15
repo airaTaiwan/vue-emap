@@ -1,5 +1,5 @@
 import { type EMapContext, EMapSymbol } from '@vue-emap/utils'
-import { type VNode, cloneVNode, defineComponent, inject, ref, toValue } from 'vue'
+import { type VNode, cloneVNode, createVNode, defineComponent, h, inject, ref, toValue } from 'vue'
 
 import type { MarkerClustererOptions } from './types'
 
@@ -31,9 +31,11 @@ export const MarkerClusterer = defineComponent(
         markers: cloneMarkers.value,
       })
 
-      // console.log(clusters, clusters.length)
-
-      return clusters.map(cluster => cloneVNode(cluster.marker))
+      return clusters.map(cluster => createVNode(
+        cluster.marker,
+        { class: 'btn' },
+        { default: () => h('p', cluster.count) },
+      ))
     }
 
 
