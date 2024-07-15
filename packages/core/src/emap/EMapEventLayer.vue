@@ -1,7 +1,11 @@
 <script lang="ts">
+import type { EMapEventContext, Point } from '@vue-emap/utils'
+
 import { createContext, useResetPoint } from '@vue-emap/utils'
 import { usePointer } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
+
+import { injectEMapContext } from './EMap.vue'
 
 interface EMapEventLayerProps {
   draggable: EMapOptions['draggable']
@@ -11,22 +15,12 @@ export type EMapEventLayerEmits = {
   onRefresh: []
 }
 
-export interface EMapEventContext {
-  mouseX: Ref<number>
-  mouseY: Ref<number>
-  translate: any
-}
-
 export const [injectEMapEventContext, provideEMapEventContext]
-  = createContext<EMapEventContext>('EMapContext')
+  = createContext<EMapEventContext>('EMapEvent')
 </script>
 
 <script setup lang="ts">
-import type { Ref } from 'vue'
-
 import type { EMapOptions } from './types'
-
-import { injectEMapContext } from './EMap.vue'
 
 const props = defineProps<EMapEventLayerProps>()
 const emits = defineEmits<EMapEventLayerEmits>()
@@ -84,7 +78,7 @@ function reset() {
 provideEMapEventContext({
   mouseX,
   mouseY,
-  translate: computed(() => JSON.parse(JSON.stringify(translate.value))),
+  translate: computed((): Point => JSON.parse(JSON.stringify(translate.value))),
 })
 
 defineExpose({

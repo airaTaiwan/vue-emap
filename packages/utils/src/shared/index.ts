@@ -1,5 +1,7 @@
 export * from './animation'
 export * from './canvas'
+export * from './context'
 export * from './createContext'
 export * from './dom'
 export * from './position'
+export * from './symbol'

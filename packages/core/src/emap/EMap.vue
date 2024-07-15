@@ -9,22 +9,13 @@ import {
   useResetPoint,
 } from '@vue-emap/utils'
 
-export interface EMapContext {
-  eventLayerEl: ShallowRef<HTMLDivElement | null>
-  imageInfo: Ref<Info>
-  translate: Ref<Point>
-  zoomChangePoint: Ref<Point>
-  zoomNum: Ref<number>
-  zoomRatio: Ref<number>
-}
-
 export const [injectEMapContext, provideEMapContext]
-  = createContext<EMapContext>('EMapContext')
+  = createContext<EMapContext>('EMap')
 </script>
 
 <script setup lang="ts">
-import type { Info, Point, Size } from '@vue-emap/utils'
-import type { Ref, ShallowRef } from 'vue'
+import type { EMapContext, Info, Point, Size } from '@vue-emap/utils'
+import type { Fn } from '@vueuse/core'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
 import { isString, sleep } from '@antfu/utils'
@@ -62,6 +53,7 @@ const props = withDefaults(defineProps<EMapOptions>(), {
   zoomControl: true,
 })
 
+
 const { pixelRatio } = useDevicePixelRatio()
 const fps = useFps()
 
@@ -75,6 +67,7 @@ const eventLayerEl = shallowRef<HTMLDivElement | null>(null)
 const eventLayerRef = shallowRef<ComponentExposed<typeof EMapEventLayer> | null>(null)
 
 const zoomNum = ref(props.zoom)
+const finallyZoom = ref(props.zoom)
 const maxZoom = ref(props.maxZoom)
 const minZoom = ref(props.minZoom)
 const zoomRatio = ref(1)
@@ -87,7 +80,7 @@ const animationEasingFunction = computed(() => easingFunctions[props.animation.e
 const sourceTransitionZoom = ref(0)
 
 // Queue for the animation steps
-const steps = ref<Function[]>([])
+const steps = ref<Fn[]>([])
 
 const { canvasCtx, clear } = useCanvas(
   canvasEl,
@@ -111,7 +104,7 @@ const controls = useRafFn(async () => {
  * Control animation frame.
  */
 async function frame() {
-  const tasks: Function[] = [...toValue(steps.value)]
+  const tasks: Fn[] = [...toValue(steps.value)]
   steps.value.length = 0
 
   if (!tasks.length) {
@@ -161,6 +154,7 @@ function setZoom(zoom: number, point?: Point): void {
   const changePointY = point ? point.y : imageCenterY
 
   sourceTransitionZoom.value = preZoom
+  finallyZoom.value = newZoom
   zoomChangePoint.value = {
     x: changePointX,
     y: changePointY,
@@ -325,6 +319,7 @@ onMounted(async () => {
 
 provideEMapContext({
   eventLayerEl,
+  finallyZoom,
   imageInfo,
   translate,
   zoomChangePoint,

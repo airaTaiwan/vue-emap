@@ -27,6 +27,7 @@ export default defineConfig([
       }
 
       if (!data.private) {
+        data.name = `@vue-emap/${pkgName}`
         data.description
           = descriptions[pkgName] || `${pkgName} feature from Vue EMap.`
         data.keywords = [

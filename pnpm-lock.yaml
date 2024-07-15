@@ -111,6 +111,18 @@ importers:
         specifier: ^10.11.0
         version: 10.11.0(vue@3.4.31(typescript@5.4.2))
 
+  packages/markerClusterer:
+    dependencies:
+      '@vue-emap/utils':
+        specifier: workspace:*
+        version: link:../utils
+      '@vueuse/core':
+        specifier: ^10.11.0
+        version: 10.11.0(vue@3.4.31(typescript@5.4.2))
+      '@vueuse/shared':
+        specifier: ^10.11.0
+        version: 10.11.0(vue@3.4.31(typescript@5.4.2))
+
   packages/utils: {}
 
   packages/vue-emap:
@@ -124,6 +136,9 @@ importers:
 
   playground:
     dependencies:
+      '@vue-emap/markerclusterer':
+        specifier: workspace:*
+        version: link:../packages/markerClusterer
       vue-emap:
         specifier: workspace:*
         version: link:../packages/vue-emap

@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vue-emap/markerclusterer": "workspace:*",
     "vue-emap": "workspace:*",
     "vue-router": "^4.4.0"
   },

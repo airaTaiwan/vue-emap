@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
+import { MarkerClusterer } from '@vue-emap/markerclusterer'
 import ControlBtns from '~/components/ControlBtns.vue'
 import mapImg from '~/images/map.jpg'
+import { generateMarkerPos } from '~/utils'
 import { EMap, Marker } from 'vue-emap'
 
 defineOptions({
@@ -15,11 +17,13 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
 <template>
   <div class="w-[800px] h-[800px]">
     <EMap :img="mapImg" ref="EMapRef" zoom-control>
-      <Marker>
-        <div btn>
-          123
-        </div>
-      </Marker>
+      <MarkerClusterer>
+        <Marker :key="item" :position="generateMarkerPos(800, 800)" v-for="item in 100">
+          <div class="btn">
+            {{ item }}
+          </div>
+        </Marker>
+      </MarkerClusterer>
     </EMap>
     <ControlBtns
       @on-reset="EMapRef?.reset()"
