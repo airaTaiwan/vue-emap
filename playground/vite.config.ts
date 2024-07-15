@@ -39,6 +39,7 @@ export default defineConfig({
         './src/composables',
       ],
       dts: true,
+      ignore: ['h'],
       imports: [
         'vue',
         '@vueuse/core',

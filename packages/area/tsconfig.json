@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "outDir": "dist"
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.vue",
+    "**/*.tsx",
+    "src/get-children.mjs"
+  ],
+  "exclude": [
+    "**/dist/**"
+  ]
+}
