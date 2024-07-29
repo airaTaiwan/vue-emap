@@ -1,7 +1,7 @@
 import type { MaybeRef } from '@vueuse/shared'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 
-import { invoke, unrefElement, until } from '@vueuse/core'
+import { invoke, unrefElement, until, useDevicePixelRatio } from '@vueuse/core'
 import { computed, ref, shallowRef } from 'vue'
 
 import type { Point } from '../types'
@@ -9,7 +9,6 @@ import type { Point } from '../types'
 import { initCanvas } from '../shared'
 
 export interface UseCanvasOptions {
-  dpi: Ref<number>
   height: Ref<number>
   width: Ref<number>
 }
@@ -31,17 +30,27 @@ export interface UseCanvasReturn {
   clear: () => void
 }
 
+export function useCanvas(options: UseCanvasOptions): UseCanvasReturn
+export function useCanvas(target: MaybeRef<HTMLCanvasElement | null>, options: UseCanvasOptions): UseCanvasReturn
+
 /**
  * Create a canvas and return its related properties and methods.
  */
-export function useCanvas(
-  target: MaybeRef<HTMLElement | null>,
-  {
-    dpi,
-    height,
-    width,
-  }: UseCanvasOptions,
-): UseCanvasReturn {
+export function useCanvas(...args: any[]) {
+  let target: MaybeRef<HTMLCanvasElement | null>
+  let options: UseCanvasOptions
+
+  if (args.length === 1) {
+    [options] = args
+    target = document.createElement('canvas')
+  }
+  else {
+    [target, options] = args
+  }
+
+  const { height, width } = options
+  const { pixelRatio } = useDevicePixelRatio()
+
   const canvasCtx = shallowRef<CanvasRenderingContext2D | null>(null)
   const isInit = ref(false)
 
@@ -59,7 +68,7 @@ export function useCanvas(
     if (el == null)
       return
 
-    canvasCtx.value = initCanvas(el as HTMLCanvasElement, width.value, height.value, dpi.value)
+    canvasCtx.value = initCanvas(el as HTMLCanvasElement, width.value, height.value, pixelRatio.value)
 
     isInit.value = true
   }
@@ -71,6 +80,8 @@ export function useCanvas(
 
   invoke(async () => {
     await until(() => unrefElement(target)).not.toBeNull()
+    await until(width).not.toBe(0)
+    await until(height).not.toBe(0)
 
     init()
   })

@@ -1,0 +1,55 @@
+{
+  "name": "@vue-emap/editor",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@9.5.0",
+  "description": "editor feature from Vue EMap.",
+  "author": "airaTaiwan <https://github.com/airaTaiwan456>",
+  "license": "MIT",
+  "homepage": "https://www.aira.com.tw/",
+  "repository": {
+    "directory": "packages/area",
+    "type": "git",
+    "url": "git+https://github.com/airaTaiwan/vue-emap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/airaTaiwan/vue-emap/issues"
+  },
+  "keywords": [
+    "vue",
+    "map",
+    "editor"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.umd.cjs"
+    },
+    "./dist/index.css": "./dist/index.css"
+  },
+  "main": "./dist/index.umd.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm type-check && pnpm build-only",
+    "build-only": "vite build",
+    "watch": "vite build --watch",
+    "type-check": "vue-tsc -p tsconfig.json --noEmit",
+    "type-gen": "vue-tsc --declaration  --emitDeclarationOnly",
+    "test": "vitest",
+    "pub:release": "pnpm publish --access public"
+  },
+  "peerDependencies": {
+    "vue": "^3.3.0"
+  },
+  "dependencies": {
+    "@vue-emap/utils": "workspace:*",
+    "@vueuse/core": "^10.11.0",
+    "@vueuse/shared": "^10.11.0"
+  }
+}

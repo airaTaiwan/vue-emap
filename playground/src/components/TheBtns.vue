@@ -11,5 +11,9 @@
     <RouterLink title="MarkerClusterer" to="/example/markerclusterer" icon-btn>
       <div i-carbon-heat-map />
     </RouterLink>
+
+    <RouterLink title="Area" to="/example/area" icon-btn>
+      <div i-carbon-area-custom />
+    </RouterLink>
   </nav>
 </template>

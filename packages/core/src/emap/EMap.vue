@@ -21,7 +21,6 @@ import type { ComponentExposed } from 'vue-component-type-helpers'
 import { isString, sleep } from '@antfu/utils'
 import {
   until,
-  useDevicePixelRatio,
   useElementSize,
   useFps,
   useRafFn,
@@ -54,7 +53,6 @@ const props = withDefaults(defineProps<EMapOptions>(), {
 })
 
 
-const { pixelRatio } = useDevicePixelRatio()
 const fps = useFps()
 
 const canvasLayerEl = shallowRef<HTMLDivElement | null>(null)
@@ -85,7 +83,6 @@ const steps = ref<Fn[]>([])
 const { canvasCtx, clear } = useCanvas(
   canvasEl,
   {
-    dpi: pixelRatio,
     height: canvasLayerHeight,
     width: canvasLayerWidth,
   },
@@ -215,6 +212,13 @@ function redraw(zoom: number) {
   })
 }
 
+function drawCanvas(canvas: HTMLCanvasElement) {
+  steps.value.push(() => {
+    if (canvasCtx.value)
+      canvasCtx.value.drawImage(canvas, 0, 0)
+  })
+}
+
 async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boolean, finished: boolean = false) {
   const { animation } = props
   const { nextZoom, sourceZoom } = zoom
@@ -318,6 +322,9 @@ onMounted(async () => {
 })
 
 provideEMapContext({
+  canvasLayerHeight,
+  canvasLayerWidth,
+  drawCanvas,
   eventLayerEl,
   finallyZoom,
   imageInfo,

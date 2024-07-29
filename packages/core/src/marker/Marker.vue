@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { isNumber, isString } from '@antfu/utils'
 import { type Point, useBaseSetup, useDrag } from '@vue-emap/utils'
 import { useElementSize } from '@vueuse/core'
-import { computed, h, onMounted, ref, shallowRef, watch } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 
 import type { MarkerOptions } from './types'
 
