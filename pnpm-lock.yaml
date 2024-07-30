@@ -163,6 +163,9 @@ importers:
       '@vue-emap/area':
         specifier: workspace:*
         version: link:../packages/area
+      '@vue-emap/editor':
+        specifier: workspace:*
+        version: link:../packages/editor
       '@vue-emap/markerclusterer':
         specifier: workspace:*
         version: link:../packages/markerClusterer

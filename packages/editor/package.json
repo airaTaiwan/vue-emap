@@ -8,7 +8,7 @@
   "license": "MIT",
   "homepage": "https://www.aira.com.tw/",
   "repository": {
-    "directory": "packages/area",
+    "directory": "packages/editor",
     "type": "git",
     "url": "git+https://github.com/airaTaiwan/vue-emap.git"
   },
