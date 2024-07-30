@@ -1,3 +1,4 @@
 import 'uno.css'
 
-export { Editor } from './editor'
+export { default as Editor } from './EditorLayer.vue'
+export { Shape } from './types'
