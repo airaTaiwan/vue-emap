@@ -51,5 +51,8 @@
     "@vue-emap/utils": "workspace:*",
     "@vueuse/core": "^10.11.0",
     "@vueuse/shared": "^10.11.0"
+  },
+  "devDependencies": {
+    "@iconify-json/mingcute": "^1.1.18"
   }
 }

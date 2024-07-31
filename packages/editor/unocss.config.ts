@@ -3,7 +3,6 @@ import {
   presetAttributify,
   presetIcons,
   presetUno,
-  presetWebFonts,
 } from 'unocss'
 
 export default defineConfig({
@@ -14,16 +13,8 @@ export default defineConfig({
       scale: 1.2,
       warn: true,
     }),
-    presetWebFonts({
-      fonts: {
-        mono: 'DM Mono',
-        sans: 'DM Sans',
-        serif: 'DM Serif Display',
-      },
-    }),
   ],
-  shortcuts: [
-    ['btn', 'px-4 py-1 rounded inline-block bg-teal-600 text-white cursor-pointer hover:bg-teal-700 disabled:cursor-default disabled:bg-gray-600 disabled:opacity-50'],
-    ['icon-btn', 'text-[0.9em] inline-block cursor-pointer select-none opacity-75 transition duration-200 ease-in-out hover:opacity-100 hover:text-teal-600 !outline-none'],
+  rules: [
+    ['shadow-island', { 'box-shadow': '0px 0px .9310142993927002px 0px rgba(0, 0, 0, .17), 0px 0px 3.1270833015441895px 0px rgba(0, 0, 0, .08), 0px 7px 14px 0px rgba(0, 0, 0, .05)' }],
   ],
 })

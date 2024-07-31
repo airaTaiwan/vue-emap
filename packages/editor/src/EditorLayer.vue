@@ -9,6 +9,7 @@ interface EditorContext {
   curY: Ref<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
   points: Ref<Point[]>
+  shape: ModelRef<Shape, string>
   viewCanvasEl: ShallowRef<HTMLCanvasElement | null>
 }
 
@@ -17,7 +18,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 
 <script setup lang="ts">
 import type { EMapContext, Point } from '@vue-emap/utils'
-import type { Ref, ShallowRef } from 'vue'
+import type { ModelRef, Ref, ShallowRef } from 'vue'
 
 import { useElementSize, useMouse } from '@vueuse/core'
 import { computed, h, inject, ref, shallowRef } from 'vue'
@@ -28,9 +29,9 @@ import DrawLayer from './DrawLayer.vue'
 import ViewLayer from './ViewLayer.vue'
 import { Shape } from './types'
 
-const props = withDefaults(defineProps<EditorOptions>(), {
-  shape: Shape.Line,
-})
+withDefaults(defineProps<EditorOptions>(), {})
+
+const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
 const { x, y } = useMouse()
 
@@ -61,7 +62,7 @@ const history = ref<History[]>([])
 const points = ref<Point[]>([])
 
 const shapeDrawCom = computed(() => {
-  switch (props.shape) {
+  switch (shape.value) {
     case Shape.LineWithArrow:
       return h(LineWithArrow, {
         ctx: drawCanvasCtx.value!,
@@ -101,6 +102,7 @@ provideEditorContext({
   curY: y,
   drawCanvasEl,
   points,
+  shape,
   viewCanvasEl,
 })
 </script>
@@ -136,5 +138,6 @@ provideEditorContext({
         </template>
       </ViewLayer>
     </template>
+    <slot name="tool" />
   </div>
 </template>

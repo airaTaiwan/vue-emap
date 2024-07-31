@@ -1,10 +1,8 @@
 import type { Point } from '@vue-emap/utils'
 
 export enum Shape {
-  Circle = 'Circle',
   Line = 'Line',
   LineWithArrow = 'LineWithArrow',
-  Rectangle = 'Rectangle',
 }
 
 export interface LineOptions {
@@ -55,7 +53,6 @@ export interface LineOptions {
 }
 
 export interface EditorOptions {
-  shape: Shape
 }
 
 export interface History {

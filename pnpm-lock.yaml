@@ -134,6 +134,10 @@ importers:
       '@vueuse/shared':
         specifier: ^10.11.0
         version: 10.11.0(vue@3.4.31(typescript@5.4.2))
+    devDependencies:
+      '@iconify-json/mingcute':
+        specifier: ^1.1.18
+        version: 1.1.18
 
   packages/markerClusterer:
     dependencies:
@@ -751,6 +755,9 @@ packages:
 
   '@iconify-json/carbon@1.1.36':
     resolution: {integrity: sha512-NC3VcqLtwLZpi7+LeXj+99/byv+asrnCQxiDNCZV6hKr9WcNh6C25kJguJYfN+dV54kOkw78e+6PitQi2Bppnw==}
+
+  '@iconify-json/mingcute@1.1.18':
+    resolution: {integrity: sha512-P5szgBqUMv8XVjZpbVT5eG1XtqpRPgfvZWxOR/uSqBwmVroHpxN5+nbLTHj9HJxL16msMsNbA294b69MNEQzaw==}
 
   '@iconify/types@2.0.0':
     resolution: {integrity: sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==}
@@ -4723,6 +4730,10 @@ snapshots:
   '@humanwhocodes/object-schema@2.0.3': {}
 
   '@iconify-json/carbon@1.1.36':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/mingcute@1.1.18':
     dependencies:
       '@iconify/types': 2.0.0
 
