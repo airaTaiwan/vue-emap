@@ -21,7 +21,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 import type { EMapContext, Point } from '@airataiwan/utils'
 import type { ModelRef, Ref, ShallowRef } from 'vue'
 
-import { useElementSize, useMouse } from '@vueuse/core'
+import { useElementSize, useMouseInElement } from '@vueuse/core'
 import { computed, h, inject, ref, shallowRef } from 'vue'
 
 import type { EditorOptions, History } from './types'
@@ -34,10 +34,10 @@ withDefaults(defineProps<EditorOptions>(), {})
 
 const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
-const { x, y } = useMouse()
-
 const editorCanvasLayerEl = shallowRef<HTMLDivElement | null>(null)
 const { height: editorCanvasLayerHeight, width: editorCanvasLayerWidth } = useElementSize(editorCanvasLayerEl)
+
+const { elementX: x, elementY: y } = useMouseInElement(editorCanvasLayerEl)
 
 const drawCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas } = useCanvas(
