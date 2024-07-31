@@ -1,6 +1,6 @@
 {
   "name": "@aira-taiwan/monorepo",
-  "version": "0.0.1-beta.3",
+  "version": "0.0.1-beta.4",
   "private": true,
   "packageManager": "pnpm@9.5.0",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
