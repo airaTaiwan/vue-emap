@@ -30,7 +30,13 @@ import DrawLayer from './DrawLayer.vue'
 import ViewLayer from './ViewLayer.vue'
 import { Shape } from './types'
 
-withDefaults(defineProps<EditorOptions>(), {})
+const props = withDefaults(defineProps<EditorOptions>(), {
+  historyShape: () => [],
+})
+
+const emit = defineEmits<{
+  save: [history: History]
+}>()
 
 const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
@@ -59,7 +65,7 @@ const { canvasLayerHeight, canvasLayerWidth } = inject(EMapSymbol, {
   canvasLayerWidth: editorCanvasLayerWidth,
 }) as EMapContext
 
-const historyShape = ref<History[]>([])
+const historyShape = ref<History[]>(props.historyShape)
 const points = ref<Point[]>([])
 
 const shapeDrawCom = computed(() => {
@@ -101,10 +107,19 @@ function save(type: Shape) {
   points.value.length = 0
   clearDrawCanvas()
 
-  historyShape.value.push({
+  const history = {
     points: data,
     type,
-  })
+  }
+
+  historyShape.value.push(history)
+  emit('save', history)
+}
+
+function reset() {
+  points.value.length = 0
+  historyShape.value.length = 0
+  clearDrawCanvas()
 }
 
 provideEditorContext({
@@ -114,6 +129,11 @@ provideEditorContext({
   points,
   shape,
   viewCanvasEl,
+})
+
+defineExpose({
+  historyShape,
+  reset,
 })
 </script>
 

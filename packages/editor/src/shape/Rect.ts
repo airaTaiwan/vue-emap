@@ -1,31 +1,9 @@
 import { defineComponent } from 'vue'
 
-import type { ShapeOptions } from '../types'
+import type { RectOptions } from '../types/shape'
 
 import { injectEditorContext } from '../EditorLayer.vue'
 import { Shape } from '../types'
-
-export interface RectOptions extends ShapeOptions {
-  /**
-   * The x-coordinate of the top-left corner of the rectangle.
-   */
-  x1: number
-
-  /**
-   * The optional x-coordinate of the bottom-right corner of the rectangle.
-   */
-  x2?: number
-
-  /**
-   * The y-coordinate of the top-left corner of the rectangle.
-   */
-  y1: number
-
-  /**
-   * The optional y-coordinate of the bottom-right corner of the rectangle.
-   */
-  y2?: number
-}
 
 export const Rect = defineComponent(
   ({ ctx, ...args }: RectOptions, { emit, slots }) => {

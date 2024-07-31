@@ -1,31 +1,9 @@
 import { defineComponent } from 'vue'
 
-import type { ShapeOptions } from '../types'
+import type { LineOptions } from '../types/shape'
 
 import { injectEditorContext } from '../EditorLayer.vue'
 import { Shape } from '../types'
-
-export interface LineOptions extends ShapeOptions {
-  /**
-   * The x-coordinate of the starting point of the line.
-   */
-  x1: number
-
-  /**
-   * The x-coordinate of the ending point of the line. (Optional)
-   */
-  x2?: number
-
-  /**
-   * The y-coordinate of the starting point of the line.
-   */
-  y1: number
-
-  /**
-   * The y-coordinate of the ending point of the line. (Optional)
-   */
-  y2?: number
-}
 
 export const Line = defineComponent(
   ({ ctx, ...args }: LineOptions, { emit, slots }) => {

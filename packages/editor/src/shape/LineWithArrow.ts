@@ -1,46 +1,9 @@
 import { defineComponent } from 'vue'
 
-import type { ShapeOptions } from '../types'
+import type { LineWithArrowOptions } from '../types/shape'
 
 import { injectEditorContext } from '../EditorLayer.vue'
 import { Shape } from '../types'
-
-export interface LineWithArrowOptions extends ShapeOptions {
-  /**
-   * The length of the arrow.
-   */
-  arrowLength?: number
-
-  /**
-   * The width of the arrow.
-   */
-  arrowWidth?: number
-
-  /**
-   * The length of the shaft.
-   */
-  shaftLength?: number
-
-  /**
-   * The x-coordinate of the starting point of the line.
-   */
-  x1: number
-
-  /**
-   * The x-coordinate of the ending point of the line.
-   */
-  x2?: number
-
-  /**
-   * The y-coordinate of the starting point of the line.
-   */
-  y1: number
-
-  /**
-   * The y-coordinate of the ending point of the line.
-   */
-  y2?: number
-}
 
 export const LineWithArrow = defineComponent(
   ({ ctx, ...args }: LineWithArrowOptions, { emit, slots }) => {
