@@ -27,7 +27,7 @@ export default defineConfig([
       }
 
       if (!data.private) {
-        data.name = `@airataiwan/${pkgName}`
+        data.name = `@airataiwan/${pkgName.toLocaleLowerCase()}`
         data.description
           = descriptions[pkgName] || `${pkgName} feature from Vue EMap.`
         data.keywords = [
