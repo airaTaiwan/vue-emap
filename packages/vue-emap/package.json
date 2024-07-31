@@ -1,5 +1,5 @@
 {
-  "name": "vue-emap",
+  "name": "@airataiwan/vue-emap",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@9.5.0",
@@ -47,5 +47,8 @@
   "dependencies": {
     "@vue-emap/core": "workspace:*",
     "@vue-emap/utils": "workspace:*"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }

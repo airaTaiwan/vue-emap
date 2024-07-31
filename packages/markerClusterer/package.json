@@ -1,5 +1,5 @@
 {
-  "name": "@vue-emap/markerclusterer",
+  "name": "@airataiwan/markerClusterer",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@9.5.0",
@@ -51,5 +51,8 @@
     "@vue-emap/utils": "workspace:*",
     "@vueuse/core": "^10.11.0",
     "@vueuse/shared": "^10.11.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }

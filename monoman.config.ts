@@ -27,7 +27,7 @@ export default defineConfig([
       }
 
       if (!data.private) {
-        data.name = `@vue-emap/${pkgName}`
+        data.name = `@airataiwan/${pkgName}`
         data.description
           = descriptions[pkgName] || `${pkgName} feature from Vue EMap.`
         data.keywords = [
@@ -35,6 +35,9 @@ export default defineConfig([
           'map',
           pkgName,
         ]
+        data.publishConfig = {
+          registry: 'https://npm.pkg.github.com/',
+        }
         data.license = 'MIT'
         data.homepage = docsLink
         data.bugs = { url: `${githubLink}/issues` }
