@@ -1,34 +1,45 @@
 import { defineComponent } from 'vue'
 
-import type { LineOptions } from '../types'
+import type { ShapeOptions } from '../types'
 
 import { injectEditorContext } from '../EditorLayer.vue'
 import { Shape } from '../types'
 
-export interface LineWithArrowOptions extends LineOptions {
+export interface LineWithArrowOptions extends ShapeOptions {
   /**
-   * The length of the arrow
-   * @default 10
+   * The length of the arrow.
    */
   arrowLength?: number
 
   /**
-   * The width of the arrow
-   * @default 5
+   * The width of the arrow.
    */
   arrowWidth?: number
 
   /**
-   * The fill color of the arrow
-   * @default '#0073e6'
-   */
-  fillStyle?: string
-
-  /**
-   * The length of the arrow shaft
-   * @default 10
+   * The length of the shaft.
    */
   shaftLength?: number
+
+  /**
+   * The x-coordinate of the starting point of the line.
+   */
+  x1: number
+
+  /**
+   * The x-coordinate of the ending point of the line.
+   */
+  x2?: number
+
+  /**
+   * The y-coordinate of the starting point of the line.
+   */
+  y1: number
+
+  /**
+   * The y-coordinate of the ending point of the line.
+   */
+  y2?: number
 }
 
 export const LineWithArrow = defineComponent(
@@ -57,28 +68,30 @@ export const LineWithArrow = defineComponent(
       ctx.fill()
     }
 
-    function draw(x1: number, x2: number, y1: number, y2: number, strokeStyle: string, fillStyle: string, lineWidth: number, arrowLength: number, arrowWidth: number, shaftLength: number) {
+    function draw(x1: number, y1: number, x2: number, y2: number) {
       if (ctx == null)
         return
 
-      ctx.strokeStyle = strokeStyle
-      ctx.fillStyle = fillStyle
-      ctx.lineWidth = lineWidth
       ctx.beginPath()
       ctx.moveTo(x1, y1)
       ctx.lineTo(x2, y2)
       ctx.stroke()
-
-      const midX = (x1 + x2) / 2
-      const midY = (y1 + y2) / 2
-      const dx = x2 - x1
-      const dy = y2 - y1
-
-      drawPerpendicularArrow(ctx, midX, midY, dx, dy, arrowLength, arrowWidth, shaftLength)
     }
 
     return () => {
-      const { arrowLength = 10, arrowWidth = 5, drawing = false, fillStyle = '#0073e6', lineWidth = 1, shaftLength = 10, strokeStyle = '#0073e6', x1, x2 = curX.value, y1, y2 = curY.value } = args
+      const {
+        arrowLength = 10,
+        arrowWidth = 5,
+        drawing = false,
+        fillStyle = '#0073e6',
+        lineWidth = 1,
+        shaftLength = 10,
+        strokeStyle = '#0073e6',
+        x1,
+        x2 = curX.value,
+        y1,
+        y2 = curY.value,
+      } = args
 
       if (drawing && points.value.length === 2) {
         emit('save', Shape.LineWithArrow)
@@ -87,7 +100,18 @@ export const LineWithArrow = defineComponent(
         if (drawing)
           emit('clear')
 
-        draw(x1, x2, y1, y2, strokeStyle, fillStyle, lineWidth, arrowLength, arrowWidth, shaftLength)
+        ctx.strokeStyle = strokeStyle
+        ctx.fillStyle = fillStyle
+        ctx.lineWidth = lineWidth
+
+        draw(x1, y1, x2, y2)
+
+        const midX = (x1 + x2) / 2
+        const midY = (y1 + y2) / 2
+        const dx = x2 - x1
+        const dy = y2 - y1
+
+        drawPerpendicularArrow(ctx, midX, midY, dx, dy, arrowLength, arrowWidth, shaftLength)
       }
 
       return slots.default?.()

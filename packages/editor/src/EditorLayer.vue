@@ -3,6 +3,7 @@ import { EMapSymbol, createContext, useCanvas } from '@vue-emap/utils'
 
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
+import { Rect } from './shape/Rect'
 
 interface EditorContext {
   curX: Ref<number>
@@ -81,6 +82,15 @@ const shapeDrawCom = computed(() => {
         y1: points.value[0].y,
         y2: points.value[1]?.y,
       })
+    case Shape.Rect:
+      return h(Rect, {
+        ctx: drawCanvasCtx.value!,
+        drawing: true,
+        h: points.value[1]?.y,
+        w: points.value[1]?.x,
+        x1: points.value[0].x,
+        y1: points.value[0].y,
+      })
     default:
       return null
   }
@@ -133,6 +143,14 @@ provideEditorContext({
               :y1="history.points[0].y"
               :y2="history.points[1].y"
               v-if="history.type === Shape.LineWithArrow"
+            />
+            <Rect
+              :ctx="viewCanvasCtx"
+              :x1="history.points[0].x"
+              :x2="history.points[1].x"
+              :y1="history.points[0].y"
+              :y2="history.points[1].y"
+              v-if="history.type === Shape.Rect"
             />
           </template>
         </template>

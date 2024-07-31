@@ -4,6 +4,7 @@ import type { Shape } from '../types'
 const iconList: Record<Shape, string> = {
   Line: 'i-mingcute:minimize-line',
   LineWithArrow: 'i-mingcute:align-arrow-right-line',
+  Rect: 'i-mingcute:rectangle-line',
 }
 </script>
 
