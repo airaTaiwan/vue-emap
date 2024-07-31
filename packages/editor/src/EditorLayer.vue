@@ -59,7 +59,7 @@ const { canvasLayerHeight, canvasLayerWidth } = inject(EMapSymbol, {
   canvasLayerWidth: editorCanvasLayerWidth,
 }) as EMapContext
 
-const history = ref<History[]>([])
+const historyShape = ref<History[]>([])
 const points = ref<Point[]>([])
 
 const shapeDrawCom = computed(() => {
@@ -101,7 +101,7 @@ function save(type: Shape) {
   points.value.length = 0
   clearDrawCanvas()
 
-  history.value.push({
+  historyShape.value.push({
     points: data,
     type,
   })
@@ -127,7 +127,7 @@ provideEditorContext({
       </DrawLayer>
       <ViewLayer :height="canvasLayerHeight" :width="canvasLayerWidth">
         <template v-if="viewCanvasCtx">
-          <template :key="history.type" v-for="history in history">
+          <template :key="history.type" v-for="history in historyShape">
             <Line
               :ctx="viewCanvasCtx"
               :x1="history.points[0].x"
