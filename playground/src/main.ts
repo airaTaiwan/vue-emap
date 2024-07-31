@@ -10,6 +10,7 @@ import './styles/main.css'
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
 import 'vue-emap/dist/index.css'
+import '@vue-emap/editor/dist/index.css'
 
 const app = createApp(App)
 const router = createRouter({

@@ -15,5 +15,9 @@
     <RouterLink title="Area" to="/example/area" icon-btn>
       <div i-carbon-area-custom />
     </RouterLink>
+
+    <RouterLink title="Editor" to="/example/editor" icon-btn>
+      <div i-carbon-edit />
+    </Routerlink>
   </nav>
 </template>

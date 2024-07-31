@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@vue-emap/area": "workspace:*",
+    "@vue-emap/editor": "workspace:*",
     "@vue-emap/markerclusterer": "workspace:*",
     "vue-emap": "workspace:*",
     "vue-router": "^4.4.0"

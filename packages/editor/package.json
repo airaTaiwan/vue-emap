@@ -1,5 +1,5 @@
 {
-  "name": "@vue-emap/editor",
+  "name": "@aira-taiwan/editor",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@9.5.0",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "homepage": "https://www.aira.com.tw/",
   "repository": {
-    "directory": "packages/area",
+    "directory": "packages/editor",
     "type": "git",
     "url": "git+https://github.com/airaTaiwan/vue-emap.git"
   },
@@ -51,5 +51,8 @@
     "@vue-emap/utils": "workspace:*",
     "@vueuse/core": "^10.11.0",
     "@vueuse/shared": "^10.11.0"
+  },
+  "devDependencies": {
+    "@iconify-json/mingcute": "^1.1.18"
   }
 }

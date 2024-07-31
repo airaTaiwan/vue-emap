@@ -1,5 +1,5 @@
 import type { MaybeRef } from '@vueuse/shared'
-import type { ComputedRef, Ref, ShallowRef } from 'vue'
+import type { ComputedRef, ShallowRef } from 'vue'
 
 import { invoke, unrefElement, until, useDevicePixelRatio } from '@vueuse/core'
 import { computed, ref, shallowRef } from 'vue'
@@ -9,8 +9,8 @@ import type { Point } from '../types'
 import { initCanvas } from '../shared'
 
 export interface UseCanvasOptions {
-  height: Ref<number>
-  width: Ref<number>
+  height: MaybeRef<number>
+  width: MaybeRef<number>
 }
 
 export interface UseCanvasReturn {
@@ -51,12 +51,15 @@ export function useCanvas(...args: any[]) {
   const { height, width } = options
   const { pixelRatio } = useDevicePixelRatio()
 
+  const _width = ref(width)
+  const _height = ref(height)
+
   const canvasCtx = shallowRef<CanvasRenderingContext2D | null>(null)
   const isInit = ref(false)
 
   const canvasCenterPoint = computed<Point>(() => ({
-    x: width.value / 2,
-    y: height.value / 2,
+    x: _width.value / 2,
+    y: _height.value / 2,
   }))
 
   /**
@@ -68,14 +71,14 @@ export function useCanvas(...args: any[]) {
     if (el == null)
       return
 
-    canvasCtx.value = initCanvas(el as HTMLCanvasElement, width.value, height.value, pixelRatio.value)
+    canvasCtx.value = initCanvas(el as HTMLCanvasElement, _width.value, _height.value, pixelRatio.value)
 
     isInit.value = true
   }
 
   function clear() {
     if (canvasCtx.value)
-      canvasCtx.value.clearRect(0, 0, width.value, height.value)
+      canvasCtx.value.clearRect(0, 0, _width.value, _height.value)
   }
 
   invoke(async () => {
