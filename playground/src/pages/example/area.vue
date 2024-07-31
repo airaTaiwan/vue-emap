@@ -16,7 +16,7 @@ const area: Point[] = [
 import type { ComponentExposed } from 'vue-component-type-helpers'
 import type { Point } from 'vue-emap'
 
-import { Area } from '@vue-emap/area'
+import { Area } from '@airataiwan/area'
 import mapImg from '~/images/map.jpg'
 import { EMap } from 'vue-emap'
 

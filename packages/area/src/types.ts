@@ -1,4 +1,4 @@
-import type { Point } from '@vue-emap/utils'
+import type { Point } from '@airataiwan/utils'
 
 export interface AreaOptions {
   /**

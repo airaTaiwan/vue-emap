@@ -45,8 +45,8 @@
     "pub:release": "pnpm publish --access public"
   },
   "dependencies": {
-    "@vue-emap/core": "workspace:*",
-    "@vue-emap/utils": "workspace:*"
+    "@airataiwan/core": "workspace:*",
+    "@airataiwan/utils": "workspace:*"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"

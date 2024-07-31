@@ -7,14 +7,14 @@ import {
   loadImage,
   useCanvas,
   useResetPoint,
-} from '@vue-emap/utils'
+} from '@airataiwan/utils'
 
 export const [injectEMapContext, provideEMapContext]
   = createContext<EMapContext>('EMap')
 </script>
 
 <script setup lang="ts">
-import type { EMapContext, Info, Point, Size } from '@vue-emap/utils'
+import type { EMapContext, Info, Point, Size } from '@airataiwan/utils'
 import type { Fn } from '@vueuse/core'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 

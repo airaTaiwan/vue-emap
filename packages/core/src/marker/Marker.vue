@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Point, useBaseSetup, useDrag } from '@vue-emap/utils'
+import { type Point, useBaseSetup, useDrag } from '@airataiwan/utils'
 import { useElementSize } from '@vueuse/core'
 import { computed, ref, shallowRef, watch } from 'vue'
 

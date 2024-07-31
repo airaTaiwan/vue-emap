@@ -16,7 +16,7 @@ export default defineConfig({
       fileName: (format, name) => {
         return `${name}.${format === 'es' ? 'js' : 'umd.cjs'}`
       },
-      name: '@vue-emap/markerclusterer',
+      name: '@airataiwan/markerclusterer',
     },
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled

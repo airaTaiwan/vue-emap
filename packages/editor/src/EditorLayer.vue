@@ -1,5 +1,5 @@
 <script lang="ts">
-import { EMapSymbol, createContext, useCanvas } from '@vue-emap/utils'
+import { EMapSymbol, createContext, useCanvas } from '@airataiwan/utils'
 
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
@@ -18,7 +18,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 </script>
 
 <script setup lang="ts">
-import type { EMapContext, Point } from '@vue-emap/utils'
+import type { EMapContext, Point } from '@airataiwan/utils'
 import type { ModelRef, Ref, ShallowRef } from 'vue'
 
 import { useElementSize, useMouse } from '@vueuse/core'

@@ -1,5 +1,5 @@
-export * from '@vue-emap/core'
+export * from '@airataiwan/core'
 // styles
-export * from '@vue-emap/core/dist/index.css'
+export * from '@airataiwan/core/dist/index.css'
 
-export * from '@vue-emap/utils'
+export * from '@airataiwan/utils'

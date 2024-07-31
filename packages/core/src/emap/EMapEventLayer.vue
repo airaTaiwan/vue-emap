@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { EMapEventContext, Point } from '@vue-emap/utils'
+import type { EMapEventContext, Point } from '@airataiwan/utils'
 
-import { createContext, useResetPoint } from '@vue-emap/utils'
+import { createContext, useResetPoint } from '@airataiwan/utils'
 import { usePointer } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
 

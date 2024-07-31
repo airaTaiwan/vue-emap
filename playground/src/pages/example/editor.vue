@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Editor, Shape, ToolBar } from '@vue-emap/editor'
+import { Editor, Shape, ToolBar } from '@airataiwan/editor'
 </script>
 
 <template>

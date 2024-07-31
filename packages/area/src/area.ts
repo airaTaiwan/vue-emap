@@ -1,6 +1,6 @@
-import type { EMapContext } from '@vue-emap/utils'
+import type { EMapContext } from '@airataiwan/utils'
 
-import { EMapSymbol, drawRectangle, useCanvas } from '@vue-emap/utils'
+import { EMapSymbol, drawRectangle, useCanvas } from '@airataiwan/utils'
 import { defineComponent, inject, watchEffect } from 'vue'
 
 import type { AreaOptions } from './types'

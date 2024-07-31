@@ -1,4 +1,4 @@
-import { type EMapContext, EMapSymbol } from '@vue-emap/utils'
+import { type EMapContext, EMapSymbol } from '@airataiwan/utils'
 import { type VNode, cloneVNode, createVNode, defineComponent, h, inject, ref, toValue } from 'vue'
 
 import type { MarkerClustererOptions } from './types'

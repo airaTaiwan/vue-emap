@@ -51,7 +51,7 @@
     "vue": "^3.3.0"
   },
   "dependencies": {
-    "@vue-emap/utils": "workspace:*",
+    "@airataiwan/utils": "workspace:*",
     "@vueuse/core": "^10.11.0",
     "@vueuse/shared": "^10.11.0"
   }

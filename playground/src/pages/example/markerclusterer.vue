@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
-import { MarkerClusterer } from '@vue-emap/markerclusterer'
+import { MarkerClusterer } from '@airataiwan/markerclusterer'
 import mapImg from '~/images/map.jpg'
 import { generateMarkerPos } from '~/utils'
 import { EMap, Marker } from 'vue-emap'

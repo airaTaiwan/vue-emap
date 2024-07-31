@@ -1,4 +1,4 @@
-import type { AnimationType } from '@vue-emap/utils'
+import type { AnimationType } from '@airataiwan/utils'
 
 export interface EMapOptions {
   animation?: Animation

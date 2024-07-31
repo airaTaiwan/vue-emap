@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
 
-import { type Point, distanceBetweenPoints } from '@vue-emap/utils'
+import { type Point, distanceBetweenPoints } from '@airataiwan/utils'
 
 import type { AlgorithmInput, AlgorithmOutput } from '../types'
 

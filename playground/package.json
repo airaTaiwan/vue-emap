@@ -1,5 +1,5 @@
 {
-  "name": "@vue-emap/playground",
+  "name": "@airataiwan/playground",
   "type": "module",
   "private": true,
   "packageManager": "pnpm@9.5.0",
@@ -11,10 +11,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vue-emap/area": "workspace:*",
-    "@vue-emap/editor": "workspace:*",
-    "@vue-emap/markerclusterer": "workspace:*",
-    "vue-emap": "workspace:*",
+    "@airataiwan/area": "workspace:*",
+    "@airataiwan/editor": "workspace:*",
+    "@airataiwan/markerclusterer": "workspace:*",
+    "@airataiwan/vue-emap": "workspace:*",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {

@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
 
-import { type Point, calculateCentroid, useResetPoint } from '@vue-emap/utils'
+import { type Point, calculateCentroid, useResetPoint } from '@airataiwan/utils'
 
 export interface ClusterOptions {
   gridSize?: number

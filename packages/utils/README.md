@@ -1,10 +1,10 @@
-# @vue-emap/utils
+# @airataiwan/utils
 `Vue-Emap` 的 `utils` 工具集，提供了一些常用的工具函数。
 
 ## Usage
 
 ```bash
-pnpm i @vue-emap/utils
+pnpm i @airataiwan/utils
 ```
 
 ## License
