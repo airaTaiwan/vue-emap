@@ -55,7 +55,7 @@ const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas } = useCanvas(
 )
 
 const viewCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
-const { canvasCtx: viewCanvasCtx } = useCanvas(viewCanvasEl, {
+const { canvasCtx: viewCanvasCtx, clear: clearViewCanvas } = useCanvas(viewCanvasEl, {
   height: editorCanvasLayerHeight,
   width: editorCanvasLayerWidth,
 })
@@ -120,6 +120,7 @@ function reset() {
   points.value.length = 0
   historyShape.value.length = 0
   clearDrawCanvas()
+  clearViewCanvas()
 }
 
 provideEditorContext({
