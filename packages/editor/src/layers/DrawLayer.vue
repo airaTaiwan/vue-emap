@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { injectEditorContext } from '../EditorLayer.vue'
 
-defineProps<{
-  height: number
-  width: number
+const props = defineProps<{
+  dpi: number
 }>()
 
 const { drawCanvasEl, points } = injectEditorContext()
@@ -39,12 +38,14 @@ const { drawCanvasEl, points } = injectEditorContext()
 
 function draw(e: MouseEvent) {
   const { offsetX, offsetY } = e
+  const x = offsetX / props.dpi
+  const y = offsetY / props.dpi
 
-  points.value.push({ x: offsetX, y: offsetY })
+  points.value.push({ x, y })
 }
 </script>
 
 <template>
-  <canvas ref="drawCanvasEl" :height :width position="absolute top-0 left-0" select-none z3 @click="draw" />
+  <canvas ref="drawCanvasEl" position="absolute top-0 left-0" select-none z3 @click="draw" />
   <slot />
 </template>

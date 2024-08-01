@@ -11,7 +11,7 @@ function goBack() {
 </script>
 
 <template>
-  <main
+  <div
     flex="~ items-center justify-center"
     h-full
     relative text="center gray-700 dark:gray-200" w-full
@@ -38,5 +38,5 @@ function goBack() {
         target="_blank" text-xl title="GitHub" to="https://github.com/CofCat456/http-test-tool"
       />
     </template>
-  </main>
+  </div>
 </template>

@@ -1,5 +1,5 @@
 import type { MaybeRef } from '@vueuse/shared'
-import type { ComputedRef, ShallowRef } from 'vue'
+import type { ComputedRef, Ref, ShallowRef } from 'vue'
 
 import { invoke, unrefElement, until, useDevicePixelRatio } from '@vueuse/core'
 import { computed, ref, shallowRef } from 'vue'
@@ -25,9 +25,14 @@ export interface UseCanvasReturn {
   canvasCtx: ShallowRef<CanvasRenderingContext2D | null>
 
   /**
-   * Clear canvas.
+   * Clears the canvas.
    */
   clear: () => void
+
+  /**
+   * The dots per inch (DPI) of the canvas.
+   */
+  dpi: Ref<number>
 }
 
 export function useCanvas(options: UseCanvasOptions): UseCanvasReturn
@@ -92,7 +97,7 @@ export function useCanvas(...args: any[]) {
   return {
     canvasCenterPoint,
     canvasCtx,
-
     clear,
+    dpi: pixelRatio,
   }
 }

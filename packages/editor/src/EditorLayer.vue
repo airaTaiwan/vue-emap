@@ -1,13 +1,13 @@
 <script lang="ts">
-import { createContext, EMapSymbol, useCanvas } from '@airataiwan/utils'
+import { createContext, useCanvas } from '@airataiwan/utils'
 
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
 import { Rect } from './shape/Rect'
 
 interface EditorContext {
-  curX: Ref<number>
-  curY: Ref<number>
+  curX: ComputedRef<number>
+  curY: ComputedRef<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
   points: Ref<Point[]>
   shape: ModelRef<Shape, string>
@@ -18,11 +18,11 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 </script>
 
 <script setup lang="ts">
-import type { EMapContext, Point } from '@airataiwan/utils'
-import type { ModelRef, Ref, ShallowRef } from 'vue'
+import type { Point } from '@airataiwan/utils'
+import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
 import { useElementSize, useMouseInElement } from '@vueuse/core'
-import { computed, h, inject, ref, shallowRef } from 'vue'
+import { computed, h, ref, shallowRef } from 'vue'
 
 import type { EditorOptions, History } from './types'
 
@@ -43,10 +43,8 @@ const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false
 const editorCanvasLayerEl = shallowRef<HTMLDivElement | null>(null)
 const { height: editorCanvasLayerHeight, width: editorCanvasLayerWidth } = useElementSize(editorCanvasLayerEl)
 
-const { elementX: x, elementY: y } = useMouseInElement(editorCanvasLayerEl)
-
 const drawCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
-const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas } = useCanvas(
+const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas, dpi } = useCanvas(
   drawCanvasEl,
   {
     height: editorCanvasLayerHeight,
@@ -60,10 +58,9 @@ const { canvasCtx: viewCanvasCtx, clear: clearViewCanvas } = useCanvas(viewCanva
   width: editorCanvasLayerWidth,
 })
 
-const { canvasLayerHeight, canvasLayerWidth } = inject(EMapSymbol, {
-  canvasLayerHeight: editorCanvasLayerHeight,
-  canvasLayerWidth: editorCanvasLayerWidth,
-}) as EMapContext
+const { elementX, elementY } = useMouseInElement(editorCanvasLayerEl)
+const x = computed(() => elementX.value / dpi.value)
+const y = computed(() => elementY.value / dpi.value)
 
 const historyShape = ref<History[]>(props.historyShape)
 const points = ref<Point[]>([])
@@ -140,43 +137,41 @@ defineExpose({
 
 <template>
   <div ref="editorCanvasLayerEl" position="absolute inset-0" z5>
-    <template v-if="canvasLayerHeight !== 0 && canvasLayerWidth !== 0">
-      <DrawLayer :height="canvasLayerHeight" :width="canvasLayerWidth">
-        <template v-if="points.length >= 1 && drawCanvasCtx">
-          <component :is="shapeDrawCom" @clear="clearDrawCanvas" @save="save" />
+    <DrawLayer :dpi>
+      <template v-if="points.length >= 1 && drawCanvasCtx">
+        <component :is="shapeDrawCom" @clear="clearDrawCanvas" @save="save" />
+      </template>
+    </DrawLayer>
+    <ViewLayer>
+      <template v-if="viewCanvasCtx">
+        <template v-for="history in historyShape" :key="history.type">
+          <Line
+            v-if="history.type === Shape.Line"
+            :ctx="viewCanvasCtx"
+            :x1="history.points[0].x"
+            :x2="history.points[1].x"
+            :y1="history.points[0].y"
+            :y2="history.points[1].y"
+          />
+          <LineWithArrow
+            v-if="history.type === Shape.LineWithArrow"
+            :ctx="viewCanvasCtx"
+            :x1="history.points[0].x"
+            :x2="history.points[1].x"
+            :y1="history.points[0].y"
+            :y2="history.points[1].y"
+          />
+          <Rect
+            v-if="history.type === Shape.Rect"
+            :ctx="viewCanvasCtx"
+            :x1="history.points[0].x"
+            :x2="history.points[1].x"
+            :y1="history.points[0].y"
+            :y2="history.points[1].y"
+          />
         </template>
-      </DrawLayer>
-      <ViewLayer :height="canvasLayerHeight" :width="canvasLayerWidth">
-        <template v-if="viewCanvasCtx">
-          <template v-for="history in historyShape" :key="history.type">
-            <Line
-              v-if="history.type === Shape.Line"
-              :ctx="viewCanvasCtx"
-              :x1="history.points[0].x"
-              :x2="history.points[1].x"
-              :y1="history.points[0].y"
-              :y2="history.points[1].y"
-            />
-            <LineWithArrow
-              v-if="history.type === Shape.LineWithArrow"
-              :ctx="viewCanvasCtx"
-              :x1="history.points[0].x"
-              :x2="history.points[1].x"
-              :y1="history.points[0].y"
-              :y2="history.points[1].y"
-            />
-            <Rect
-              v-if="history.type === Shape.Rect"
-              :ctx="viewCanvasCtx"
-              :x1="history.points[0].x"
-              :x2="history.points[1].x"
-              :y1="history.points[0].y"
-              :y2="history.points[1].y"
-            />
-          </template>
-        </template>
-      </ViewLayer>
-    </template>
+      </template>
+    </ViewLayer>
     <slot name="tool" />
   </div>
 </template>
