@@ -66,13 +66,13 @@ watch(() => props.position, (newPosition) => {
 
 <template>
   <div
+    ref="el"
     :style="{
       top: `${markerPosOnMap.y}px`,
       left: `${markerPosOnMap.x}px`,
     }"
-    class="marker"
-    ref="el"
-    block op100 pos-absolute z0
+    block
+    class="marker" op100 pos-absolute z0
   >
     <slot>
       I am a marker

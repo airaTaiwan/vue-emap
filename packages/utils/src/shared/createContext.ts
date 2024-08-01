@@ -1,4 +1,4 @@
-import { type InjectionKey, inject, provide } from 'vue'
+import { inject, type InjectionKey, provide } from 'vue'
 
 import { EMapEventSymbol, EMapSymbol } from './symbol'
 

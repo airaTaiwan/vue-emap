@@ -50,7 +50,6 @@ watch([mouseX, mouseY, pressure], ([curX, curY, curPressure], [preX, preY, _preP
   emits('onRefresh')
 })
 
-
 const eventLayerCursor = ref<'default' | 'grab' | 'grabbing'>('default')
 
 function dragStart() {
@@ -88,22 +87,22 @@ defineExpose({
 
 <template>
   <div
+    ref="eventLayerEl"
     :style="{
       cursor: eventLayerCursor,
     }"
-    @pointerdown="dragStart"
-    @pointerleave="dragEnd"
-    @pointerup="dragEnd"
-    class="emap-event-layer" ref="eventLayerEl"
-    b-0 h-full m0 p0 pos-absolute w-full z3
+    b-0
+    class="emap-event-layer"
+    h-full m0
+    p0 pos-absolute w-full z3 @pointerdown="dragStart" @pointerleave="dragEnd" @pointerup="dragEnd"
   >
     <div
       position="absolute top-0 left-0"
+      w-full
+      will-change-transform
       @click.stop
       @dblclick.stop
-      @mousedown.stop
-      @pointerdown.stop
-      w-full will-change-transform
+      @mousedown.stop @pointerdown.stop
     >
       <div
         position="absolute top-0 left-0" w-full z104

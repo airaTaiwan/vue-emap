@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
 
-import { type Point, calculateCentroid, useResetPoint } from '@airataiwan/utils'
+import { calculateCentroid, type Point, useResetPoint } from '@airataiwan/utils'
 
 export interface ClusterOptions {
   gridSize?: number
@@ -9,9 +9,9 @@ export interface ClusterOptions {
 }
 
 export class Cluster {
-  public readonly markers: VNode[]
   private _gridSize = 500
   private _position: Point
+  public readonly markers: VNode[]
 
   constructor({ gridSize, markers, position }: ClusterOptions) {
     this.markers = markers
@@ -22,7 +22,6 @@ export class Cluster {
     else
       this._position = useResetPoint()
   }
-
 
   // public get bounds(): google.maps.LatLngBounds | undefined {
   //   if (this.markers.length === 0 && !this._position) {
@@ -36,12 +35,19 @@ export class Cluster {
   //   return bounds
   // }
 
-  public get position(): Point {
-    return this._position
+  public contains(position: Point): boolean {
+    return position.x >= this._position.x - this._gridSize / 2 && position.x <= this._position.x + this._gridSize / 2
+      && position.y >= this._position.y - this._gridSize / 2 && position.y <= this._position.y + this._gridSize / 2
   }
 
-  public get marker(): VNode {
-    return this.markers[0]
+  /**
+   * Add a marker to the cluster.
+   */
+  public push(marker: VNode): void {
+    if (this.markers)
+      this.markers.push(marker)
+
+    this.updatePosition()
   }
 
   public updatePosition(): void {
@@ -53,11 +59,6 @@ export class Cluster {
       this._position = positions[0]
   }
 
-  public contains(position: Point): boolean {
-    return position.x >= this._position.x - this._gridSize / 2 && position.x <= this._position.x + this._gridSize / 2
-      && position.y >= this._position.y - this._gridSize / 2 && position.y <= this._position.y + this._gridSize / 2
-  }
-
   /**
    * Get the count of visible markers.
    */
@@ -66,14 +67,12 @@ export class Cluster {
     return this.markers.length
   }
 
-  /**
-   * Add a marker to the cluster.
-   */
-  public push(marker: VNode): void {
-    if (this.markers)
-      this.markers.push(marker)
+  public get marker(): VNode {
+    return this.markers[0]
+  }
 
-    this.updatePosition()
+  public get position(): Point {
+    return this._position
   }
 
   // /**

@@ -1,6 +1,6 @@
 import type { VNode } from 'vue'
 
-import { type Point, distanceBetweenPoints } from '@airataiwan/utils'
+import { distanceBetweenPoints, type Point } from '@airataiwan/utils'
 
 import type { AlgorithmInput, AlgorithmOutput } from '../types'
 
@@ -23,10 +23,10 @@ export interface GridOptions {
 }
 
 export class GridAlgorithm {
-  protected gridSize: number
-  protected maxDistance: number
   private _preZoom: number
   protected clusters: Cluster[]
+  protected gridSize: number
+  protected maxDistance: number
 
   constructor({
     gridSize = 500,
@@ -36,33 +36,6 @@ export class GridAlgorithm {
     this.gridSize = gridSize
     this._preZoom = 1
     this.clusters = []
-  }
-
-  public calculate(zoom: number, {
-    markers,
-  }: AlgorithmInput): AlgorithmOutput {
-    let changed = false
-
-    changed = zoom === this._preZoom
-
-    return {
-      changed,
-      clusters: this.cluster({
-        markers,
-      }),
-    }
-  }
-
-  protected cluster({
-    markers,
-  }: Pick<AlgorithmInput, 'markers'>): Cluster[] {
-    this.clusters = []
-
-    markers.forEach((marker) => {
-      this.addToClosestCluster(marker)
-    })
-
-    return this.clusters
   }
 
   protected addToClosestCluster(marker: VNode): void {
@@ -95,5 +68,32 @@ export class GridAlgorithm {
       })
       this.clusters.push(newCluster)
     }
+  }
+
+  public calculate(zoom: number, {
+    markers,
+  }: AlgorithmInput): AlgorithmOutput {
+    let changed = false
+
+    changed = zoom === this._preZoom
+
+    return {
+      changed,
+      clusters: this.cluster({
+        markers,
+      }),
+    }
+  }
+
+  protected cluster({
+    markers,
+  }: Pick<AlgorithmInput, 'markers'>): Cluster[] {
+    this.clusters = []
+
+    markers.forEach((marker) => {
+      this.addToClosestCluster(marker)
+    })
+
+    return this.clusters
   }
 }

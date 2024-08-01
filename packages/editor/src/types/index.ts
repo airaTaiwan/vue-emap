@@ -9,6 +9,9 @@ export enum Shape {
 }
 
 export interface EditorOptions {
+  /** The exist shape */
+  historyShape?: History[]
+
   /** Line Options */
   LineOptions?: LineOptions
 
@@ -17,9 +20,6 @@ export interface EditorOptions {
 
   /** Rectangle Options */
   RectOptions?: RectOptions
-
-  /** The exist shape */
-  historyShape?: History[]
 }
 
 export interface History {

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { EMapSymbol, createContext, useCanvas } from '@airataiwan/utils'
+import { createContext, EMapSymbol, useCanvas } from '@airataiwan/utils'
 
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
@@ -26,8 +26,8 @@ import { computed, h, inject, ref, shallowRef } from 'vue'
 
 import type { EditorOptions, History } from './types'
 
-import DrawLayer from './DrawLayer.vue'
-import ViewLayer from './ViewLayer.vue'
+import DrawLayer from './layers/DrawLayer.vue'
+import ViewLayer from './layers/ViewLayer.vue'
 import { Shape } from './types'
 
 const props = withDefaults(defineProps<EditorOptions>(), {
@@ -139,7 +139,7 @@ defineExpose({
 </script>
 
 <template>
-  <div position="absolute inset-0" ref="editorCanvasLayerEl" z5>
+  <div ref="editorCanvasLayerEl" position="absolute inset-0" z5>
     <template v-if="canvasLayerHeight !== 0 && canvasLayerWidth !== 0">
       <DrawLayer :height="canvasLayerHeight" :width="canvasLayerWidth">
         <template v-if="points.length >= 1 && drawCanvasCtx">
@@ -148,30 +148,30 @@ defineExpose({
       </DrawLayer>
       <ViewLayer :height="canvasLayerHeight" :width="canvasLayerWidth">
         <template v-if="viewCanvasCtx">
-          <template :key="history.type" v-for="history in historyShape">
+          <template v-for="history in historyShape" :key="history.type">
             <Line
+              v-if="history.type === Shape.Line"
               :ctx="viewCanvasCtx"
               :x1="history.points[0].x"
               :x2="history.points[1].x"
               :y1="history.points[0].y"
               :y2="history.points[1].y"
-              v-if="history.type === Shape.Line"
             />
             <LineWithArrow
+              v-if="history.type === Shape.LineWithArrow"
               :ctx="viewCanvasCtx"
               :x1="history.points[0].x"
               :x2="history.points[1].x"
               :y1="history.points[0].y"
               :y2="history.points[1].y"
-              v-if="history.type === Shape.LineWithArrow"
             />
             <Rect
+              v-if="history.type === Shape.Rect"
               :ctx="viewCanvasCtx"
               :x1="history.points[0].x"
               :x2="history.points[1].x"
               :y1="history.points[0].y"
               :y2="history.points[1].y"
-              v-if="history.type === Shape.Rect"
             />
           </template>
         </template>

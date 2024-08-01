@@ -1,4 +1,3 @@
-
 /**
  * Represents the size of an object or element.
  */

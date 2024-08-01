@@ -1,5 +1,5 @@
 import { type EMapContext, EMapSymbol } from '@airataiwan/utils'
-import { type VNode, cloneVNode, createVNode, defineComponent, h, inject, ref, toValue } from 'vue'
+import { cloneVNode, createVNode, defineComponent, h, inject, ref, toValue, type VNode } from 'vue'
 
 import type { MarkerClustererOptions } from './types'
 
@@ -38,7 +38,6 @@ export const MarkerClusterer = defineComponent(
       ))
     }
 
-
     function render(markers: VNode[]) {
       if (isRender.value)
         return renderClusterer()
@@ -56,4 +55,3 @@ export const MarkerClusterer = defineComponent(
     props: ['algorithm'],
   },
 )
-

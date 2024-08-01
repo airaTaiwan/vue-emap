@@ -1,5 +1,5 @@
 import { unrefElement, useEventListener } from '@vueuse/core'
-import { type MaybeRef, type Ref, type ShallowRef, ref, watch } from 'vue'
+import { type MaybeRef, type Ref, ref, type ShallowRef, watch } from 'vue'
 
 export interface UseDragOptions {
   draggable: boolean
@@ -21,7 +21,6 @@ export function useDrag(
   }: UseDragOptions,
 ) {
   const isDragging = ref(false)
-
 
   watch([mouseX, mouseY], ([curX, curY], [preX, preY]) => {
     const el = unrefElement(target)

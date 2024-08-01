@@ -20,4 +20,3 @@ export interface EMapEventContext {
   mouseY: Ref<number>
   translate: ComputedRef<Point>
 }
-

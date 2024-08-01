@@ -16,7 +16,6 @@ export function initCanvas(canvas: HTMLCanvasElement, width: number, height: num
   return ctx
 }
 
-
 /**
  * Draws a rectangle on the canvas using the provided points.
  *

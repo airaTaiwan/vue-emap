@@ -1,6 +1,6 @@
 import type { EMapContext } from '@airataiwan/utils'
 
-import { EMapSymbol, drawRectangle, useCanvas } from '@airataiwan/utils'
+import { drawRectangle, EMapSymbol, useCanvas } from '@airataiwan/utils'
 import { defineComponent, inject, watchEffect } from 'vue'
 
 import type { AreaOptions } from './types'
@@ -59,4 +59,3 @@ export const Area = defineComponent(
     props: ['area', 'draggable'],
   },
 )
-

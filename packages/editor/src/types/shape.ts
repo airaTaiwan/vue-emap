@@ -11,7 +11,6 @@ export interface ShapeOptions extends Partial<CanvasFillStrokeStyles>, Partial<C
   drawing?: boolean
 }
 
-
 export interface LineOptions extends ShapeOptions {
   /**
    * The x-coordinate of the starting point of the line.
@@ -33,7 +32,6 @@ export interface LineOptions extends ShapeOptions {
    */
   y2?: number
 }
-
 
 export interface LineWithArrowOptions extends ShapeOptions {
   /**
@@ -93,4 +91,3 @@ export interface RectOptions extends ShapeOptions {
    */
   y2?: number
 }
-

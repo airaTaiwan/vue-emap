@@ -52,7 +52,6 @@ const props = withDefaults(defineProps<EMapOptions>(), {
   zoomControl: true,
 })
 
-
 const fps = useFps()
 
 const canvasLayerEl = shallowRef<HTMLDivElement | null>(null)
@@ -247,7 +246,6 @@ async function transitionRedraw(zoom: Zoom, targetPoint: Point, firstRender: boo
   imageInfo.value.x = targetPoint.x - (newZoomImageWidth) / 2
   imageInfo.value.y = targetPoint.y - (newZoomImageHeight) / 2
 
-
   sourceTransitionZoom.value = newZoom
   zoomNum.value = newZoom
 
@@ -343,12 +341,12 @@ defineExpose({
 
 <template>
   <EMapOverlay :img-height="imageInfo.height" :img-width="imageInfo.width" :zoom="minZoom">
-    <div position="absolute inset-0" ref="canvasLayerEl" z0>
-      <canvas :height="canvasLayerHeight" :width="canvasLayerWidth" position="absolute top-0 left-0" ref="canvasEl" select-none />
+    <div ref="canvasLayerEl" position="absolute inset-0" z0>
+      <canvas ref="canvasEl" :height="canvasLayerHeight" :width="canvasLayerWidth" position="absolute top-0 left-0" select-none />
     </div>
 
     <template #event>
-      <EMapEventLayer :draggable @on-refresh="redraw(zoomNum)" ref="eventLayerRef">
+      <EMapEventLayer ref="eventLayerRef" :draggable @on-refresh="redraw(zoomNum)">
         <slot />
       </EMapEventLayer>
     </template>

@@ -2,8 +2,8 @@
 import { computed } from 'vue'
 
 const props = defineProps<{
-  imgWidth: number
   imgHeight: number
+  imgWidth: number
   zoom: number
 }>()
 
@@ -15,7 +15,7 @@ const size = computed(() => ({
 
 <template>
   <div h-full overflow-hidden pos-relative w-full>
-    <div :style="size" position="absolute inset-0" b-0 h-full m0 p0 w-full z0>
+    <div :style="size" b-0 h-full m0 p0 position="absolute inset-0" w-full z0>
       <div position="absolute inset-0" w-full z-1>
         <slot />
       </div>

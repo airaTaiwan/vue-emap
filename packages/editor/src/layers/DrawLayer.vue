@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { injectEditorContext } from './EditorLayer.vue'
+import { injectEditorContext } from '../EditorLayer.vue'
 
 defineProps<{
-  width: number
   height: number
+  width: number
 }>()
 
 const { drawCanvasEl, points } = injectEditorContext()
@@ -45,6 +45,6 @@ function draw(e: MouseEvent) {
 </script>
 
 <template>
-  <canvas :height :width @click="draw" position="absolute top-0 left-0" ref="drawCanvasEl" select-none z3 />
+  <canvas ref="drawCanvasEl" :height :width position="absolute top-0 left-0" select-none z3 @click="draw" />
   <slot />
 </template>

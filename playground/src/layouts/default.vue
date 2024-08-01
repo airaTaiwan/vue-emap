@@ -13,17 +13,17 @@ function goBack() {
 <template>
   <main
     flex="~ items-center justify-center"
-    text="center gray-700 dark:gray-200"
-    h-full relative w-full
+    h-full
+    relative text="center gray-700 dark:gray-200" w-full
   >
     <RouterView />
     <template v-if="route.fullPath !== '/'">
       <button
-        @click="goBack"
         flex="~ gap-2 items-center"
+        hover:opacity-100
         m="3 t6"
-        position="absolute top-xl left-xl" hover:opacity-100 opacity-50
-        transition-opacity
+        opacity-50 position="absolute top-xl left-xl" transition-opacity
+        @click="goBack"
       >
         <div i-carbon-arrow-left />
         Back
@@ -31,11 +31,11 @@ function goBack() {
     </template>
     <template v-else>
       <RouterLink
+        bg-white
+        i-carbon-logo-github
+        icon-btn
         position="absolute bottom-xl right-xl"
-        target="_blank"
-        title="GitHub"
-        to="https://github.com/CofCat456/http-test-tool"
-        bg-white i-carbon-logo-github icon-btn text-xl
+        target="_blank" text-xl title="GitHub" to="https://github.com/CofCat456/http-test-tool"
       />
     </template>
   </main>

@@ -1,5 +1,5 @@
 import { isFunction } from '@antfu/utils'
-import { type Slots, type VNode, ref } from 'vue'
+import { ref, type Slots, type VNode } from 'vue'
 
 export function useChildren(originalSlots: Slots = {}) {
   const markers: VNode[] = []
@@ -17,7 +17,6 @@ export function useChildren(originalSlots: Slots = {}) {
 
     els.forEach((vnode) => {
       const isFragment = typeof vnode.type === 'symbol'
-
 
       if (isFragment && vnode.children) {
         getSlidesFromElements(vnode.children, slotName)

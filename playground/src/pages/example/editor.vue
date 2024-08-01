@@ -4,7 +4,7 @@ import { Editor, Shape, ToolBar } from '@airataiwan/editor'
 
 <template>
   <div grid="~ place-items-center" h-full w-full>
-    <div border="~ warmGray" h-251 pos-relative rounded-lg w-250>
+    <div border="~ warmGray" class="w50% h80% " pos-relative rounded-lg>
       <Editor :shape="Shape.LineWithArrow">
         <template #tool>
           <ToolBar />
