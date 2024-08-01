@@ -116,13 +116,13 @@ export default antfu(
           type: 'natural',
         },
       ],
-      'perfectionist/sort-switch-case': [
-        'error',
-        {
-          order: 'asc',
-          type: 'natural',
-        },
-      ],
+      // 'perfectionist/sort-switch-case': [
+      //   'error',
+      //   {
+      //     order: 'asc',
+      //     type: 'natural',
+      //   },
+      // ],
       'perfectionist/sort-union-types': [
         'error',
         {

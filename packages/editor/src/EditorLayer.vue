@@ -1,11 +1,12 @@
 <script lang="ts">
-import { createContext, useCanvas } from '@airataiwan/utils'
+import { createContext, isPointInPolygon, isPointOnLine, useCanvas } from '@airataiwan/utils'
 
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
 import { Rect } from './shape/Rect'
 
 interface EditorContext {
+  action: ModelRef<Action, string>
   curX: ComputedRef<number>
   curY: ComputedRef<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
@@ -28,7 +29,7 @@ import type { EditorOptions, History } from './types'
 
 import DrawLayer from './layers/DrawLayer.vue'
 import ViewLayer from './layers/ViewLayer.vue'
-import { Shape } from './types'
+import { Action, Shape } from './types'
 
 const props = withDefaults(defineProps<EditorOptions>(), {
   historyShape: () => [],
@@ -36,8 +37,10 @@ const props = withDefaults(defineProps<EditorOptions>(), {
 
 const emit = defineEmits<{
   save: [history: History]
+  select: [shape: History]
 }>()
 
+const action = defineModel<Action>('action', { default: Action.Default, required: false })
 const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
 const editorCanvasLayerEl = shallowRef<HTMLDivElement | null>(null)
@@ -99,6 +102,54 @@ const shapeDrawCom = computed(() => {
   }
 })
 
+function handleCapture(e: MouseEvent) {
+  if (action.value !== Action.Default || historyShape.value.length === 0)
+    return
+
+  if (editorCanvasLayerEl.value == null)
+    return
+
+  const rect = editorCanvasLayerEl.value.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
+
+  const targetShape = historyShape.value.find((shape) => {
+    const { points, type } = shape
+
+    switch (type) {
+      case Shape.Line:
+      case Shape.LineWithArrow:
+        return isPointOnLine(x, y, points)
+      case Shape.Rect:
+        return isPointInPolygon(x, y, [
+          {
+            x: points[0].x,
+            y: points[0].y,
+          },
+          {
+            x: points[1].x,
+            y: points[0].y,
+          },
+          {
+            x: points[1].x,
+            y: points[1].y,
+          },
+          {
+            x: points[0].x,
+            y: points[1].y,
+          },
+        ])
+      default :
+        return false
+    }
+  })
+
+  if (targetShape == null)
+    return
+
+  emit('select', targetShape)
+}
+
 function save(type: Shape) {
   const data = JSON.parse(JSON.stringify(points.value))
   points.value.length = 0
@@ -121,6 +172,7 @@ function reset() {
 }
 
 provideEditorContext({
+  action,
   curX: x,
   curY: y,
   drawCanvasEl,
@@ -136,8 +188,8 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="editorCanvasLayerEl" position="absolute inset-0" z5>
-    <DrawLayer :dpi>
+  <div ref="editorCanvasLayerEl" position="absolute inset-0" z5 of-hidden @click="handleCapture">
+    <DrawLayer :dpi :disabled="action !== Action.Draw">
       <template v-if="points.length >= 1 && drawCanvasCtx">
         <component :is="shapeDrawCom" @clear="clearDrawCanvas" @save="save" />
       </template>

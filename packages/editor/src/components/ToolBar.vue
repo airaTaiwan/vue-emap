@@ -1,7 +1,13 @@
 <script lang="ts">
-import type { Shape } from '../types'
+import { Action, type Shape } from '../types'
 
-const iconList: Record<Shape, string> = {
+type IconName = string
+
+const actionList: Partial<Record<Action, IconName>> = {
+  Default: 'i-mingcute:cursor-2-line',
+}
+
+const iconList: Partial<Record<Shape, IconName>> = {
   Line: 'i-mingcute:minimize-line',
   LineWithArrow: 'i-mingcute:align-arrow-right-line',
   Rect: 'i-mingcute:rectangle-line',
@@ -11,9 +17,14 @@ const iconList: Record<Shape, string> = {
 <script setup lang="ts">
 import { injectEditorContext } from '../EditorLayer.vue'
 
-const { shape } = injectEditorContext()
+const { action, shape } = injectEditorContext()
+
+function handleActionChange(key: Action) {
+  action.value = key
+}
 
 function handleShapeChange(key: Shape) {
+  action.value = Action.Draw
   shape.value = key
 }
 </script>
@@ -22,9 +33,17 @@ function handleShapeChange(key: Shape) {
   <div flex="~ justify-center" position="absolute top-4 inset-x-0" text-black z100>
     <div bg-white p1 pos-relative rounded-lg shadow-island>
       <div grid="~ flow-col auto-cols-min rows-[auto] gap-x-1">
+        <template v-for="(icon, key) in actionList" :key="key">
+          <label cursor-pointer flex="~ inline items-center" pos-relative rounded-lg select-none @click.stop="handleActionChange(key)">
+            <div :class="action === key ? 'bg-sky:50' : 'hover:bg-sky:30'" flex="~ justify-center items-center" h10 rounded-lg transition="~ colors ease-in-out" w10>
+              <div :class="icon" />
+            </div>
+          </label>
+        </template>
+
         <template v-for="(icon, key) in iconList" :key="key">
-          <label cursor-pointer flex="~ inline items-center" pos-relative rounded-lg select-none @click="handleShapeChange(key)">
-            <div :class="shape === key ? 'bg-sky:50' : 'hover:bg-sky:30'" flex="~ justify-center items-center" h10 rounded-lg transition="~ colors ease-in-out" w10>
+          <label cursor-pointer flex="~ inline items-center" pos-relative rounded-lg select-none @click.stop="handleShapeChange(key)">
+            <div :class="action === Action.Draw && shape === key ? 'bg-sky:50' : 'hover:bg-sky:30'" flex="~ justify-center items-center" h10 rounded-lg transition="~ colors ease-in-out" w10>
               <div :class="icon" />
             </div>
           </label>

@@ -2,6 +2,11 @@ import type { Point } from '@airataiwan/utils'
 
 import type { LineOptions, LineWithArrowOptions, RectOptions } from './shape'
 
+export enum Action {
+  Default = 'Default',
+  Draw = 'Draw',
+}
+
 export enum Shape {
   Line = 'Line',
   LineWithArrow = 'LineWithArrow',
