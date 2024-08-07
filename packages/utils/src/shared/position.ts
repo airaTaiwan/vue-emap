@@ -47,3 +47,24 @@ export function calculateCentroid(points: Point[]): Point {
     y: sum.y / numPoints,
   }
 }
+
+/**
+ * Scale the point to the new distance
+ */
+export function scalePoint(point: Point, center: Point, newDistance: number) {
+  const { x: px, y: py } = point
+  const { x: qx, y: qy } = center
+
+  const vx = qx - px
+  const vy = qy - py
+
+  const length = Math.sqrt(vx * vx + vy * vy)
+
+  const ux = vx / length
+  const uy = vy / length
+
+  const newPx = qx - ux * newDistance
+  const newPy = qy - uy * newDistance
+
+  return { x: newPx, y: newPy }
+}

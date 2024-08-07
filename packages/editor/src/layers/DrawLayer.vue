@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { injectEditorContext } from '../EditorLayer.vue'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+  disabled: boolean
   dpi: number
-}>()
+}>(), {
+  disabled: false,
+  dpi: 1,
+})
 
 const { drawCanvasEl, points } = injectEditorContext()
 
@@ -37,6 +41,9 @@ const { drawCanvasEl, points } = injectEditorContext()
 // }
 
 function draw(e: MouseEvent) {
+  if (props.disabled)
+    return
+
   const { offsetX, offsetY } = e
   const x = offsetX / props.dpi
   const y = offsetY / props.dpi
