@@ -1,7 +1,7 @@
 {
   "name": "@airataiwan/area",
   "type": "module",
-  "version": "0.0.1-beta.4",
+  "version": "0.0.1-beta.5",
   "packageManager": "pnpm@9.6.0",
   "description": "area feature from Vue EMap.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
