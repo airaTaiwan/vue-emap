@@ -1,16 +1,24 @@
 <script lang="ts">
-import { createContext, isPointInPolygon, isPointOnLine, useCanvas } from '@airataiwan/utils'
+import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
+import { createContext } from '@airataiwan/utils'
+import { computed, h, onBeforeMount, ref, shallowRef } from 'vue'
+
+import { useControl } from './composable/control'
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
 import { Rect } from './shape/Rect'
+import { Shape } from './types/shape'
 
 interface EditorContext {
   action: ModelRef<Action, string>
+  clearDrawCanvas: () => void
+  clearViewCanvas: () => void
   curX: ComputedRef<number>
   curY: ComputedRef<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
   points: Ref<Point[]>
+  reset: () => void
   shape: ModelRef<Shape, string>
   viewCanvasEl: ShallowRef<HTMLCanvasElement | null>
 }
@@ -19,17 +27,14 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 </script>
 
 <script setup lang="ts">
-import type { Point } from '@airataiwan/utils'
-import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
-
-import { useElementSize, useMouseInElement } from '@vueuse/core'
-import { computed, h, ref, shallowRef } from 'vue'
+import { type Point, useCanvas } from '@airataiwan/utils'
+import { onKeyStroke, useElementSize, useMouseInElement, watchDeep } from '@vueuse/core'
 
 import type { EditorOptions, History } from './types'
 
 import DrawLayer from './layers/DrawLayer.vue'
 import ViewLayer from './layers/ViewLayer.vue'
-import { Action, Shape } from './types'
+import { Action } from './types'
 
 const props = withDefaults(defineProps<EditorOptions>(), {
   historyShape: () => [],
@@ -65,6 +70,13 @@ const { elementX, elementY } = useMouseInElement(editorCanvasLayerEl)
 const x = computed(() => elementX.value / dpi.value)
 const y = computed(() => elementY.value / dpi.value)
 
+const timeStamp = ref(0)
+const {
+  controlator,
+  controlatorIdx,
+  isInSide,
+} = useControl(editorCanvasLayerEl, drawCanvasCtx, timeStamp)
+
 const historyShape = ref<History[]>(props.historyShape)
 const points = ref<Point[]>([])
 
@@ -73,29 +85,32 @@ const shapeDrawCom = computed(() => {
     case Shape.LineWithArrow:
       return h(LineWithArrow, {
         ctx: drawCanvasCtx.value!,
-        drawing: true,
+        status: action.value,
         x1: points.value[0].x,
         x2: points.value[1]?.x,
         y1: points.value[0].y,
         y2: points.value[1]?.y,
+        ...props.lineWithArrowOptions,
       })
     case Shape.Line:
       return h(Line, {
         ctx: drawCanvasCtx.value!,
-        drawing: true,
+        status: action.value,
         x1: points.value[0].x,
         x2: points.value[1]?.x,
         y1: points.value[0].y,
         y2: points.value[1]?.y,
+        ...props.lineOptions,
       })
     case Shape.Rect:
       return h(Rect, {
         ctx: drawCanvasCtx.value!,
-        drawing: true,
-        h: points.value[1]?.y,
-        w: points.value[1]?.x,
+        status: action.value,
         x1: points.value[0].x,
+        x2: points.value[1]?.x,
         y1: points.value[0].y,
+        y2: points.value[1]?.y,
+        ...props.rectOptions,
       })
     default:
       return null
@@ -103,59 +118,75 @@ const shapeDrawCom = computed(() => {
 })
 
 function handleCapture(e: MouseEvent) {
-  if (action.value !== Action.Default || historyShape.value.length === 0)
+  if (action.value === Action.Draw || !editorCanvasLayerEl.value)
     return
 
-  if (editorCanvasLayerEl.value == null)
+  if (controlator.value && e.timeStamp - timeStamp.value > 300)
     return
 
-  const rect = editorCanvasLayerEl.value.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
+  const { left, top } = editorCanvasLayerEl.value.getBoundingClientRect()
+  const x = e.clientX - left
+  const y = e.clientY - top
 
-  const targetShape = historyShape.value.find((shape) => {
-    const { points, type } = shape
+  const mergeArrayableShape = controlator.value
+    ? [...historyShape.value.slice(0, controlatorIdx.value), { points: points.value, type: shape.value }, ...historyShape.value.slice(controlatorIdx.value)]
+    : historyShape.value
 
-    switch (type) {
-      case Shape.Line:
-      case Shape.LineWithArrow:
-        return isPointOnLine(x, y, points)
-      case Shape.Rect:
-        return isPointInPolygon(x, y, [
-          {
-            x: points[0].x,
-            y: points[0].y,
-          },
-          {
-            x: points[1].x,
-            y: points[0].y,
-          },
-          {
-            x: points[1].x,
-            y: points[1].y,
-          },
-          {
-            x: points[0].x,
-            y: points[1].y,
-          },
-        ])
-      default :
-        return false
-    }
-  })
+  const targetShapeIdx = mergeArrayableShape.findIndex(shape =>
+    isInSide(shape.type, { x, y }, shape.points),
+  )
 
-  if (targetShape == null)
+  if (targetShapeIdx === controlatorIdx.value)
     return
 
-  emit('select', targetShape)
+  if (controlator.value && points.value.length) {
+    resetControlator()
+  }
+
+  if (targetShapeIdx === -1)
+    return
+
+  setNewControlator(targetShapeIdx)
+
+  if (controlator.value) {
+    emit('select', controlator.value)
+  }
 }
+
+function resetControlator() {
+  clearViewCanvas()
+  clearDrawCanvas()
+  action.value = Action.Default
+  historyShape.value.splice(controlatorIdx.value, 0, controlator.value!)
+  controlatorIdx.value = -1
+  controlator.value = null
+  points.value = []
+}
+
+function setNewControlator(idx: number) {
+  clearViewCanvas()
+  action.value = Action.Edit
+  controlatorIdx.value = idx
+  controlator.value = historyShape.value[idx]
+  shape.value = controlator.value.type
+  points.value = JSON.parse(JSON.stringify(controlator.value.points))
+  historyShape.value.splice(idx, 1)
+}
+
+watchDeep(controlator, (history) => {
+  if (history == null)
+    return
+
+  clearDrawCanvas()
+  points.value = [...history.points]
+})
 
 function save(type: Shape) {
   const data = JSON.parse(JSON.stringify(points.value))
   points.value.length = 0
   clearDrawCanvas()
 
-  const history = {
+  const history: History = {
     points: data,
     type,
   }
@@ -164,25 +195,60 @@ function save(type: Shape) {
   emit('save', history)
 }
 
-function reset() {
-  points.value.length = 0
-  historyShape.value.length = 0
+function clear() {
   clearDrawCanvas()
   clearViewCanvas()
 }
 
+function reset() {
+  points.value.length = 0
+  historyShape.value.length = 0
+  clear()
+}
+
+// Clear view canvas when history shape changed to avoid the shape re-drawing
+watchDeep(historyShape, () => {
+  clearViewCanvas()
+}, { flush: 'pre' })
+
+onKeyStroke(['Backspace'], () => {
+  if (controlator.value) {
+    points.value.length = 0
+    controlator.value = null
+    clearDrawCanvas()
+  }
+})
+
+onKeyStroke(['Escape'], () => {
+  if (action.value === Action.Draw && points.value.length === 1) {
+    points.value.length = 0
+    clearDrawCanvas()
+  }
+})
+
+onBeforeMount(() => {
+  if (props.shape) {
+    shape.value = props.shape
+    action.value = Action.Draw
+  }
+})
+
 provideEditorContext({
   action,
+  clearDrawCanvas,
+  clearViewCanvas,
   curX: x,
   curY: y,
   drawCanvasEl,
   points,
+  reset,
   shape,
   viewCanvasEl,
 })
 
 defineExpose({
   historyShape,
+  points,
   reset,
 })
 </script>
@@ -196,7 +262,7 @@ defineExpose({
     </DrawLayer>
     <ViewLayer>
       <template v-if="viewCanvasCtx">
-        <template v-for="history in historyShape" :key="history.type">
+        <template v-for="history in historyShape" :key="history.type + Date.now()">
           <Line
             v-if="history.type === Shape.Line"
             :ctx="viewCanvasCtx"
@@ -204,6 +270,9 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
+            v-bind="props.lineOptions"
+            @clear="clearDrawCanvas"
+            @save="save"
           />
           <LineWithArrow
             v-if="history.type === Shape.LineWithArrow"
@@ -212,6 +281,9 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
+            v-bind="props.lineWithArrowOptions"
+            @clear="clearDrawCanvas"
+            @save="save"
           />
           <Rect
             v-if="history.type === Shape.Rect"
@@ -220,6 +292,9 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
+            v-bind="props.rectOptions"
+            @clear="clearDrawCanvas"
+            @save="save"
           />
         </template>
       </template>

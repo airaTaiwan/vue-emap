@@ -1,16 +1,11 @@
 import type { Point } from '@airataiwan/utils'
 
-import type { LineOptions, LineWithArrowOptions, RectOptions } from './shape'
+import type { LineWithArrowOptions, Shape, ShapeOptions } from './shape'
 
 export enum Action {
   Default = 'Default',
   Draw = 'Draw',
-}
-
-export enum Shape {
-  Line = 'Line',
-  LineWithArrow = 'LineWithArrow',
-  Rect = 'Rect',
+  Edit = 'Edit',
 }
 
 export interface EditorOptions {
@@ -18,13 +13,16 @@ export interface EditorOptions {
   historyShape?: History[]
 
   /** Line Options */
-  LineOptions?: LineOptions
+  lineOptions?: ShapeOptions
 
   /** LineWithArrow Options */
-  LineWithArrowOptions?: LineWithArrowOptions
+  lineWithArrowOptions?: Pick<LineWithArrowOptions, 'isAbove'> & ShapeOptions
 
   /** Rectangle Options */
-  RectOptions?: RectOptions
+  rectOptions?: ShapeOptions
+
+  /** The shape to draw */
+  shape: Shape
 }
 
 export interface History {

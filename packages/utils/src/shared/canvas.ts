@@ -102,6 +102,23 @@ export function isPointInCircle(x: number, y: number, center: Point, radius: num
 }
 
 /**
+ * Determines whether a point is on a line segment within a given tolerance.
+ */
+export function isPointOnLine(x: any, y: any, line: Point[], tolerance = 5): boolean {
+  const [start, end] = line
+  const d1 = distancePointToPoint(x, y, start.x, start.y)
+  const d2 = distancePointToPoint(x, y, end.x, end.y)
+  const lineLength = distancePointToPoint(start.x, start.y, end.x, end.y)
+  const buffer = 0.1
+
+  if (d1 + d2 >= lineLength - buffer && d1 + d2 <= lineLength + buffer) {
+    const distance = distancePointToLine(x, y, start, end)
+    return distance <= tolerance
+  }
+  return false
+}
+
+/**
  * Calculates the distance between two points in a 2D coordinate system.
  */
 export function distancePointToPoint(x1: number, y1: number, x2: number, y2: number) {
@@ -144,18 +161,21 @@ export function distancePointToLine(x: number, y: number, lineStart: Point, line
 }
 
 /**
- * Determines whether a point is on a line segment within a given tolerance.
+ * Calculates the center point of an array of points.
  */
-export function isPointOnLine(x: any, y: any, line: Point[], tolerance = 5): boolean {
-  const [start, end] = line
-  const d1 = distancePointToPoint(x, y, start.x, start.y)
-  const d2 = distancePointToPoint(x, y, end.x, end.y)
-  const lineLength = distancePointToPoint(start.x, start.y, end.x, end.y)
-  const buffer = 0.1
+export function getCenterPoint(points: Point[]): Point {
+  let centroidX = 0
+  let centroidY = 0
 
-  if (d1 + d2 >= lineLength - buffer && d1 + d2 <= lineLength + buffer) {
-    const distance = distancePointToLine(x, y, start, end)
-    return distance <= tolerance
+  const numPoints = points.length
+
+  points.forEach((point) => {
+    centroidX += point.x
+    centroidY += point.y
+  })
+
+  return {
+    x: centroidX / numPoints,
+    y: centroidY / numPoints,
   }
-  return false
 }

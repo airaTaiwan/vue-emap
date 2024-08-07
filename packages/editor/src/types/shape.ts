@@ -1,17 +1,35 @@
-export interface ShapeOptions extends Partial<CanvasFillStrokeStyles>, Partial<CanvasPathDrawingStyles> {
+import type { Action } from '.'
+
+/**
+ * Shape type
+ */
+export enum Shape {
+  Line = 'Line',
+  LineWithArrow = 'LineWithArrow',
+  Rect = 'Rect',
+}
+
+export interface ShapeOptions extends Partial<CanvasFillStrokeStyles>, Partial<CanvasPathDrawingStyles> {}
+
+export interface EditorBaseOptions {
   /**
    * The 2D rendering context of the canvas
    */
   ctx: CanvasRenderingContext2D
 
   /**
-   * Indicates whether the line is being drawn
-   * @default false
+   * The status of the shape
+   *
+   * - `Default`: The shape is not being edited or drawn
+   * - `Draw`: The shape is being drawn
+   * - `Edit`: The shape is being edited
+   *
+   * @default 'Default'
    */
-  drawing?: boolean
+  status?: Action
 }
 
-export interface LineOptions extends ShapeOptions {
+export interface LineOptions extends ShapeOptions, EditorBaseOptions {
   /**
    * The x-coordinate of the starting point of the line.
    */
@@ -33,7 +51,7 @@ export interface LineOptions extends ShapeOptions {
   y2?: number
 }
 
-export interface LineWithArrowOptions extends ShapeOptions {
+export interface LineWithArrowOptions extends ShapeOptions, EditorBaseOptions {
   /**
    * The length of the arrow.
    */
@@ -43,6 +61,11 @@ export interface LineWithArrowOptions extends ShapeOptions {
    * The width of the arrow.
    */
   arrowWidth?: number
+
+  /**
+   * Whether the line is above the canvas.
+   */
+  isAbove?: boolean
 
   /**
    * The length of the shaft.
@@ -70,7 +93,7 @@ export interface LineWithArrowOptions extends ShapeOptions {
   y2?: number
 }
 
-export interface RectOptions extends ShapeOptions {
+export interface RectOptions extends ShapeOptions, EditorBaseOptions {
   /**
    * The x-coordinate of the top-left corner of the rectangle.
    */

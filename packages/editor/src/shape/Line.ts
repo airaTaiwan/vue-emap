@@ -1,47 +1,46 @@
+import type { Point } from '@airataiwan/utils'
+
 import { defineComponent } from 'vue'
 
-import type { LineOptions } from '../types/shape'
-
 import { injectEditorContext } from '../EditorLayer.vue'
-import { Shape } from '../types'
+import { Action } from '../types'
+import { type LineOptions, Shape } from '../types/shape'
 
 export const Line = defineComponent(
-  ({ ctx, ...args }: LineOptions, { emit, slots }) => {
+  (props: LineOptions, { emit, slots }) => {
     const { curX, curY, points } = injectEditorContext()
 
     function draw(x1: number, y1: number, x2: number, y2: number) {
-      if (ctx == null)
+      if (props.ctx == null)
         return
 
-      ctx.beginPath()
-      ctx.moveTo(x1, y1)
-      ctx.lineTo(x2, y2)
+      props.ctx.beginPath()
+      props.ctx.moveTo(x1, y1)
+      props.ctx.lineTo(x2, y2)
 
-      ctx.stroke()
+      props.ctx.stroke()
     }
 
     return () => {
-      const {
-        drawing = false,
-        lineWidth = 1,
-        strokeStyle = '#0073e6',
-        x1,
-        x2 = curX.value,
-        y1,
-        y2 = curY.value,
-      } = args
+      const _x2 = props.x2 ?? curX.value
+      const _y2 = props.y2 ?? curY.value
 
-      if (drawing && points.value.length === 2) {
+      if (props.status === Action.Draw && points.value.length === 2) {
         emit('save', Shape.Line)
       }
       else {
-        if (drawing)
+        if (props.status === Action.Draw)
           emit('clear')
 
-        ctx.strokeStyle = strokeStyle
-        ctx.lineWidth = lineWidth
+        const strokeStyle = props.strokeStyle ?? '#0073e6'
+        const lineWidth = props.lineWidth ?? 1
 
-        draw(x1, y1, x2, y2)
+        props.ctx.save()
+        props.ctx.strokeStyle = strokeStyle
+        props.ctx.lineWidth = lineWidth
+
+        draw(props.x1, props.y1, _x2, _y2)
+        props.ctx.restore()
       }
 
       return slots.default?.()
@@ -49,6 +48,33 @@ export const Line = defineComponent(
   },
   {
     emits: ['save', 'clear'],
-    props: ['ctx', 'x1', 'y1', 'x2', 'y2', 'drawing', 'strokeStyle', 'lineWidth'],
+    props: [
+      'ctx',
+      'x1',
+      'y1',
+      'x2',
+      'y2',
+      'status',
+      'lineWidth',
+      'strokeStyle',
+      'fillStyle',
+    ],
   },
 )
+
+export function updateLinePoint(points: Point[], offsetX: number, offsetY: number, idx: number) {
+  const newPoints: Point[] = [...points]
+
+  switch (idx) {
+    case 0:
+      newPoints[0].x += offsetX
+      newPoints[0].y += offsetY
+      break
+    case 1:
+      newPoints[1].x += offsetX
+      newPoints[1].y += offsetY
+      break
+  }
+
+  return newPoints
+}

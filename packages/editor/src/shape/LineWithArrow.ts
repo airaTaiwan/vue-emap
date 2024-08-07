@@ -1,24 +1,30 @@
 import { defineComponent } from 'vue'
 
-import type { LineWithArrowOptions } from '../types/shape'
-
 import { injectEditorContext } from '../EditorLayer.vue'
-import { Shape } from '../types'
+import { Action } from '../types'
+import { type LineWithArrowOptions, Shape } from '../types/shape'
 
 export const LineWithArrow = defineComponent(
-  ({ ctx, ...args }: LineWithArrowOptions, { emit, slots }) => {
+  (props: LineWithArrowOptions, { emit, slots }) => {
     const { curX, curY, points } = injectEditorContext()
 
-    function drawPerpendicularArrow(ctx: CanvasRenderingContext2D, midX: number, midY: number, dx: number, dy: number, arrowLength: number, arrowWidth: number, shaftLength: number) {
+    function drawPerpendicularArrow(ctx: CanvasRenderingContext2D, midX: number, midY: number, dx: number, dy: number, arrowLength: number, arrowWidth: number, shaftLength: number, lineWidth: number, isAbove: boolean) {
       // Calculate the perpendicular vector
       const length = Math.sqrt(dx * dx + dy * dy)
-      const perpX = -dy / length
-      const perpY = dx / length
+      let perpX = -dy / length
+      let perpY = dx / length
+
+      // If the arrowhead should be below the line, reverse the perpendicular vector
+      if (!isAbove) {
+        perpX = -perpX
+        perpY = -perpY
+      }
 
       ctx.beginPath()
       // Draw the arrow shaft
       ctx.moveTo(midX, midY)
       ctx.lineTo(midX + perpX * shaftLength, midY + perpY * shaftLength)
+      ctx.lineWidth = lineWidth
       ctx.stroke()
 
       // Draw the arrow head
@@ -32,49 +38,48 @@ export const LineWithArrow = defineComponent(
     }
 
     function draw(x1: number, y1: number, x2: number, y2: number) {
-      if (ctx == null)
+      if (props.ctx == null)
         return
 
-      ctx.beginPath()
-      ctx.moveTo(x1, y1)
-      ctx.lineTo(x2, y2)
-      ctx.stroke()
+      props.ctx.beginPath()
+      props.ctx.moveTo(x1, y1)
+      props.ctx.lineTo(x2, y2)
+      props.ctx.stroke()
     }
 
     return () => {
-      const {
-        arrowLength = 10,
-        arrowWidth = 5,
-        drawing = false,
-        fillStyle = '#0073e6',
-        lineWidth = 1,
-        shaftLength = 10,
-        strokeStyle = '#0073e6',
-        x1,
-        x2 = curX.value,
-        y1,
-        y2 = curY.value,
-      } = args
+      const _x2 = props.x2 ?? curX.value
+      const _y2 = props.y2 ?? curY.value
 
-      if (drawing && points.value.length === 2) {
+      if (props.status === Action.Draw && points.value.length === 2) {
         emit('save', Shape.LineWithArrow)
       }
       else {
-        if (drawing)
+        if (props.status === Action.Draw)
           emit('clear')
 
-        ctx.strokeStyle = strokeStyle
-        ctx.fillStyle = fillStyle
-        ctx.lineWidth = lineWidth
+        const strokeStyle = props.strokeStyle ?? '#0073e6'
+        const fillStyle = props.fillStyle ?? '#0073e6'
+        const lineWidth = props.lineWidth ?? 1
+        const arrowLength = props.arrowLength ?? 10 * lineWidth
+        const arrowWidth = props.arrowWidth ?? 5 * lineWidth
+        const shaftLength = props.shaftLength ?? 10 * lineWidth
+        const isAbove = props.isAbove ?? true
 
-        draw(x1, y1, x2, y2)
+        props.ctx.save()
+        props.ctx.strokeStyle = strokeStyle
+        props.ctx.fillStyle = fillStyle
+        props.ctx.lineWidth = lineWidth
 
-        const midX = (x1 + x2) / 2
-        const midY = (y1 + y2) / 2
-        const dx = x2 - x1
-        const dy = y2 - y1
+        draw(props.x1, props.y1, _x2, _y2)
 
-        drawPerpendicularArrow(ctx, midX, midY, dx, dy, arrowLength, arrowWidth, shaftLength)
+        const midX = (props.x1 + _x2) / 2
+        const midY = (props.y1 + _y2) / 2
+        const dx = _x2 - props.x1
+        const dy = _y2 - props.y1
+
+        drawPerpendicularArrow(props.ctx, midX, midY, dx, dy, arrowLength, arrowWidth, shaftLength, lineWidth, isAbove)
+        props.ctx.restore()
       }
 
       return slots.default?.()
@@ -82,6 +87,20 @@ export const LineWithArrow = defineComponent(
   },
   {
     emits: ['save', 'clear'],
-    props: ['ctx', 'x1', 'x2', 'y1', 'y2', 'drawing', 'strokeStyle', 'fillStyle', 'lineWidth', 'arrowLength', 'arrowWidth', 'shaftLength'],
+    props: [
+      'ctx',
+      'x1',
+      'x2',
+      'y1',
+      'y2',
+      'status',
+      'arrowLength',
+      'arrowWidth',
+      'shaftLength',
+      'lineWidth',
+      'strokeStyle',
+      'fillStyle',
+      'isAbove',
+    ],
   },
 )

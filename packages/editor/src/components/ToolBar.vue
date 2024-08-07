@@ -1,5 +1,7 @@
 <script lang="ts">
-import { Action, type Shape } from '../types'
+import type { Shape } from '../types/shape'
+
+import { Action } from '../types'
 
 type IconName = string
 
@@ -17,10 +19,13 @@ const iconList: Partial<Record<Shape, IconName>> = {
 <script setup lang="ts">
 import { injectEditorContext } from '../EditorLayer.vue'
 
-const { action, shape } = injectEditorContext()
+const { action, clearDrawCanvas, points, shape } = injectEditorContext()
 
 function handleActionChange(key: Action) {
   action.value = key
+
+  points.value.length = 0
+  clearDrawCanvas()
 }
 
 function handleShapeChange(key: Shape) {
@@ -35,7 +40,7 @@ function handleShapeChange(key: Shape) {
       <div grid="~ flow-col auto-cols-min rows-[auto] gap-x-1">
         <template v-for="(icon, key) in actionList" :key="key">
           <label cursor-pointer flex="~ inline items-center" pos-relative rounded-lg select-none @click.stop="handleActionChange(key)">
-            <div :class="action === key ? 'bg-sky:50' : 'hover:bg-sky:30'" flex="~ justify-center items-center" h10 rounded-lg transition="~ colors ease-in-out" w10>
+            <div :class="action !== Action.Draw ? 'bg-sky:50' : 'hover:bg-sky:30'" flex="~ justify-center items-center" h10 rounded-lg transition="~ colors ease-in-out" w10>
               <div :class="icon" />
             </div>
           </label>
