@@ -69,6 +69,7 @@ export const LineWithArrow = defineComponent(
         props.ctx.save()
         props.ctx.strokeStyle = strokeStyle
         props.ctx.fillStyle = fillStyle
+        props.ctx.fillStyle = fillStyle
         props.ctx.lineWidth = lineWidth
 
         draw(props.x1, props.y1, _x2, _y2)

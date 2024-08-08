@@ -28,7 +28,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 
 <script setup lang="ts">
 import { type Point, useCanvas } from '@airataiwan/utils'
-import { onKeyStroke, useElementSize, useMouseInElement, watchDeep } from '@vueuse/core'
+import { onKeyStroke, useElementSize, useMouseInElement, watchDeep, watchThrottled } from '@vueuse/core'
 
 import type { EditorOptions, History } from './types'
 
@@ -187,6 +187,7 @@ function save(type: Shape) {
   clearDrawCanvas()
 
   const history: History = {
+    options: type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : props.rectOptions,
     points: data,
     type,
   }
@@ -206,11 +207,6 @@ function reset() {
   clear()
 }
 
-// Clear view canvas when history shape changed to avoid the shape re-drawing
-watchDeep(historyShape, () => {
-  clearViewCanvas()
-}, { flush: 'pre' })
-
 onKeyStroke(['Backspace'], () => {
   if (controlator.value) {
     points.value.length = 0
@@ -224,6 +220,16 @@ onKeyStroke(['Escape'], () => {
     points.value.length = 0
     clearDrawCanvas()
   }
+})
+
+// Clear view canvas when state changed to avoid the shape re-drawing
+watchThrottled(historyShape, (_new) => {
+  if (historyShape.value.length) {
+    clearViewCanvas()
+  }
+}, {
+  deep: true,
+  flush: 'pre',
 })
 
 onBeforeMount(() => {
@@ -270,9 +276,7 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
-            v-bind="props.lineOptions"
-            @clear="clearDrawCanvas"
-            @save="save"
+            v-bind="history.options || props.lineOptions"
           />
           <LineWithArrow
             v-if="history.type === Shape.LineWithArrow"
@@ -281,9 +285,7 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
-            v-bind="props.lineWithArrowOptions"
-            @clear="clearDrawCanvas"
-            @save="save"
+            v-bind="history.options || props.lineWithArrowOptions"
           />
           <Rect
             v-if="history.type === Shape.Rect"
@@ -292,9 +294,7 @@ defineExpose({
             :x2="history.points[1].x"
             :y1="history.points[0].y"
             :y2="history.points[1].y"
-            v-bind="props.rectOptions"
-            @clear="clearDrawCanvas"
-            @save="save"
+            v-bind="history.options || props.rectOptions"
           />
         </template>
       </template>

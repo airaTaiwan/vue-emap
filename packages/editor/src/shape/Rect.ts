@@ -26,28 +26,24 @@ export const Rect = defineComponent(
       const w = _x2 - props.x1
       const h = _y2 - props.y1
 
-      const fillStyle = props.fillStyle ?? 'transparent'
-      const strokeStyle = props.strokeStyle ?? '#0073e6'
-
-      props.ctx.save()
-      props.ctx.lineWidth = props.lineWidth ?? 1
-      props.ctx.fillStyle = fillStyle
-      props.ctx.strokeStyle = strokeStyle
-
-      if (props.status === Action.Edit) {
-        emit('clear')
-        draw(props.x1, props.y1, w, h)
-      }
-      else if (props.status === Action.Draw && points.value.length === 2) {
+      if (props.status === Action.Draw && points.value.length === 2) {
         emit('save', Shape.Rect)
       }
       else {
         if (props.status === Action.Draw)
           emit('clear')
 
+        const fillStyle = props.fillStyle ?? 'transparent'
+        const strokeStyle = props.strokeStyle ?? '#0073e6'
+
+        props.ctx.save()
+        props.ctx.lineWidth = props.lineWidth ?? 1
+        props.ctx.fillStyle = fillStyle
+        props.ctx.strokeStyle = strokeStyle
+
         draw(props.x1, props.y1, w, h)
+        props.ctx.restore()
       }
-      props.ctx.restore()
 
       return slots.default?.()
     }

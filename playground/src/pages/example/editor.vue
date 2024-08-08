@@ -4,10 +4,25 @@ import type { ComponentExposed } from 'vue-component-type-helpers'
 import { Editor, Shape, ToolBar } from '@airataiwan/editor'
 
 const EditorRef = shallowRef<ComponentExposed<typeof Editor> | null>(null)
+
+const strokeStyle = ref('red')
+const fillStyle = ref('red')
+const isAbove = ref(true)
+
+function handleChangeColor() {
+  strokeStyle.value = isAbove.value ? 'blue' : 'red'
+  fillStyle.value = isAbove.value ? 'blue' : 'red'
+  isAbove.value = !isAbove.value
+}
 </script>
 
 <template>
   <div grid="~ place-items-center" h-full w-full>
+    <div fixed top-40 left-40 btn>
+      <button @click="handleChangeColor">
+        Change Color
+      </button>
+    </div>
     <div position="fixed top-20 left-20">
       <div flex="~ col gap-2">
         <p>
@@ -24,15 +39,14 @@ const EditorRef = shallowRef<ComponentExposed<typeof Editor> | null>(null)
         ref="EditorRef"
         :shape="Shape.LineWithArrow"
         :rect-options="{
-          strokeStyle: 'red',
+          strokeStyle,
           lineWidth: 50,
-        }"
-        :line-options="{
-          lineWidth: 10,
         }"
         :line-with-arrow-options="{
           lineWidth: 10,
-          isAbove: true,
+          isAbove,
+          strokeStyle,
+          fillStyle,
         }"
       >
         <template #tool>
