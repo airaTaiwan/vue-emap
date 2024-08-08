@@ -32,6 +32,7 @@ function handleChangeColor() {
         <div pos-relative w-full h-full>
           <Editor
             ref="EditorRef"
+            allow-backspace-delete
             :shape="Shape.Rect"
             :rect-options="{
               lineWidth: 50,

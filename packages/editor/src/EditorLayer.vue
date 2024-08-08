@@ -37,6 +37,7 @@ import ViewLayer from './layers/ViewLayer.vue'
 import { Action } from './types'
 
 const props = withDefaults(defineProps<EditorOptions>(), {
+  allowBackspaceDelete: false,
   historyShape: () => [],
 })
 
@@ -215,7 +216,7 @@ function reset() {
 }
 
 onKeyStroke(['Backspace'], () => {
-  if (controlator.value)
+  if (props.allowBackspaceDelete && controlator.value)
     deleteControlator()
 })
 

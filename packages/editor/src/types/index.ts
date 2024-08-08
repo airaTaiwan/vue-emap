@@ -9,19 +9,34 @@ export enum Action {
 }
 
 export interface EditorOptions {
-  /** The exist shape */
+  /**
+   * @param {boolean} [allowBackspaceDelete=false] If `true`, the backspace key will delete the captured shape.
+   */
+  allowBackspaceDelete?: boolean
+
+  /**
+   * The exist shape
+   */
   historyShape?: History[]
 
-  /** Line Options */
+  /**
+   * Line Options
+   */
   lineOptions?: ShapeOptions
 
-  /** LineWithArrow Options */
+  /**
+   * LineWithArrow Options
+   */
   lineWithArrowOptions?: Pick<LineWithArrowOptions, 'isAbove'> & ShapeOptions
 
-  /** Rectangle Options */
+  /**
+   * Rectangle Options
+   */
   rectOptions?: ShapeOptions
 
-  /** The shape to draw */
+  /**
+   * The shape to draw
+   */
   shape: Shape
 }
 
