@@ -1,4 +1,5 @@
-import { distancePointToPoint, type Point, scalePoint } from '@airataiwan/utils'
+import type { Point } from '@airataiwan/utils'
+
 import { defineComponent } from 'vue'
 
 import { injectEditorContext } from '../EditorLayer.vue'
@@ -120,27 +121,40 @@ export function updateRectPoint(points: Point[], offsetX: number, offsetY: numbe
 /**
  * Draw the borders of a rectangle
  */
-export function drawRectBorders(ctx: CanvasRenderingContext2D, points: Point[], center: Point, distance: number) {
+/**
+ * Draw the borders of a rectangle
+ */
+export function drawRectBorders(
+  ctx: CanvasRenderingContext2D,
+  points: Point[],
+  center: Point,
+  distance: number,
+) {
   ctx.save()
 
   ctx.globalAlpha = 1
   ctx.strokeStyle = '#00c9ff'
   ctx.lineWidth = 1
 
-  const startX = scalePoint(points[0], center, distancePointToPoint(points[0].x, points[0].y, center.x, center.y) + distance).x
-  const startY = scalePoint(points[0], center, distancePointToPoint(points[0].x, points[0].y, center.x, center.y) + distance).y
+  const width = Math.abs(points[2].x - points[0].x)
+  const height = Math.abs(points[2].y - points[0].y)
+
+  const newWidth = width + 2 * distance
+  const newHeight = height + 2 * distance
+
+  const newX = center.x - newWidth / 2
+  const newY = center.y - newHeight / 2
 
   ctx.beginPath()
-  ctx.moveTo(startX, startY)
-  points.forEach((corner, index) => {
-    if (index > 0) {
-      const newCornerX = scalePoint(corner, center, distancePointToPoint(corner.x, corner.y, center.x, center.y) + distance).x
-      const newCornerY = scalePoint(corner, center, distancePointToPoint(corner.x, corner.y, center.x, center.y) + distance).y
-      ctx.lineTo(newCornerX, newCornerY)
-    }
-  })
-  ctx.closePath()
+  ctx.rect(newX, newY, newWidth, newHeight)
   ctx.stroke()
 
   ctx.restore()
+
+  return [
+    { x: newX, y: newY },
+    { x: newX + newWidth, y: newY },
+    { x: newX + newWidth, y: newY + newHeight },
+    { x: newX, y: newY + newHeight },
+  ]
 }

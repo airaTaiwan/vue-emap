@@ -2,7 +2,7 @@ import type { MaybeRef, Ref, ShallowRef } from 'vue'
 
 import { abortEvent, distancePointToPoint, getCenterPoint, isPointInPolygon, isPointOnLine, type Point, scalePoint } from '@airataiwan/utils'
 import { unrefElement, useEventListener, watchDeep } from '@vueuse/core'
-import { ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef } from 'vue'
 
 import type { History } from '../types'
 import type { ControlCoords, Corner, CornerOptions } from '../types/control'
@@ -18,7 +18,7 @@ export interface UseControlOptions extends CornerOptions {
   /**
    * The distance between the controlator and shape.
    *
-   * @default 5
+   * @default 10
    */
   distance?: number
 }
@@ -43,7 +43,7 @@ export function useControl(
   const {
     cornerSize = 8,
     cornerStorkColor = '#00c9ff',
-    distance = 5,
+    distance = 10,
   } = options
 
   const controlator = shallowRef<History | null>(null)
@@ -57,6 +57,11 @@ export function useControl(
   const isResizeing = ref<boolean>(false)
   const isDragging = ref<boolean>(false)
 
+  const controlatorDistance = computed(() => {
+    const lineWidth = controlator.value?.options?.lineWidth ?? 1
+    return lineWidth / 2 + distance
+  })
+
   function setCursor(cursor: string) {
     const el = unrefElement(target)
 
@@ -69,7 +74,7 @@ export function useControl(
   function drawBorders(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
     switch (controlator.value?.type) {
       case Shape.Rect:
-        drawRectBorders(ctx, points, center, distance)
+        drawRectBorders(ctx, points, center, controlatorDistance.value)
         break
       default:
         break
@@ -91,14 +96,15 @@ export function useControl(
       default:
         break
     }
-
-    ctx.restore()
   }
 
   function drawRectControls(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
-    points.forEach((corner, index) => {
-      const x = scalePoint(corner, center, distancePointToPoint(corner.x, corner.y, center.x, center.y) + distance).x - cornerSize / 2
-      const y = scalePoint(corner, center, distancePointToPoint(corner.x, corner.y, center.x, center.y) + distance).y - cornerSize / 2
+  // 獲取新的邊框角點
+    const borderPoints = drawRectBorders(ctx, points, center, controlatorDistance.value)
+
+    borderPoints.forEach((corner, index) => {
+      const x = corner.x - cornerSize / 2
+      const y = corner.y - cornerSize / 2
       const cursor = setCornerCursor(corner, center)
 
       ctx.fillRect(x, y, cornerSize, cornerSize)

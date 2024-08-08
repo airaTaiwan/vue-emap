@@ -18,13 +18,8 @@ function handleChangeColor() {
 
 <template>
   <div grid="~ place-items-center" h-full w-full>
-    <div fixed top-40 left-40 btn>
-      <button @click="handleChangeColor">
-        Change Color
-      </button>
-    </div>
-    <div position="fixed top-20 left-20">
-      <div flex="~ col gap-2">
+    <div w-full h-full flex="~ items-center gap-6">
+      <div h-full pt-20 px-4 flex="~ col gap-y-2" class="w25% ">
         <p>
           {{ EditorRef?.historyShape }}
         </p>
@@ -32,27 +27,41 @@ function handleChangeColor() {
           {{ EditorRef?.points }}
         </p>
       </div>
-    </div>
 
-    <div border="~ warmGray" class="w50% h80% " pos-relative rounded-lg>
-      <Editor
-        ref="EditorRef"
-        :shape="Shape.LineWithArrow"
-        :rect-options="{
-          strokeStyle,
-          lineWidth: 50,
-        }"
-        :line-with-arrow-options="{
-          lineWidth: 10,
-          isAbove,
-          strokeStyle,
-          fillStyle,
-        }"
-      >
-        <template #tool>
-          <ToolBar />
-        </template>
-      </Editor>
+      <div border="~ warmGray" rounded-lg class="w50% h80%">
+        <div pos-relative w-full h-full>
+          <Editor
+            ref="EditorRef"
+            :shape="Shape.Rect"
+            :rect-options="{
+              lineWidth: 50,
+              strokeStyle,
+            }"
+            :line-with-arrow-options="{
+              lineWidth: 10,
+              isAbove,
+              strokeStyle,
+              fillStyle,
+            }"
+          >
+            <template #tool>
+              <ToolBar />
+            </template>
+          </Editor>
+        </div>
+
+        <div flex="~ items-center gap-4" mt-6>
+          <button w-fit btn @click="handleChangeColor">
+            Change Color
+          </button>
+
+          <button w-fit btn @click="EditorRef?.reset">
+            Clear Shape
+          </button>
+        </div>
+      </div>
+
+      <div class="w25%" />
     </div>
   </div>
 </template>
