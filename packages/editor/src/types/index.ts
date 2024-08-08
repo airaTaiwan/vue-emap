@@ -41,6 +41,7 @@ export interface EditorOptions {
 }
 
 export interface History {
+  id: string
   options?: EditorOptions['lineOptions'] | EditorOptions['lineWithArrowOptions'] | EditorOptions['rectOptions']
   points: Point[]
   type: Shape

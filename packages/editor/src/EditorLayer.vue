@@ -77,6 +77,19 @@ const {
   controlatorIdx,
   isInSide,
 } = useControl(editorCanvasLayerEl, drawCanvasCtx, timeStamp)
+/**
+ * Set controlator
+ *
+ * @param id - The id of the shape to set as controlator
+ */
+function setControlator(id: string) {
+  const targetIdx = historyShape.value.findIndex(shape => shape.id === id)
+
+  controlator.value = historyShape.value[targetIdx]
+  controlatorIdx.value = targetIdx
+
+  action.value = Action.Edit
+}
 
 const historyShape = ref<History[]>(props.historyShape)
 const points = ref<Point[]>([])
@@ -195,6 +208,7 @@ function save(type: Shape) {
   clearDrawCanvas()
 
   const history: History = {
+    id: nanoid(),
     options: type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : props.rectOptions,
     points: data,
     type,
@@ -255,6 +269,7 @@ defineExpose({
   historyShape,
   points,
   reset,
+  setControlator,
 })
 </script>
 
@@ -267,7 +282,7 @@ defineExpose({
     </DrawLayer>
     <ViewLayer>
       <template v-if="viewCanvasCtx">
-        <template v-for="history in historyShape" :key="history.type + Date.now()">
+        <template v-for="history in historyShape" :key="history.id + Date.now()">
           <Line
             v-if="history.type === Shape.Line"
             :ctx="viewCanvasCtx"
