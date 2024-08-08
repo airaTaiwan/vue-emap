@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
-import { Editor, Shape, ToolBar } from '@airataiwan/editor'
+import { Action, Editor, Shape, ToolBar } from '@airataiwan/editor'
 
 const EditorRef = shallowRef<ComponentExposed<typeof Editor> | null>(null)
 
@@ -34,6 +34,7 @@ function handleChangeColor() {
             ref="EditorRef"
             allow-backspace-delete
             :shape="Shape.Rect"
+            :action="Action.Default"
             :rect-options="{
               lineWidth: 50,
               strokeStyle,

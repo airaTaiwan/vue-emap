@@ -2,7 +2,7 @@
 import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
 import { createContext } from '@airataiwan/utils'
-import { computed, h, onBeforeMount, ref, shallowRef } from 'vue'
+import { computed, h, ref, shallowRef } from 'vue'
 
 import { useControl } from './composable/control'
 import { Line } from './shape/Line'
@@ -201,6 +201,7 @@ function save(type: Shape) {
   }
 
   historyShape.value.push(history)
+  action.value = Action.Default
   emit('save', history)
 }
 
@@ -235,13 +236,6 @@ watchThrottled(historyShape, (_new) => {
 }, {
   deep: true,
   flush: 'pre',
-})
-
-onBeforeMount(() => {
-  if (props.shape) {
-    shape.value = props.shape
-    action.value = Action.Draw
-  }
 })
 
 provideEditorContext({
