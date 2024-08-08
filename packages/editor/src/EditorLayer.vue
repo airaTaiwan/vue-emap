@@ -153,6 +153,13 @@ function handleCapture(e: MouseEvent) {
   }
 }
 
+function deleteControlator() {
+  points.value.length = 0
+  controlator.value = null
+  controlatorIdx.value = -1
+  clearDrawCanvas()
+}
+
 function resetControlator() {
   clearViewCanvas()
   clearDrawCanvas()
@@ -208,11 +215,8 @@ function reset() {
 }
 
 onKeyStroke(['Backspace'], () => {
-  if (controlator.value) {
-    points.value.length = 0
-    controlator.value = null
-    clearDrawCanvas()
-  }
+  if (controlator.value)
+    deleteControlator()
 })
 
 onKeyStroke(['Escape'], () => {
