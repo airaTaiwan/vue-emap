@@ -1,6 +1,6 @@
 {
   "name": "@airataiwan/utils",
-  "version": "0.0.1-beta.5",
+  "version": "0.0.1-beta.6",
   "packageManager": "pnpm@9.6.0",
   "description": "Vue EMap utils library.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
