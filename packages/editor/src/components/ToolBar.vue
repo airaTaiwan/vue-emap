@@ -19,7 +19,7 @@ const iconList: Partial<Record<Shape, IconName>> = {
 <script setup lang="ts">
 import { injectEditorContext } from '../EditorLayer.vue'
 
-const { action, clearDrawCanvas, points, shape } = injectEditorContext()
+const { action, clearDrawCanvas, controlatorIdx, points, resetControlator, shape } = injectEditorContext()
 
 function handleActionChange(key: Action) {
   action.value = key
@@ -29,6 +29,9 @@ function handleActionChange(key: Action) {
 }
 
 function handleShapeChange(key: Shape) {
+  if (action.value === Action.Edit && controlatorIdx.value !== -1)
+    resetControlator()
+
   action.value = Action.Draw
   shape.value = key
 }

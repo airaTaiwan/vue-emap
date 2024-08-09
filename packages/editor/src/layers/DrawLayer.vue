@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { abortEvent } from '@airataiwan/utils'
+
 import { injectEditorContext } from '../EditorLayer.vue'
 
 const props = withDefaults(defineProps<{
@@ -49,6 +51,8 @@ function draw(e: MouseEvent) {
   const y = offsetY / props.dpi
 
   points.value.push({ x, y })
+
+  abortEvent(e)
 }
 </script>
 

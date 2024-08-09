@@ -2,6 +2,7 @@
 import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
 import { createContext } from '@airataiwan/utils'
+import { nanoid } from 'nanoid'
 import { computed, h, ref, shallowRef } from 'vue'
 
 import { useControl } from './composable/control'
@@ -14,11 +15,13 @@ interface EditorContext {
   action: ModelRef<Action, string>
   clearDrawCanvas: () => void
   clearViewCanvas: () => void
+  controlatorIdx: Ref<number>
   curX: ComputedRef<number>
   curY: ComputedRef<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
   points: Ref<Point[]>
   reset: () => void
+  resetControlator: () => void
   shape: ModelRef<Shape, string>
   viewCanvasEl: ShallowRef<HTMLCanvasElement | null>
 }
@@ -38,6 +41,7 @@ import { Action } from './types'
 
 const props = withDefaults(defineProps<EditorOptions>(), {
   allowBackspaceDelete: false,
+  autoEdit: true,
   historyShape: () => [],
 })
 
@@ -181,7 +185,7 @@ function resetControlator() {
   historyShape.value.splice(controlatorIdx.value, 0, controlator.value!)
   controlatorIdx.value = -1
   controlator.value = null
-  points.value = []
+  points.value.length = 0
 }
 
 function setNewControlator(idx: number) {
@@ -217,6 +221,10 @@ function save(type: Shape) {
   historyShape.value.push(history)
   action.value = Action.Default
   emit('save', history)
+
+  if (props.autoEdit) {
+    setNewControlator(historyShape.value.length - 1)
+  }
 }
 
 function clear() {
@@ -256,11 +264,13 @@ provideEditorContext({
   action,
   clearDrawCanvas,
   clearViewCanvas,
+  controlatorIdx,
   curX: x,
   curY: y,
   drawCanvasEl,
   points,
   reset,
+  resetControlator,
   shape,
   viewCanvasEl,
 })

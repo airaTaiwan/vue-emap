@@ -10,9 +10,16 @@ export enum Action {
 
 export interface EditorOptions {
   /**
-   * @param {boolean} [allowBackspaceDelete=false] If `true`, the backspace key will delete the captured shape.
+   * If `true`, the backspace key will delete the captured shape.
+   * @param {boolean} [allowBackspaceDelete=false]
    */
   allowBackspaceDelete?: boolean
+
+  /**
+   * If `true`, when draw done, the shape will be automatically edit mode.
+   * @param {boolean} [autoEdit=true]
+   */
+  autoEdit?: boolean
 
   /**
    * The exist shape
