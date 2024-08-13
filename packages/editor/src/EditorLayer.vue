@@ -87,12 +87,12 @@ const {
  * @param id - The id of the shape to set as controlator
  */
 function setControlator(id: string) {
+  if (controlatorIdx.value !== -1)
+    resetControlator()
+
   const targetIdx = historyShape.value.findIndex(shape => shape.id === id)
 
-  controlator.value = historyShape.value[targetIdx]
-  controlatorIdx.value = targetIdx
-
-  action.value = Action.Edit
+  setNewControlator(targetIdx)
 }
 
 const historyShape = ref<History[]>(props.historyShape)
@@ -109,6 +109,7 @@ const shapeDrawCom = computed(() => {
         y1: points.value[0].y,
         y2: points.value[1]?.y,
         ...props.lineWithArrowOptions,
+        ...controlator.value?.options,
       })
     case Shape.Line:
       return h(Line, {
@@ -119,6 +120,7 @@ const shapeDrawCom = computed(() => {
         y1: points.value[0].y,
         y2: points.value[1]?.y,
         ...props.lineOptions,
+        ...controlator.value?.options,
       })
     case Shape.Rect:
       return h(Rect, {
@@ -129,6 +131,7 @@ const shapeDrawCom = computed(() => {
         y1: points.value[0].y,
         y2: points.value[1]?.y,
         ...props.rectOptions,
+        ...controlator.value?.options,
       })
     default:
       return null

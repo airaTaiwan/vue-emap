@@ -14,6 +14,10 @@ function handleChangeColor() {
   fillStyle.value = isAbove.value ? 'blue' : 'red'
   isAbove.value = !isAbove.value
 }
+
+function handleChangeDirection() {
+  isAbove.value = !isAbove.value
+}
 </script>
 
 <template>
@@ -59,6 +63,14 @@ function handleChangeColor() {
 
           <button w-fit btn @click="EditorRef?.reset">
             Clear Shape
+          </button>
+
+          <button w-fit btn @click="handleChangeDirection">
+            Change Direction
+          </button>
+
+          <button w-fit btn :disabled="EditorRef?.historyShape.length === 0" @click="EditorRef?.setControlator(EditorRef.historyShape[0].id)">
+            Set Controlator
           </button>
         </div>
       </div>

@@ -2,7 +2,7 @@
   "name": "@airataiwan/vue-emap",
   "type": "module",
   "version": "0.0.1-beta.8",
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@9.7.0",
   "description": "Vue EMap component library.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",

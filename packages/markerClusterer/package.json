@@ -2,7 +2,7 @@
   "name": "@airataiwan/markerclusterer",
   "type": "module",
   "version": "0.0.1-beta.8",
-  "packageManager": "pnpm@9.6.0",
+  "packageManager": "pnpm@9.7.0",
   "description": "markerClusterer feature from Vue EMap.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",
@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@airataiwan/utils": "workspace:*",
-    "@vueuse/core": "^10.11.0",
-    "@vueuse/shared": "^10.11.0"
+    "@vueuse/core": "^10.11.1",
+    "@vueuse/shared": "^10.11.1"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
