@@ -119,10 +119,7 @@ export function updateRectPoint(points: Point[], offsetX: number, offsetY: numbe
 }
 
 /**
- * Draw the borders of a rectangle
- */
-/**
- * Draw the borders of a rectangle
+ * Draw the borders of a rectangle.
  */
 export function drawRectBorders(
   ctx: CanvasRenderingContext2D,

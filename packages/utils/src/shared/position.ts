@@ -31,6 +31,13 @@ export function distanceBetweenPoints(p1: Point, p2: Point): number {
 }
 
 /**
+ * Find the nearest point to the target point.
+ */
+export function findNearPoint(point: Point, target: Point, distance: number): boolean {
+  return distanceBetweenPoints(point, target) < distance
+}
+
+/**
  * Calculates the centroid of an array of points.
  */
 export function calculateCentroid(points: Point[]): Point {

@@ -12,6 +12,7 @@ const actionList: Partial<Record<Action, IconName>> = {
 const iconList: Partial<Record<Shape, IconName>> = {
   Line: 'i-mingcute:minimize-line',
   LineWithArrow: 'i-mingcute:align-arrow-right-line',
+  Polygon: 'i-mingcute:hexagon-line',
   Rect: 'i-mingcute:rectangle-line',
 }
 </script>

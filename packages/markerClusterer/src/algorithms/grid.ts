@@ -23,10 +23,10 @@ export interface GridOptions {
 }
 
 export class GridAlgorithm {
-  private _preZoom: number
   protected clusters: Cluster[]
   protected gridSize: number
   protected maxDistance: number
+  private _preZoom: number
 
   constructor({
     gridSize = 500,
@@ -70,6 +70,18 @@ export class GridAlgorithm {
     }
   }
 
+  protected cluster({
+    markers,
+  }: Pick<AlgorithmInput, 'markers'>): Cluster[] {
+    this.clusters = []
+
+    markers.forEach((marker) => {
+      this.addToClosestCluster(marker)
+    })
+
+    return this.clusters
+  }
+
   public calculate(zoom: number, {
     markers,
   }: AlgorithmInput): AlgorithmOutput {
@@ -83,17 +95,5 @@ export class GridAlgorithm {
         markers,
       }),
     }
-  }
-
-  protected cluster({
-    markers,
-  }: Pick<AlgorithmInput, 'markers'>): Cluster[] {
-    this.clusters = []
-
-    markers.forEach((marker) => {
-      this.addToClosestCluster(marker)
-    })
-
-    return this.clusters
   }
 }

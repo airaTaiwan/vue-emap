@@ -37,6 +37,11 @@ export interface EditorOptions {
   lineWithArrowOptions?: Pick<LineWithArrowOptions, 'isAbove'> & ShapeOptions
 
   /**
+   * Polygon Options
+   */
+  polygonOptions?: ShapeOptions
+
+  /**
    * Rectangle Options
    */
   rectOptions?: ShapeOptions

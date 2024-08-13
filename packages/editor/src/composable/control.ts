@@ -8,6 +8,7 @@ import type { History } from '../types'
 import type { ControlCoords, Corner, CornerOptions } from '../types/control'
 
 import { updateLinePoint } from '../shape/Line'
+import { drawPolygonBorders, updatePolygonPoint } from '../shape/Polygon'
 import { drawRectBorders, translateRectPoints, updateRectPoint } from '../shape/Rect'
 import { Shape } from '../types/shape'
 import { setCornerCursor } from '../utils'
@@ -76,6 +77,9 @@ export function useControl(
       case Shape.Rect:
         drawRectBorders(ctx, points, center, controlatorDistance.value)
         break
+      case Shape.Polygon:
+        drawPolygonBorders(ctx, points, center, controlatorDistance.value)
+        break
       default:
         break
     }
@@ -93,13 +97,16 @@ export function useControl(
       case Shape.LineWithArrow:
         drawLineControls(ctx, points, center)
         break
+      case Shape.Polygon:
+        drawPolygonControls(ctx, points, center)
+        break
       default:
         break
     }
   }
 
   function drawRectControls(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
-  // 獲取新的邊框角點
+    // 獲取新的邊框角點
     const borderPoints = drawRectBorders(ctx, points, center, controlatorDistance.value)
 
     borderPoints.forEach((corner, index) => {
@@ -122,6 +129,26 @@ export function useControl(
 
       ctx.beginPath()
       ctx.arc(x + cornerSize / 2, y + cornerSize / 2, cornerSize / 2, 0, 2 * Math.PI)
+      ctx.stroke()
+
+      setControlCoords(index, x, y, cornerSize, cornerSize, cursor)
+    })
+  }
+
+  function drawPolygonControls(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
+    ctx.fillStyle = '#ffffff'
+    ctx.strokeStyle = cornerStorkColor
+
+    points.forEach((point, index) => {
+      // Calculate the control point on the outer control line
+      const controlPoint = scalePoint(point, center, distancePointToPoint(point.x, point.y, center.x, center.y) + controlatorDistance.value)
+      const x = controlPoint.x - cornerSize / 2
+      const y = controlPoint.y - cornerSize / 2
+      const cursor = 'move'
+
+      ctx.beginPath()
+      ctx.rect(x, y, cornerSize, cornerSize)
+      ctx.fill()
       ctx.stroke()
 
       setControlCoords(index, x, y, cornerSize, cornerSize, cursor)
@@ -152,6 +179,9 @@ export function useControl(
     switch (type) {
       case Shape.Rect:
         controlator.value.points = updateRectPoint(controlator.value.points, offsetX, offsetY, idx)
+        break
+      case Shape.Polygon:
+        controlator.value.points = updatePolygonPoint(controlator.value.points, offsetX, offsetY, idx)
         break
       case Shape.Line:
       case Shape.LineWithArrow:
@@ -191,6 +221,8 @@ export function useControl(
         return isPointOnLine(targetPoint.x, targetPoint.y, points)
       case Shape.Rect:
         return isPointInPolygon(targetPoint.x, targetPoint.y, translateRectPoints(points))
+      case Shape.Polygon:
+        return isPointInPolygon(targetPoint.x, targetPoint.y, points)
       default:
         return -1
     }

@@ -6,6 +6,7 @@ import type { Action } from '.'
 export enum Shape {
   Line = 'Line',
   LineWithArrow = 'LineWithArrow',
+  Polygon = 'Polygon',
   Rect = 'Rect',
 }
 
@@ -113,4 +114,11 @@ export interface RectOptions extends ShapeOptions, EditorBaseOptions {
    * The optional y-coordinate of the bottom-right corner of the rectangle.
    */
   y2?: number
+}
+
+export interface PolygonOptions extends ShapeOptions, EditorBaseOptions {
+  /**
+   * The points of the polygon.
+   */
+  points: { x: number, y: number }[]
 }

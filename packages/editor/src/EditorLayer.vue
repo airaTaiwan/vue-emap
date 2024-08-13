@@ -8,6 +8,7 @@ import { computed, h, ref, shallowRef } from 'vue'
 import { useControl } from './composable/control'
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
+import { Polygon } from './shape/Polygon'
 import { Rect } from './shape/Rect'
 import { Shape } from './types/shape'
 
@@ -133,6 +134,14 @@ const shapeDrawCom = computed(() => {
         ...props.rectOptions,
         ...controlator.value?.options,
       })
+    case Shape.Polygon:
+      return h(Polygon, {
+        ctx: drawCanvasCtx.value!,
+        points: points.value,
+        status: action.value,
+        ...props.polygonOptions,
+        ...controlator.value?.options,
+      })
     default:
       return null
   }
@@ -216,7 +225,7 @@ function save(type: Shape) {
 
   const history: History = {
     id: nanoid(),
-    options: type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : props.rectOptions,
+    options: type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : type === Shape.Rect ? props.rectOptions : props.polygonOptions,
     points: data,
     type,
   }
@@ -322,6 +331,12 @@ defineExpose({
             :y1="history.points[0].y"
             :y2="history.points[1].y"
             v-bind="history.options || props.rectOptions"
+          />
+          <Polygon
+            v-if="history.type === Shape.Polygon"
+            :ctx="viewCanvasCtx"
+            :points="history.points"
+            v-bind="history.options || props.polygonOptions"
           />
         </template>
       </template>
