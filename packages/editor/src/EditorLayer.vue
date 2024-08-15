@@ -194,6 +194,7 @@ function resetControlator() {
   clearViewCanvas()
   clearDrawCanvas()
   action.value = Action.Default
+  emit('save', controlator.value!)
   historyShape.value.splice(controlatorIdx.value, 0, controlator.value!)
   controlatorIdx.value = -1
   controlator.value = null
