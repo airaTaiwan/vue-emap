@@ -215,6 +215,9 @@ export function useControl(
    * Check if the target point is in the side of the shape
    */
   function isInSide(shape: Shape, targetPoint: Point, points: Point[]) {
+    if (points.length === 0)
+      return -1
+
     switch (shape) {
       case Shape.Line:
       case Shape.LineWithArrow:
