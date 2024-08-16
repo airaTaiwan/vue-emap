@@ -32,6 +32,11 @@ export interface EditorOptions {
   lineWithArrowOptions?: Pick<LineWithArrowOptions, 'isAbove'> & ShapeOptions
 
   /**
+   * If `true`, the shape will be only view mode.
+   */
+  onlyView?: boolean
+
+  /**
    * Polygon Options
    */
   polygonOptions?: ShapeOptions

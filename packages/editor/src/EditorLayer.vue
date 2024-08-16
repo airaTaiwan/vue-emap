@@ -43,6 +43,7 @@ import { Action } from './types'
 const props = withDefaults(defineProps<EditorOptions>(), {
   allowBackspaceDelete: false,
   autoEdit: true,
+  onlyView: false,
 })
 
 const emit = defineEmits<{
@@ -87,6 +88,9 @@ const {
  * @param id - The id of the shape to set as controlator
  */
 function setControlator(id: string) {
+  if (props.onlyView)
+    return
+
   if (controlatorIdx.value !== -1)
     resetControlator()
 
@@ -147,6 +151,9 @@ const shapeDrawCom = computed(() => {
 })
 
 function handleCapture(e: MouseEvent) {
+  if (props.onlyView)
+    return
+
   if (action.value === Action.Draw || !editorCanvasLayerEl.value)
     return
 
@@ -236,6 +243,11 @@ function save(type: Shape) {
 
   if (props.autoEdit) {
     setNewControlator(historyShape.value.length - 1)
+  }
+
+  if (props.onlyView && controlator.value) {
+    resetControlator()
+    deleteControlator()
   }
 }
 
