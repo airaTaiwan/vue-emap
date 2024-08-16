@@ -260,6 +260,7 @@ function reset() {
   points.value.length = 0
   historyShape.value.length = 0
   clear()
+  deleteControlator()
 }
 
 onKeyStroke(['Backspace'], () => {

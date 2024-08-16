@@ -37,7 +37,6 @@ function handleChangeDirection() {
           <Editor
             ref="EditorRef"
             allow-backspace-delete
-            only-view
             :shape="Shape.Rect"
             :action="Action.Default"
             :rect-options="{
