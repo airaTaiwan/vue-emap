@@ -22,11 +22,6 @@ export interface EditorOptions {
   autoEdit?: boolean
 
   /**
-   * The exist shape
-   */
-  historyShape?: History[]
-
-  /**
    * Line Options
    */
   lineOptions?: ShapeOptions

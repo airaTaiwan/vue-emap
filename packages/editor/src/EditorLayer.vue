@@ -3,7 +3,7 @@ import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
 import { createContext } from '@airataiwan/utils'
 import { nanoid } from 'nanoid'
-import { computed, h, ref, shallowRef } from 'vue'
+import { computed, h, reactive, ref, shallowRef } from 'vue'
 
 import { useControl } from './composable/control'
 import { Line } from './shape/Line'
@@ -43,7 +43,6 @@ import { Action } from './types'
 const props = withDefaults(defineProps<EditorOptions>(), {
   allowBackspaceDelete: false,
   autoEdit: true,
-  historyShape: () => [],
 })
 
 const emit = defineEmits<{
@@ -96,7 +95,7 @@ function setControlator(id: string) {
   setNewControlator(targetIdx)
 }
 
-const historyShape = ref<History[]>(props.historyShape)
+const historyShape = defineModel<History[]>('historyShape', { default: reactive([]), required: false })
 const points = ref<Point[]>([])
 
 const shapeDrawCom = computed(() => {
