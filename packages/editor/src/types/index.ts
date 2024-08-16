@@ -45,11 +45,6 @@ export interface EditorOptions {
    * Rectangle Options
    */
   rectOptions?: ShapeOptions
-
-  /**
-   * The shape to draw
-   */
-  shape: Shape
 }
 
 export interface History {
