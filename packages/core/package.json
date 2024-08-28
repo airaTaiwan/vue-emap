@@ -2,7 +2,7 @@
   "name": "@airataiwan/core",
   "type": "module",
   "version": "0.0.1-beta.13",
-  "packageManager": "pnpm@9.7.1",
+  "packageManager": "pnpm@9.9.0",
   "description": "Vue EMap core.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",
@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@airataiwan/utils": "workspace:*",
-    "@vueuse/core": "^11.0.0",
-    "@vueuse/shared": "^11.0.0"
+    "@vueuse/core": "^11.0.3",
+    "@vueuse/shared": "^11.0.3"
   }
 }
