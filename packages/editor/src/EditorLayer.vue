@@ -150,6 +150,46 @@ const shapeDrawCom = computed(() => {
   }
 })
 
+const shapeViewCom = computed(() => (history: History) => {
+  switch (history.type) {
+    case Shape.Line:
+      return h(Line, {
+        ctx: viewCanvasCtx.value!,
+        x1: history.points[0].x,
+        x2: history.points[1].x,
+        y1: history.points[0].y,
+        y2: history.points[1].y,
+        ...history.options || props.lineOptions,
+      })
+    case Shape.LineWithArrow:
+      return h(LineWithArrow, {
+        ctx: viewCanvasCtx.value!,
+        x1: history.points[0].x,
+        x2: history.points[1].x,
+        y1: history.points[0].y,
+        y2: history.points[1].y,
+        ...history.options || props.lineWithArrowOptions,
+      })
+    case Shape.Rect:
+      return h(Rect, {
+        ctx: viewCanvasCtx.value!,
+        x1: history.points[0].x,
+        x2: history.points[1].x,
+        y1: history.points[0].y,
+        y2: history.points[1].y,
+        ...history.options || props.rectOptions,
+      })
+    case Shape.Polygon:
+      return h(Polygon, {
+        ctx: viewCanvasCtx.value!,
+        points: history.points,
+        ...history.options || props.polygonOptions,
+      })
+    default:
+      return null
+  }
+})
+
 function handleCapture(e: MouseEvent) {
   if (props.onlyView)
     return
@@ -318,39 +358,7 @@ defineExpose({
     <ViewLayer>
       <template v-if="viewCanvasCtx">
         <template v-for="history in historyShape" :key="history.id + Date.now()">
-          <Line
-            v-if="history.type === Shape.Line"
-            :ctx="viewCanvasCtx"
-            :x1="history.points[0].x"
-            :x2="history.points[1].x"
-            :y1="history.points[0].y"
-            :y2="history.points[1].y"
-            v-bind="history.options || props.lineOptions"
-          />
-          <LineWithArrow
-            v-if="history.type === Shape.LineWithArrow"
-            :ctx="viewCanvasCtx"
-            :x1="history.points[0].x"
-            :x2="history.points[1].x"
-            :y1="history.points[0].y"
-            :y2="history.points[1].y"
-            v-bind="history.options || props.lineWithArrowOptions"
-          />
-          <Rect
-            v-if="history.type === Shape.Rect"
-            :ctx="viewCanvasCtx"
-            :x1="history.points[0].x"
-            :x2="history.points[1].x"
-            :y1="history.points[0].y"
-            :y2="history.points[1].y"
-            v-bind="history.options || props.rectOptions"
-          />
-          <Polygon
-            v-if="history.type === Shape.Polygon"
-            :ctx="viewCanvasCtx"
-            :points="history.points"
-            v-bind="history.options || props.polygonOptions"
-          />
+          <component :is="shapeViewCom(history)" />
         </template>
       </template>
     </ViewLayer>
