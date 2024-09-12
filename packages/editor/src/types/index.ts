@@ -11,15 +11,24 @@ export enum Action {
 export interface EditorOptions {
   /**
    * If `true`, the backspace key will delete the captured shape.
-   * @param {boolean} [allowBackspaceDelete=false]
+   *
+   * @default false
    */
   allowBackspaceDelete?: boolean
 
   /**
    * If `true`, when draw done, the shape will be automatically edit mode.
-   * @param {boolean} [autoEdit=true]
+   *
+   * @default true
    */
   autoEdit?: boolean
+
+  /**
+   * If `true`, the dpi will be enabled.
+   *
+   * @default false
+   */
+  enableDpi?: boolean
 
   /**
    * Line Options

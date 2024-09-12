@@ -9,10 +9,11 @@ export const Area = defineComponent(
   ({
     area = [],
   }: AreaOptions, { slots }) => {
-    const { canvasLayerHeight, canvasLayerWidth, drawCanvas, imageInfo, zoomNum } = inject(EMapSymbol) as EMapContext
+    const { canvasLayerHeight, canvasLayerWidth, drawCanvas, enableDpi: eMapEnableDpi, imageInfo, zoomNum } = inject(EMapSymbol) as EMapContext
 
     const { canvasCtx, clear } = useCanvas(
       {
+        enableDpi: eMapEnableDpi,
         height: canvasLayerHeight,
         width: canvasLayerWidth,
       },

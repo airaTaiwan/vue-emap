@@ -6,6 +6,7 @@ export interface EMapContext {
   canvasLayerHeight: Ref<number>
   canvasLayerWidth: Ref<number>
   drawCanvas: (canvas: HTMLCanvasElement) => void
+  enableDpi: boolean
   eventLayerEl: ShallowRef<HTMLDivElement | null>
   finallyZoom: Ref<number>
   imageInfo: Ref<Info>

@@ -9,6 +9,7 @@ import type { Point } from '../types'
 import { initCanvas } from '../shared'
 
 export interface UseCanvasOptions {
+  enableDpi: MaybeRef<boolean>
   height: MaybeRef<number>
   width: MaybeRef<number>
 }
@@ -53,11 +54,12 @@ export function useCanvas(...args: any[]) {
     [target, options] = args
   }
 
-  const { height, width } = options
+  const { enableDpi, height, width } = options
   const { pixelRatio } = useDevicePixelRatio()
 
   const _width = ref(width)
   const _height = ref(height)
+  const _dpi = ref(enableDpi ? pixelRatio.value : 1)
 
   const canvasCtx = shallowRef<CanvasRenderingContext2D | null>(null)
   const isInit = ref(false)
@@ -76,7 +78,7 @@ export function useCanvas(...args: any[]) {
     if (el == null)
       return
 
-    canvasCtx.value = initCanvas(el as HTMLCanvasElement, _width.value, _height.value, pixelRatio.value)
+    canvasCtx.value = initCanvas(el as HTMLCanvasElement, _width.value, _height.value, _dpi.value)
 
     isInit.value = true
   }
@@ -98,6 +100,6 @@ export function useCanvas(...args: any[]) {
     canvasCenterPoint,
     canvasCtx,
     clear,
-    dpi: pixelRatio,
+    dpi: _dpi,
   }
 }

@@ -11,6 +11,13 @@ export interface EMapOptions {
   draggable?: boolean
 
   /**
+   * If `true`, the dpi will be enabled.
+   *
+   * @default false
+   */
+  enableDpi?: boolean
+
+  /**
    * map image
    */
   img: HTMLImageElement | string
@@ -18,6 +25,7 @@ export interface EMapOptions {
    * The maximum zoom level which will be displayed on the map.
    */
   maxZoom?: number
+
   /**
    * The minimum zoom level which will be displayed on the map.
    */

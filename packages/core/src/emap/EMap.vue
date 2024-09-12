@@ -46,6 +46,7 @@ const props = withDefaults(defineProps<EMapOptions>(), {
     easingFunction: ANIMATION_EASE_IN_OUT_QUAD,
   }),
   draggable: true,
+  enableDpi: false,
   maxZoom: 5,
   minZoom: 0.5,
   zoom: 1,
@@ -82,6 +83,7 @@ const steps = ref<Fn[]>([])
 const { canvasCtx, clear } = useCanvas(
   canvasEl,
   {
+    enableDpi: props.enableDpi,
     height: canvasLayerHeight,
     width: canvasLayerWidth,
   },
@@ -323,6 +325,7 @@ provideEMapContext({
   canvasLayerHeight,
   canvasLayerWidth,
   drawCanvas,
+  enableDpi: props.enableDpi,
   eventLayerEl,
   finallyZoom,
   imageInfo,

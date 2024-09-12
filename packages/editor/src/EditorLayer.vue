@@ -43,6 +43,7 @@ import { Action } from './types'
 const props = withDefaults(defineProps<EditorOptions>(), {
   allowBackspaceDelete: false,
   autoEdit: true,
+  enableDpi: false,
   onlyView: false,
 })
 
@@ -61,6 +62,7 @@ const drawCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas, dpi } = useCanvas(
   drawCanvasEl,
   {
+    enableDpi: props.enableDpi,
     height: editorCanvasLayerHeight,
     width: editorCanvasLayerWidth,
   },
@@ -68,6 +70,7 @@ const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas, dpi } = useCanvas(
 
 const viewCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const { canvasCtx: viewCanvasCtx, clear: clearViewCanvas } = useCanvas(viewCanvasEl, {
+  enableDpi: props.enableDpi,
   height: editorCanvasLayerHeight,
   width: editorCanvasLayerWidth,
 })
