@@ -1,7 +1,7 @@
 {
   "name": "@airataiwan/markerclusterer",
   "type": "module",
-  "version": "0.0.1-beta.13",
+  "version": "0.0.1-beta.14",
   "packageManager": "pnpm@9.9.0",
   "description": "markerClusterer feature from Vue EMap.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",

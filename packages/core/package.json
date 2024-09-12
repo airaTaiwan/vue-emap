@@ -1,7 +1,7 @@
 {
   "name": "@airataiwan/core",
   "type": "module",
-  "version": "0.0.1-beta.13",
+  "version": "0.0.1-beta.14",
   "packageManager": "pnpm@9.9.0",
   "description": "Vue EMap core.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
