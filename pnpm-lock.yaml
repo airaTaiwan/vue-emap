@@ -137,6 +137,9 @@ importers:
       '@vueuse/shared':
         specifier: ^11.0.3
         version: 11.0.3(vue@3.4.38(typescript@5.4.2))
+      points-on-curve:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       '@iconify-json/mingcute':
         specifier: ^1.1.20
@@ -3569,6 +3572,9 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==, tarball: https://registry.npmjs.org/pluralize/-/pluralize-8.0.0.tgz}
     engines: {node: '>=4'}
+
+  points-on-curve@1.0.1:
+    resolution: {integrity: sha512-3nmX4/LIiyuwGLwuUrfhTlDeQFlAhi7lyK/zcRNGhalwapDWgAGR82bUpmn2mA03vII3fvNCG8jAONzKXwpxAg==, tarball: https://registry.npmjs.org/points-on-curve/-/points-on-curve-1.0.1.tgz}
 
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==, tarball: https://registry.npmjs.org/possible-typed-array-names/-/possible-typed-array-names-1.0.0.tgz}
@@ -8369,6 +8375,8 @@ snapshots:
       pathe: 1.1.2
 
   pluralize@8.0.0: {}
+
+  points-on-curve@1.0.1: {}
 
   possible-typed-array-names@1.0.0: {}
 

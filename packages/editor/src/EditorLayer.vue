@@ -6,6 +6,7 @@ import { nanoid } from 'nanoid'
 import { computed, h, reactive, ref, shallowRef } from 'vue'
 
 import { useControl } from './composable/control'
+import { Curve } from './shape/Curve'
 import { Line } from './shape/Line'
 import { LineWithArrow } from './shape/LineWithArrow'
 import { Polygon } from './shape/Polygon'
@@ -148,6 +149,14 @@ const shapeDrawCom = computed(() => {
         ...props.polygonOptions,
         ...controlator.value?.options,
       })
+    case Shape.Curve:
+      return h(Curve, {
+        ctx: drawCanvasCtx.value!,
+        points: points.value,
+        status: action.value,
+        ...props.curveOptions,
+        ...controlator.value?.options,
+      })
     default:
       return null
   }
@@ -187,6 +196,12 @@ const shapeViewCom = computed(() => (history: History) => {
         ctx: viewCanvasCtx.value!,
         points: history.points,
         ...history.options || props.polygonOptions,
+      })
+    case Shape.Curve:
+      return h(Curve, {
+        ctx: viewCanvasCtx.value!,
+        points: history.points,
+        ...history.options || props.curveOptions,
       })
     default:
       return null
@@ -275,7 +290,7 @@ function save(type: Shape) {
 
   const history: History = {
     id: nanoid(),
-    options: type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : type === Shape.Rect ? props.rectOptions : props.polygonOptions,
+    options: type === Shape.Curve ? props.curveOptions : type === Shape.Line ? props.lineOptions : type === Shape.LineWithArrow ? props.lineWithArrowOptions : type === Shape.Rect ? props.rectOptions : props.polygonOptions,
     points: data,
     type,
   }
@@ -312,9 +327,15 @@ onKeyStroke(['Backspace'], () => {
 })
 
 onKeyStroke(['Escape'], () => {
-  if (action.value === Action.Draw && points.value.length === 1) {
-    points.value.length = 0
+  if (action.value !== Action.Draw)
+    return
+
+  if (points.value.length === 1) {
     clearDrawCanvas()
+    points.value.length = 0
+  }
+  else {
+    save(shape.value)
   }
 })
 

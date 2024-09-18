@@ -24,6 +24,11 @@ export interface EditorOptions {
   autoEdit?: boolean
 
   /**
+   * Curve Options
+   */
+  curveOptions?: ShapeOptions
+
+  /**
    * If `true`, the dpi will be enabled.
    *
    * @default false

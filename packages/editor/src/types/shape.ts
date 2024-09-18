@@ -4,6 +4,7 @@ import type { Action } from '.'
  * Shape type
  */
 export enum Shape {
+  Curve = 'Curve',
   Line = 'Line',
   LineWithArrow = 'LineWithArrow',
   Polygon = 'Polygon',
@@ -119,6 +120,13 @@ export interface RectOptions extends ShapeOptions, EditorBaseOptions {
 export interface PolygonOptions extends ShapeOptions, EditorBaseOptions {
   /**
    * The points of the polygon.
+   */
+  points: { x: number, y: number }[]
+}
+
+export interface CurveOptions extends ShapeOptions, EditorBaseOptions {
+  /**
+   * The points of the curve.
    */
   points: { x: number, y: number }[]
 }
