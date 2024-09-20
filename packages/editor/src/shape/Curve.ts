@@ -72,3 +72,14 @@ export const Curve = defineComponent(
     ],
   },
 )
+
+export function updateCurvePoint(points: Point[], offsetX: number, offsetY: number, idx: number) {
+  const newPoints: Point[] = [...points]
+
+  newPoints[idx] = {
+    x: newPoints[idx].x + offsetX,
+    y: newPoints[idx].y + offsetY,
+  }
+
+  return newPoints
+}

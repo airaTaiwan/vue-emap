@@ -1,12 +1,13 @@
 import type { MaybeRef, Ref, ShallowRef } from 'vue'
 
-import { abortEvent, distancePointToPoint, getCenterPoint, isPointInPolygon, isPointOnLine, type Point, scalePoint } from '@airataiwan/utils'
+import { abortEvent, distancePointToPoint, getCenterPoint, isPointInCurve, isPointInPolygon, isPointOnLine, type Point, scalePoint } from '@airataiwan/utils'
 import { unrefElement, useEventListener, watchDeep } from '@vueuse/core'
 import { computed, ref, shallowRef } from 'vue'
 
 import type { History } from '../types'
 import type { ControlCoords, Corner, CornerOptions } from '../types/control'
 
+import { updateCurvePoint } from '../shape/Curve'
 import { updateLinePoint } from '../shape/Line'
 import { drawPolygonBorders, updatePolygonPoint } from '../shape/Polygon'
 import { drawRectBorders, translateRectPoints, updateRectPoint } from '../shape/Rect'
@@ -100,13 +101,15 @@ export function useControl(
       case Shape.Polygon:
         drawPolygonControls(ctx, points, center)
         break
+      case Shape.Curve:
+        drawCurveControls(ctx, points)
+        break
       default:
         break
     }
   }
 
   function drawRectControls(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
-    // 獲取新的邊框角點
     const borderPoints = drawRectBorders(ctx, points, center, controlatorDistance.value)
 
     borderPoints.forEach((corner, index) => {
@@ -114,8 +117,10 @@ export function useControl(
       const y = corner.y - cornerSize / 2
       const cursor = setCornerCursor(corner, center)
 
-      ctx.fillRect(x, y, cornerSize, cornerSize)
-      ctx.strokeRect(x, y, cornerSize, cornerSize)
+      ctx.beginPath()
+      ctx.arc(x + cornerSize / 2, y + cornerSize / 2, cornerSize / 2, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.stroke()
 
       setControlCoords(index, x, y, cornerSize, cornerSize, cursor)
     })
@@ -136,22 +141,32 @@ export function useControl(
   }
 
   function drawPolygonControls(ctx: CanvasRenderingContext2D, points: Point[], center: Point) {
-    ctx.fillStyle = '#ffffff'
-    ctx.strokeStyle = cornerStorkColor
-
     points.forEach((point, index) => {
-      // Calculate the control point on the outer control line
       const controlPoint = scalePoint(point, center, distancePointToPoint(point.x, point.y, center.x, center.y) + controlatorDistance.value)
       const x = controlPoint.x - cornerSize / 2
       const y = controlPoint.y - cornerSize / 2
       const cursor = 'move'
 
       ctx.beginPath()
-      ctx.rect(x, y, cornerSize, cornerSize)
+      ctx.arc(x + cornerSize / 2, y + cornerSize / 2, cornerSize / 2, 0, 2 * Math.PI)
       ctx.fill()
       ctx.stroke()
 
       setControlCoords(index, x, y, cornerSize, cornerSize, cursor)
+    })
+  }
+
+  function drawCurveControls(ctx: CanvasRenderingContext2D, points: Point[]) {
+    points.forEach((point, index) => {
+      const x = point.x - cornerSize / 2
+      const y = point.y - cornerSize / 2
+
+      ctx.beginPath()
+      ctx.arc(x + cornerSize / 2, y + cornerSize / 2, cornerSize / 2, 0, 2 * Math.PI)
+      ctx.fill()
+      ctx.stroke()
+
+      setControlCoords(index, x, y, cornerSize, cornerSize, 'move')
     })
   }
 
@@ -186,6 +201,9 @@ export function useControl(
       case Shape.Line:
       case Shape.LineWithArrow:
         controlator.value.points = updateLinePoint(controlator.value.points, offsetX, offsetY, idx)
+        break
+      case Shape.Curve:
+        controlator.value.points = updateCurvePoint(controlator.value.points, offsetX, offsetY, idx)
         break
     }
   }
@@ -226,6 +244,8 @@ export function useControl(
         return isPointInPolygon(targetPoint.x, targetPoint.y, translateRectPoints(points))
       case Shape.Polygon:
         return isPointInPolygon(targetPoint.x, targetPoint.y, points)
+      case Shape.Curve:
+        return isPointInCurve(targetPoint, points)
       default:
         return -1
     }
@@ -244,6 +264,7 @@ export function useControl(
         break
       case Shape.Line:
       case Shape.LineWithArrow:
+      case Shape.Curve:
         points = history.points
         break
       default:

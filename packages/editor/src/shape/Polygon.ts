@@ -84,13 +84,6 @@ export function drawPolygonBorders(
   center: Point,
   distance: number,
 ) {
-  ctx.save()
-
-  ctx.globalAlpha = 1
-  ctx.strokeStyle = '#00c9ff'
-  ctx.lineWidth = 1
-
-  // 計算新的頂點
   const newPoints = points.map((point) => {
     const dx = point.x - center.x
     const dy = point.y - center.y
@@ -101,7 +94,6 @@ export function drawPolygonBorders(
     }
   })
 
-  // 繪製新的多邊形
   ctx.beginPath()
   ctx.moveTo(newPoints[0].x, newPoints[0].y)
   for (let i = 1; i < newPoints.length; i++) {
@@ -109,8 +101,6 @@ export function drawPolygonBorders(
   }
   ctx.closePath()
   ctx.stroke()
-
-  ctx.restore()
 
   return newPoints
 }
