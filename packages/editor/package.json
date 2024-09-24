@@ -2,7 +2,7 @@
   "name": "@airataiwan/editor",
   "type": "module",
   "version": "0.0.1-beta.14",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@9.11.0",
   "description": "editor feature from Vue EMap.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
   "license": "MIT",
@@ -49,12 +49,12 @@
   },
   "dependencies": {
     "@airataiwan/utils": "workspace:*",
-    "@vueuse/core": "^11.0.3",
-    "@vueuse/shared": "^11.0.3",
+    "@vueuse/core": "^11.1.0",
+    "@vueuse/shared": "^11.1.0",
     "points-on-curve": "^1.0.1"
   },
   "devDependencies": {
-    "@iconify-json/mingcute": "^1.1.20"
+    "@iconify-json/mingcute": "^1.2.0"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/"
