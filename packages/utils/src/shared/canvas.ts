@@ -119,6 +119,33 @@ export function isPointOnLine(x: any, y: any, line: Point[], tolerance = 5): boo
 }
 
 /**
+ * Checks if a point is inside a curve defined by an array of points.
+ */
+export function isPointInCurve(targetPoint: Point, points: Point[]): boolean {
+  let windingNumber = 0
+  const n = points.length
+
+  for (let i = 0; i < n; i++) {
+    const p1 = points[i]
+    const p2 = points[(i + 1) % n]
+
+    if (p1.y <= targetPoint.y) {
+      if (p2.y > targetPoint.y && isLeft(p1, p2, targetPoint) > 0)
+        windingNumber++
+    }
+    else {
+      if (p2.y <= targetPoint.y && isLeft(p1, p2, targetPoint) < 0)
+        windingNumber--
+    }
+  }
+
+  return windingNumber !== 0
+}
+function isLeft(p0: Point, p1: Point, p2: Point): number {
+  return (p1.x - p0.x) * (p2.y - p0.y) - (p2.x - p0.x) * (p1.y - p0.y)
+}
+
+/**
  * Calculates the distance between two points in a 2D coordinate system.
  */
 export function distancePointToPoint(x1: number, y1: number, x2: number, y2: number) {

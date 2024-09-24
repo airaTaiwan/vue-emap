@@ -50,7 +50,8 @@
   "dependencies": {
     "@airataiwan/utils": "workspace:*",
     "@vueuse/core": "^11.0.3",
-    "@vueuse/shared": "^11.0.3"
+    "@vueuse/shared": "^11.0.3",
+    "points-on-curve": "^1.0.1"
   },
   "devDependencies": {
     "@iconify-json/mingcute": "^1.1.20"

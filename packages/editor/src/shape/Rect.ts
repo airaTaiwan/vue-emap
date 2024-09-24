@@ -127,12 +127,6 @@ export function drawRectBorders(
   center: Point,
   distance: number,
 ) {
-  ctx.save()
-
-  ctx.globalAlpha = 1
-  ctx.strokeStyle = '#00c9ff'
-  ctx.lineWidth = 1
-
   const width = Math.abs(points[2].x - points[0].x)
   const height = Math.abs(points[2].y - points[0].y)
 
@@ -145,8 +139,6 @@ export function drawRectBorders(
   ctx.beginPath()
   ctx.rect(newX, newY, newWidth, newHeight)
   ctx.stroke()
-
-  ctx.restore()
 
   return [
     { x: newX, y: newY },
