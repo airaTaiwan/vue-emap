@@ -63,7 +63,7 @@ export interface EditorOptions {
 
 export interface History {
   id: string
-  options?: EditorOptions['lineOptions'] | EditorOptions['lineWithArrowOptions'] | EditorOptions['rectOptions']
+  options?: EditorOptions['curveOptions'] | EditorOptions['lineOptions'] | EditorOptions['lineWithArrowOptions'] | EditorOptions['polygonOptions'] | EditorOptions['rectOptions']
   points: Point[]
   type: Shape
 }
