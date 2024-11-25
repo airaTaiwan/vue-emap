@@ -13,7 +13,7 @@ const EMapRef = shallowRef<ComponentExposed<typeof EMap> | null>(null)
 </script>
 
 <template>
-  <div class="w-[800px] h-[800px]">
+  <div>
     <EMap ref="EMapRef" :img="mapImg" zoom-control />
     <ControlBtns
       @on-reset="EMapRef?.reset()"

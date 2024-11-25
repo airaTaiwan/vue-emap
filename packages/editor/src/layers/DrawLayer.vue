@@ -1,17 +1,11 @@
 <script setup lang="ts">
-import { abortEvent } from '@airataiwan/utils'
-
 import { injectEditorContext } from '../EditorLayer.vue'
 
-const props = withDefaults(defineProps<{
-  disabled: boolean
-  dpi: number
-}>(), {
-  disabled: false,
-  dpi: 1,
-})
+defineEmits<{
+  onDraw: [e: MouseEvent]
+}>()
 
-const { drawCanvasEl, points } = injectEditorContext()
+const { drawCanvasEl } = injectEditorContext()
 
 // function drawPoint(point: Point, text?: number | string) {
 //   if (canvasCtx.value == null)
@@ -41,22 +35,9 @@ const { drawCanvasEl, points } = injectEditorContext()
 
 //   canvasCtx.value.restore()
 // }
-
-function draw(e: MouseEvent) {
-  if (props.disabled)
-    return
-
-  const { offsetX, offsetY } = e
-  const x = offsetX / props.dpi
-  const y = offsetY / props.dpi
-
-  points.value.push({ x, y })
-
-  abortEvent(e)
-}
 </script>
 
 <template>
-  <canvas ref="drawCanvasEl" position="absolute top-0 left-0" select-none z3 @click="draw" />
+  <canvas ref="drawCanvasEl" position="absolute top-0 left-0" select-none z3 @click="$emit('onDraw', $event)" />
   <slot />
 </template>

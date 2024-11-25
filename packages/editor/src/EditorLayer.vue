@@ -2,8 +2,9 @@
 import type { ComputedRef, ModelRef, Ref, ShallowRef } from 'vue'
 
 import { createContext } from '@airataiwan/utils'
+import { isString } from '@antfu/utils'
 import { nanoid } from 'nanoid'
-import { computed, h, reactive, ref, shallowRef } from 'vue'
+import { computed, h, reactive, ref, shallowRef, watch } from 'vue'
 
 import { useControl } from './composable/control'
 import { Curve } from './shape/Curve'
@@ -21,6 +22,8 @@ interface EditorContext {
   curX: ComputedRef<number>
   curY: ComputedRef<number>
   drawCanvasEl: ShallowRef<HTMLCanvasElement | null>
+  imageCache: ShallowRef<HTMLImageElement | null>
+  imageInfo: Ref<Info>
   points: Ref<Point[]>
   reset: () => void
   resetControlator: () => void
@@ -32,7 +35,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 </script>
 
 <script setup lang="ts">
-import { type Point, useCanvas } from '@airataiwan/utils'
+import { abortEvent, type Info, loadImage, type Point, useCanvas } from '@airataiwan/utils'
 import { onKeyStroke, useElementSize, useMouseInElement, watchDeep, watchThrottled } from '@vueuse/core'
 
 import type { EditorOptions, History } from './types'
@@ -56,6 +59,9 @@ const emit = defineEmits<{
 const action = defineModel<Action>('action', { default: Action.Default, required: false })
 const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
+const imageCache = shallowRef<HTMLImageElement | null>(null)
+const imageInfo = ref<Info>({ height: 0, width: 0, x: 0, y: 0 })
+
 const editorCanvasLayerEl = shallowRef<HTMLDivElement | null>(null)
 const { height: editorCanvasLayerHeight, width: editorCanvasLayerWidth } = useElementSize(editorCanvasLayerEl)
 
@@ -69,10 +75,52 @@ const { canvasCtx: drawCanvasCtx, clear: clearDrawCanvas, dpi } = useCanvas(
   },
 )
 
+async function initImage() {
+  const img = isString(props.img) ? await loadImage(props.img) : props.img
+
+  if (img == null)
+    return
+
+  imageInfo.value.width = img.naturalWidth
+  imageInfo.value.height = img.naturalHeight
+  imageCache.value = img
+}
+
+async function drawImage() {
+  const { height: imageHeight = 400, width: imageWidth = 400, x, y } = imageInfo.value
+
+  editorCanvasLayerEl.value?.style.setProperty('height', `${imageHeight}px`)
+  editorCanvasLayerEl.value?.style.setProperty('width', `${imageWidth}px`)
+
+  viewCanvasCtx.value?.drawImage(imageCache.value!, x, y, imageWidth, imageHeight)
+}
+
+function startDraw(e: MouseEvent) {
+  if (action.value !== Action.Draw)
+    return
+
+  onDraw(e)
+}
+
+function onDraw(e: MouseEvent) {
+  const { offsetX, offsetY } = e
+  const x = offsetX / dpi.value
+  const y = offsetY / dpi.value
+
+  points.value.push({ x, y })
+
+  abortEvent(e)
+}
+
 const viewCanvasEl = shallowRef<HTMLCanvasElement | null>(null)
 const { canvasCtx: viewCanvasCtx, clear: clearViewCanvas } = useCanvas(viewCanvasEl, {
   enableDpi: props.enableDpi,
   height: editorCanvasLayerHeight,
+  onDone: async () => {
+    await initImage()
+
+    drawImage()
+  },
   width: editorCanvasLayerWidth,
 })
 
@@ -339,14 +387,20 @@ onKeyStroke(['Escape'], () => {
   }
 })
 
-// Clear view canvas when state changed to avoid the shape re-drawing
-watchThrottled(historyShape, (_new) => {
-  if (historyShape.value.length) {
+watchThrottled(historyShape, async (newShape) => {
+  // Clear view canvas when state changed to avoid the shape re-drawing
+  if (newShape.length) {
     clearViewCanvas()
   }
+
+  await drawImage()
 }, {
   deep: true,
   flush: 'pre',
+})
+
+watch(() => props.img, async () => {
+  await initImage()
 })
 
 provideEditorContext({
@@ -357,6 +411,8 @@ provideEditorContext({
   curX: x,
   curY: y,
   drawCanvasEl,
+  imageCache,
+  imageInfo,
   points,
   reset,
   resetControlator,
@@ -373,8 +429,8 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="editorCanvasLayerEl" position="absolute inset-0" z5 of-hidden @click="handleCapture">
-    <DrawLayer :dpi :disabled="action !== Action.Draw">
+  <div ref="editorCanvasLayerEl" style="width: 400px; height: 400px;" relative z5 of-hidden @click="handleCapture">
+    <DrawLayer @on-draw="startDraw">
       <template v-if="points.length >= 1 && drawCanvasCtx">
         <component :is="shapeDrawCom" @clear="clearDrawCanvas" @save="save" />
       </template>
