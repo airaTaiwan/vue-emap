@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { History } from '@airataiwan/editor'
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
 import { Action, Editor, Shape, ToolBar } from '@airataiwan/editor'
@@ -20,6 +21,15 @@ function handleChangeColor() {
 function handleChangeDirection() {
   isAbove.value = !isAbove.value
 }
+
+const historyShape = ref<History[]>([
+  {
+    id: 'GpsrKcX_O9L_1LPUreWKn',
+    options: { lineWidth: 50, strokeStyle: 'red' },
+    points: [{ x: 69.3671875, y: 192.47265625 }, { x: 726.56640625, y: 715.05078125 }],
+    type: Shape.Rect,
+  },
+])
 </script>
 
 <template>
@@ -38,8 +48,11 @@ function handleChangeDirection() {
         <div rounded-lg>
           <Editor
             ref="EditorRef"
+            :history-shape
             border="~ warmGray"
             mxa
+            :max-width="800"
+            :max-height="800"
             allow-backspace-delete
             :img
             :shape="Shape.Rect"
