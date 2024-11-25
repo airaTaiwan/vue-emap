@@ -58,6 +58,8 @@ const emit = defineEmits<{
   select: [shape: History]
 }>()
 
+const id = ref(nanoid())
+
 const action = defineModel<Action>('action', { default: Action.Default, required: false })
 const shape = defineModel<Shape>('shape', { default: Shape.Line, required: false })
 
@@ -108,6 +110,7 @@ async function drawImage() {
   editorCanvasLayerEl.value?.style.setProperty('width', `${width}px`)
 
   viewCanvasCtx.value?.drawImage(imageCache.value, 0, 0, width, height)
+  id.value = nanoid()
 }
 
 function startDraw(e: MouseEvent) {
@@ -464,7 +467,7 @@ defineExpose({
     </DrawLayer>
     <ViewLayer>
       <template v-if="viewCanvasCtx">
-        <template v-for="history in historyShape" :key="history.id + Date.now()">
+        <template v-for="history in historyShape" :key="history.id + id">
           <component :is="shapeViewCom(history)" />
         </template>
       </template>
