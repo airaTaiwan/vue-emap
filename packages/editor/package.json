@@ -1,7 +1,7 @@
 {
   "name": "@airataiwan/editor",
   "type": "module",
-  "version": "0.0.1-beta.18",
+  "version": "0.0.1-beta.19",
   "packageManager": "pnpm@9.11.0",
   "description": "editor feature from Vue EMap.",
   "author": "airaTaiwan <https://github.com/airaTaiwan456>",
