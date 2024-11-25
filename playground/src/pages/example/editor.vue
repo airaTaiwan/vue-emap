@@ -9,7 +9,7 @@ const strokeStyle = ref('red')
 const fillStyle = ref('red')
 const isAbove = ref(true)
 
-const img = computed(() => `https://fakeimg.pl/400x400/?retina=1&text=Example&font=noto`)
+const img = computed(() => `https://fakeimg.pl/800x800/?retina=1&text=Example&font=noto`)
 
 function handleChangeColor() {
   strokeStyle.value = isAbove.value ? 'blue' : 'red'
@@ -35,9 +35,11 @@ function handleChangeDirection() {
       </div>
 
       <div>
-        <div border="~ warmGray" rounded-lg>
+        <div rounded-lg>
           <Editor
             ref="EditorRef"
+            border="~ warmGray"
+            mxa
             allow-backspace-delete
             :img
             :shape="Shape.Rect"
