@@ -36,6 +36,11 @@ export interface EditorOptions {
   enableDpi?: boolean
 
   /**
+   * map image
+   */
+  img?: HTMLImageElement | string
+
+  /**
    * Line Options
    */
   lineOptions?: ShapeOptions
