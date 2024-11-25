@@ -51,6 +51,16 @@ export interface EditorOptions {
   lineWithArrowOptions?: Pick<LineWithArrowOptions, 'isAbove'> & ShapeOptions
 
   /**
+   * Max height of the rectangle.
+   */
+  maxHeight?: number
+
+  /**
+   * Max width of the rectangle.
+   */
+  maxWidth?: number
+
+  /**
    * If `true`, the shape will be only view mode.
    */
   onlyView?: boolean
