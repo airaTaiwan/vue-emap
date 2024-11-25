@@ -422,6 +422,8 @@ provideEditorContext({
 
 defineExpose({
   historyShape,
+  imageCache,
+  imageInfo,
   points,
   reset,
   setControlator,
