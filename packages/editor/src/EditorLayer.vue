@@ -378,6 +378,7 @@ function save(type: Shape) {
 function clear() {
   clearDrawCanvas()
   clearViewCanvas()
+  drawImage()
 }
 
 function reset() {
