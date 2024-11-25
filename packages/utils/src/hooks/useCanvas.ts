@@ -1,8 +1,8 @@
-import type { MaybeRef } from '@vueuse/shared'
+import type { Fn, MaybeRef } from '@vueuse/shared'
 import type { ComputedRef, Ref, ShallowRef } from 'vue'
 
 import { invoke, unrefElement, until, useDevicePixelRatio } from '@vueuse/core'
-import { computed, ref, shallowRef } from 'vue'
+import { computed, ref, shallowRef, watch } from 'vue'
 
 import type { Point } from '../types'
 
@@ -11,6 +11,10 @@ import { initCanvas } from '../shared'
 export interface UseCanvasOptions {
   enableDpi: MaybeRef<boolean>
   height: MaybeRef<number>
+  /**
+   * A callback function that is called when the canvas is initialized.
+   */
+  onDone?: Fn
   width: MaybeRef<number>
 }
 
@@ -54,7 +58,7 @@ export function useCanvas(...args: any[]) {
     [target, options] = args
   }
 
-  const { enableDpi, height, width } = options
+  const { enableDpi, height, onDone, width } = options
   const { pixelRatio } = useDevicePixelRatio()
 
   const _width = ref(width)
@@ -81,6 +85,8 @@ export function useCanvas(...args: any[]) {
     canvasCtx.value = initCanvas(el as HTMLCanvasElement, _width.value, _height.value, _dpi.value)
 
     isInit.value = true
+
+    onDone?.()
   }
 
   function clear() {
@@ -93,6 +99,10 @@ export function useCanvas(...args: any[]) {
     await until(width).not.toBe(0)
     await until(height).not.toBe(0)
 
+    init()
+  })
+
+  watch([width, height], () => {
     init()
   })
 
