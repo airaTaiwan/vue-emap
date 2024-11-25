@@ -35,7 +35,7 @@ export const [injectEditorContext, provideEditorContext] = createContext<EditorC
 </script>
 
 <script setup lang="ts">
-import { abortEvent, type Info, loadImage, type Point, useCanvas } from '@airataiwan/utils'
+import { abortEvent, calculateDimensions, type Info, loadImage, type Point, useCanvas } from '@airataiwan/utils'
 import { onKeyStroke, useElementSize, useMouseInElement, watchDeep, watchThrottled } from '@vueuse/core'
 
 import type { EditorOptions, History } from './types'
@@ -48,6 +48,8 @@ const props = withDefaults(defineProps<EditorOptions>(), {
   allowBackspaceDelete: false,
   autoEdit: true,
   enableDpi: false,
+  maxHeight: 400,
+  maxWidth: 400,
   onlyView: false,
 })
 
@@ -87,12 +89,25 @@ async function initImage() {
 }
 
 async function drawImage() {
-  const { height: imageHeight = 400, width: imageWidth = 400, x, y } = imageInfo.value
+  if (!imageCache.value)
+    return
 
-  editorCanvasLayerEl.value?.style.setProperty('height', `${imageHeight}px`)
-  editorCanvasLayerEl.value?.style.setProperty('width', `${imageWidth}px`)
+  const { height, width } = calculateDimensions(
+    imageCache.value.naturalWidth,
+    imageCache.value.naturalHeight,
+    props.maxWidth,
+    props.maxHeight,
+  )
 
-  viewCanvasCtx.value?.drawImage(imageCache.value!, x, y, imageWidth, imageHeight)
+  imageInfo.value.width = width
+  imageInfo.value.height = height
+  imageInfo.value.x = 0
+  imageInfo.value.y = 0
+
+  editorCanvasLayerEl.value?.style.setProperty('height', `${height}px`)
+  editorCanvasLayerEl.value?.style.setProperty('width', `${width}px`)
+
+  viewCanvasCtx.value?.drawImage(imageCache.value, 0, 0, width, height)
 }
 
 function startDraw(e: MouseEvent) {
@@ -431,7 +446,17 @@ defineExpose({
 </script>
 
 <template>
-  <div ref="editorCanvasLayerEl" style="width: 400px; height: 400px;" relative z5 of-hidden @click="handleCapture">
+  <div
+    ref="editorCanvasLayerEl"
+    :style="{
+      maxWidth: `${props.maxWidth}px`,
+      maxHeight: `${props.maxHeight}px`,
+    }"
+    relative
+    z5
+    of-hidden
+    @click="handleCapture"
+  >
     <DrawLayer @on-draw="startDraw">
       <template v-if="points.length >= 1 && drawCanvasCtx">
         <component :is="shapeDrawCom" @clear="clearDrawCanvas" @save="save" />
